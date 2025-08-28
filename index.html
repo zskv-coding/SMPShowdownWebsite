@@ -1,0 +1,2183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMP Showdown - 8 SMPs Battle It Out</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Orbitron:wght@400;700;900&family=Anton&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cinzel', serif;
+            background: linear-gradient(135deg, #1a1100 0%, #2d1f00 50%, #3d2700 100%);
+            color: #fff8e1;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* EPIC ANIMATED BACKGROUND */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(255,215,0,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,165,0,0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(255,140,0,0.05) 0%, transparent 50%);
+            animation: epicPulse 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes epicPulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border-radius: 50%;
+            animation: epicTwinkle 4s infinite;
+            box-shadow: 
+                0 0 6px #FFD700,
+                0 0 12px #FFA500,
+                0 0 18px rgba(255,215,0,0.3);
+        }
+
+        @keyframes epicTwinkle {
+            0%, 100% { 
+                opacity: 0.4; 
+                transform: scale(0.8) rotate(0deg);
+            }
+            25% { 
+                opacity: 1; 
+                transform: scale(1.2) rotate(90deg);
+            }
+            50% { 
+                opacity: 0.6; 
+                transform: scale(1) rotate(180deg);
+            }
+            75% { 
+                opacity: 1; 
+                transform: scale(1.4) rotate(270deg);
+            }
+        }
+
+        /* EPIC SHOOTING STARS */
+        .shooting-star {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border-radius: 50%;
+            box-shadow: 0 0 20px #FFD700;
+            animation: shootingStar 3s linear infinite;
+            z-index: 2;
+        }
+
+        @keyframes shootingStar {
+            0% {
+                transform: translateX(-100px) translateY(-100px);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100vw) translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,165,0,0.1));
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            border: 2px solid rgba(255,215,0,0.3);
+            padding: 10px 20px;
+        }
+
+        nav a {
+            font-family: 'Orbitron', sans-serif;
+            color: #FFD700;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #FFA500;
+            text-shadow: 0 0 15px rgba(255,165,0,0.8);
+        }
+
+        /* ULTRA EPIC HEADER */
+        header {
+            text-align: center;
+            padding: 80px 0 60px 0;
+            background: 
+                linear-gradient(45deg, rgba(255,215,0,0.3), rgba(255,165,0,0.4), rgba(255,140,0,0.3)),
+                radial-gradient(ellipse at center, rgba(255,215,0,0.1) 0%, transparent 70%);
+            border-radius: 0 0 80px 80px;
+            margin-bottom: 60px;
+            box-shadow: 
+                0 20px 60px rgba(255,165,0,0.6),
+                inset 0 0 100px rgba(255,215,0,0.1);
+            border: 3px solid rgba(255,215,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,215,0,0.1), transparent);
+            animation: epicHeaderSweep 6s linear infinite;
+        }
+
+        @keyframes epicHeaderSweep {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .logo-img {
+            max-width: 700px;
+            height: auto;
+            margin-bottom: 30px;
+            filter: 
+                drop-shadow(0 0 30px rgba(255,215,0,0.8))
+                drop-shadow(0 0 60px rgba(255,165,0,0.4));
+            animation: logoFloat 4s ease-in-out infinite;
+            position: relative;
+            z-index: 5;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-10px) scale(1.02); }
+        }
+
+        .tagline {
+            font-family: 'Anton', sans-serif;
+            font-size: 2.2rem;
+            color: #FFD700;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 
+                0 0 20px rgba(255,215,0,0.8),
+                0 0 40px rgba(255,165,0,0.5),
+                0 0 60px rgba(255,140,0,0.3);
+            animation: epicGlow 3s ease-in-out infinite alternate;
+            position: relative;
+            z-index: 5;
+        }
+
+        @keyframes epicGlow {
+            0% { 
+                text-shadow: 
+                    0 0 20px rgba(255,215,0,0.8),
+                    0 0 40px rgba(255,165,0,0.5),
+                    0 0 60px rgba(255,140,0,0.3);
+            }
+            100% { 
+                text-shadow: 
+                    0 0 30px rgba(255,215,0,1),
+                    0 0 60px rgba(255,165,0,0.8),
+                    0 0 90px rgba(255,140,0,0.6);
+            }
+        }
+
+        .event-info {
+            background: 
+                linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,165,0,0.15)),
+                radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+            backdrop-filter: blur(15px);
+            padding: 35px;
+            border-radius: 25px;
+            border: 3px solid rgba(255,215,0,0.6);
+            margin-bottom: 60px;
+            text-align: center;
+            box-shadow: 
+                0 15px 40px rgba(255,165,0,0.4),
+                inset 0 0 50px rgba(255,215,0,0.1);
+            position: relative;
+            z-index: 5;
+            overflow: hidden;
+        }
+
+        .event-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,215,0,0.2), transparent);
+            animation: epicSweep 4s linear infinite;
+        }
+
+        @keyframes epicSweep {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .event-date {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: #FFD700;
+            margin-bottom: 15px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 
+                0 0 15px rgba(255,215,0,0.8),
+                0 0 30px rgba(255,165,0,0.6);
+            position: relative;
+            z-index: 2;
+        }
+
+        .event-status {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            color: #FF8C00;
+            font-weight: bold;
+            animation: epicPulse2 2.5s infinite;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 20px rgba(255,140,0,0.8);
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes epicPulse2 {
+            0%, 100% { 
+                opacity: 0.8; 
+                transform: scale(1);
+                text-shadow: 0 0 20px rgba(255,140,0,0.8);
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.05);
+                text-shadow: 
+                    0 0 30px rgba(255,140,0,1),
+                    0 0 60px rgba(255,165,0,0.6);
+            }
+        }
+
+        .section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            text-align: center;
+            margin-bottom: 50px;
+            background: linear-gradient(45deg, #FFD700, #FF8C00, #FFA500, #FFD700);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255,215,0,0.5);
+            animation: epicTitleShine 4s ease-in-out infinite;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 700;
+        }
+
+        @keyframes epicTitleShine {
+            0%, 100% { 
+                background-position: 0% 50%;
+                filter: hue-rotate(0deg);
+            }
+            50% { 
+                background-position: 100% 50%;
+                filter: hue-rotate(10deg);
+            }
+        }
+
+        .teams-section {
+            margin-bottom: 60px;
+        }
+
+        .brackets-section {
+            background: 
+                linear-gradient(135deg, rgba(255,215,0,0.12), rgba(255,165,0,0.08)),
+                radial-gradient(ellipse at center, rgba(255,215,0,0.1) 0%, transparent 70%);
+            border-radius: 30px;
+            padding: 50px;
+            margin-bottom: 60px;
+            border: 3px solid rgba(255,215,0,0.3);
+            box-shadow: 
+                0 15px 40px rgba(255,165,0,0.3),
+                inset 0 0 50px rgba(255,215,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brackets-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,215,0,0.05) 0%, transparent 70%);
+            animation: epicRotate 20s linear infinite;
+        }
+
+        @keyframes epicRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .games-preview {
+            margin-bottom: 60px;
+        }
+
+        .games-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .game-preview-card {
+            background: 
+                linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,165,0,0.1)),
+                radial-gradient(circle at top left, rgba(255,215,0,0.1), transparent);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 2px solid rgba(255,215,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-preview-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 
+                0 20px 40px rgba(255,165,0,0.4),
+                0 0 50px rgba(255,215,0,0.2);
+            border-color: rgba(255,215,0,0.6);
+        }
+
+        .game-preview-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #FFD700;
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px rgba(255,215,0,0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .view-games-btn {
+            background: linear-gradient(45deg, #FFD700, #FF8C00);
+            color: #1a1100;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 8px 25px rgba(255,215,0,0.4),
+                inset 0 0 20px rgba(255,255,255,0.2);
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .view-games-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .view-games-btn:hover::before {
+            left: 100%;
+        }
+
+        .view-games-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 
+                0 12px 35px rgba(255,215,0,0.6),
+                inset 0 0 30px rgba(255,255,255,0.3);
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 0;
+            color: #D2B48C;
+            border-top: 3px solid rgba(255,215,0,0.3);
+            background: 
+                linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,165,0,0.05)),
+                radial-gradient(ellipse at center, rgba(255,215,0,0.05) 0%, transparent 70%);
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+        }
+
+        .social-links {
+            margin-top: 30px;
+        }
+
+        .social-links a {
+            font-family: 'Orbitron', sans-serif;
+            color: #FFD700;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .social-links a:hover {
+            color: #FFA500;
+            text-shadow: 
+                0 0 15px rgba(255,165,0,0.8),
+                0 0 30px rgba(255,215,0,0.4);
+            transform: scale(1.1);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            nav {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+            
+            .tagline {
+                font-size: 1.6rem;
+                letter-spacing: 2px;
+            }
+            
+            .section-title {
+                font-size: 2.8rem;
+            }
+            
+            .event-date {
+                font-size: 2rem;
+            }
+            
+            .games-preview-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    <div class="shooting-stars" id="shooting-stars"></div>
+    
+    <nav>
+        <a href="#home">Home</a>
+        <a href="games.html">Games</a>
+    </nav>
+    
+    <div class="container">
+        <header>
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==" alt="SMP Showdown Logo" class="logo-img">
+            <p class="tagline">8 SMPs Battle It Out</p>
+            <div class="event-info">
+                <div class="event-date">CRGN x SMP Showdown</div>
+                <div class="event-date" style="font-size: 1.8rem; margin-bottom: 20px;">September 5th, 2025 @ 12 PM CST</div>
+                <div class="event-status">In Development</div>
+                <div style="font-size: 1.1rem; color: #FFB84D; margin-top: 15px; font-family: 'Orbitron', sans-serif;">
+                    <span id="user-timezone"></span>
+                </div>
+            </div>
+        </header>
+
+        <section class="teams-section">
+            <h2 class="section-title">Competing SMPs</h2>
+            <div style="text-align: center; padding: 80px 30px; background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,165,0,0.06)); border-radius: 25px; border: 3px dashed rgba(255,215,0,0.4); box-shadow: 0 15px 40px rgba(255,165,0,0.2);">
+                <div style="font-size: 4rem; margin-bottom: 25px; opacity: 0.4;">🏗️</div>
+                <h3 style="font-family: 'Cinzel', serif; font-size: 2.8rem; color: #FFD700; margin-bottom: 20px; text-shadow: 0 0 20px rgba(255,215,0,0.6); font-weight: 700;">None Yet!</h3>
+                <p style="font-family: 'Cinzel', serif; font-size: 1.3rem; color: #F5DEB3; line-height: 1.7; max-width: 600px; margin: 0 auto;">
+                    We're still forging alliances and gathering the mightiest SMPs across the realm. 
+                    <br><strong>The greatest battle awaits...</strong>
+                </p>
+                <div style="margin-top: 40px; padding: 25px; background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,165,0,0.1)); border-radius: 20px; border: 2px solid rgba(255,215,0,0.5); box-shadow: 0 10px 25px rgba(255,215,0,0.2);">
+                    <p style="font-family: 'Orbitron', sans-serif; color: #FFD700; font-weight: bold; margin-bottom: 15px; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px;">Think Your SMP Has What It Takes?</p>
+                    <p style="font-family: 'Cinzel', serif; color: #F5DEB3; font-size: 1.1rem;">Join the legendary battle on Discord or Twitter!</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="brackets-section">
+            <h2 class="section-title">Tournament Bracket</h2>
+            <div style="text-align: center; padding: 50px; background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,165,0,0.05)); border-radius: 25px; position: relative; z-index: 2;">
+                <div style="font-size: 3.5rem; margin-bottom: 25px; opacity: 0.5;">🏆</div>
+                <h3 style="font-family: 'Orbitron', sans-serif; font-size: 2.2rem; color: #FFD700; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 20px rgba(255,215,0,0.5); font-weight: 700;">Epic Tournament Structure</h3>
+                <p style="font-family: 'Cinzel', serif; color: #F5DEB3; line-height: 1.7; font-size: 1.1rem;">
+                    Once our legendary SMPs have assembled, the ultimate bracket of champions will be revealed. 
+                    <br><strong style="color: #FFD700;">Prepare for the most EPIC showdown in Minecraft history!</strong>
+                </p>
+            </div>
+        </section>
+
+        <section class="games-preview">
+            <h2 class="section-title">Epic Games Preview</h2>
+            <div class="games-preview-grid">
+                <div class="game-preview-card">
+                    <h3 class="game-preview-name">Peckish Playoffs</h3>
+                    <p style="color: #F5DEB3; font-size: 0.95rem;">Japanese-themed Survival Games</p>
+                </div>
+                <div class="game-preview-card">
+                    <h3 class="game-preview-name">Block Shuffle</h3>
+                    <p style="color: #F5DEB3; font-size: 0.95rem;">Pattern recognition survival</p>
+                </div>
+                <div class="game-preview-card">
+                    <h3 class="game-preview-name">King of the Hill</h3>
+                    <p style="color: #F5DEB3; font-size: 0.95rem;">Territory control battles</p>
+                </div>
+                <div class="game-preview-card">
+                    <h3 class="game-preview-name">And 4 More...</h3>
+                    <p style="color: #F5DEB3; font-size: 0.95rem;">Epic challenges await!</p>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <a href="games.html" class="view-games-btn">View All Games</a>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 SMP Showdown. Forged with ⚔️ for the Minecraft Legends.</p>
+            <div class="social-links">
+                <a href="#">Discord</a>
+                <a href="#">YouTube</a>
+                <a href="#">Twitch</a>
+                <a href="#">Twitter</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Create EPIC animated stars background
+        function createEpicStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 150;
+            
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 4 + 's';
+                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Create EPIC shooting stars
+        function createShootingStars() {
+            const container = document.getElementById('shooting-stars');
+            
+            function createStar() {
+                const star = document.createElement('div');
+                star.className = 'shooting-star';
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                container.appendChild(star);
+                
+                setTimeout(() => {
+                    star.remove();
+                }, 4000);
+            }
+            
+            setInterval(createStar, 3000);
+        }
+
+        // Add EPIC parallax effect
+        function epicParallaxEffect() {
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const stars = document.getElementById('stars');
+                const shootingStars = document.getElementById('shooting-stars');
+                
+                stars.style.transform = `translateY(${scrolled * 0.3}px) rotate(${scrolled * 0.01}deg)`;
+                shootingStars.style.transform = `translateY(${scrolled * 0.5}px)`;
+            });
+        }
+
+        // Show user's timezone conversion
+        function showUserTimezone() {
+            const eventDate = new Date('2025-09-05T17:00:00Z'); // 12 PM CST = 5 PM UTC
+            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const userTime = eventDate.toLocaleString('en-US', {
+                timeZone: userTimezone,
+                weekday: 'long',
+                month: 'long', 
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                timeZoneName: 'short'
+            });
+            
+            const timezoneElement = document.getElementById('user-timezone');
+            if (userTimezone !== 'America/Chicago') {
+                timezoneElement.innerHTML = `⚡ That's ${userTime} in your timezone! ⚡`;
+            } else {
+                timezoneElement.innerHTML = `⚡ That's your local time! ⚡`;
+            }
+        }
+
+        // Add epic mouse trail effect
+        function createMouseTrail() {
+            const trail = [];
+            const maxTrail = 10;
+            
+            document.addEventListener('mousemove', (e) => {
+                trail.push({
+                    x: e.clientX,
+                    y: e.clientY,
+                    time: Date.now()
+                });
+                
+                if (trail.length > maxTrail) {
+                    trail.shift();
+                }
+                
+                // Create trail particle
+                const particle = document.createElement('div');
+                particle.style.cssText = `
+                    position: fixed;
+                    width: 4px;
+                    height: 4px;
+                    background: radial-gradient(circle, #FFD700, #FFA500);
+                    border-radius: 50%;
+                    pointer-events: none;
+                    z-index: 1000;
+                    left: ${e.clientX}px;
+                    top: ${e.clientY}px;
+                    box-shadow: 0 0 10px #FFD700;
+                    animation: fadeOut 0.8s ease-out forwards;
+                `;
+                
+                document.body.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 800);
+            });
+        }
+        
+        // Add fadeOut animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                0% { 
+                    opacity: 1; 
+                    transform: scale(1);
+                }
+                100% { 
+                    opacity: 0; 
+                    transform: scale(0.3);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize ALL epic effects
+        document.addEventListener('DOMContentLoaded', () => {
+            createEpicStars();
+            createShootingStars();
+            epicParallaxEffect();
+            showUserTimezone();
+            createMouseTrail();
+            
+            // Add epic entrance animations
+            const elements = document.querySelectorAll('.game-preview-card');
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(50px)';
+                el.style.transition = 'all 0.6s ease';
+                
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMP Showdown - 8 SMPs Battle It Out</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Orbitron:wght@400;700;900&family=Pirata+One&family=Anton&family=Bungee&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cinzel', serif;
+            background: linear-gradient(135deg, #1a1100 0%, #2d1f00 50%, #3d2700 100%);
+            color: #fff8e1;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* EPIC ANIMATED BACKGROUND */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(255,215,0,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,165,0,0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(255,140,0,0.05) 0%, transparent 50%);
+            animation: epicPulse 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes epicPulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border-radius: 50%;
+            animation: epicTwinkle 4s infinite;
+            box-shadow: 
+                0 0 6px #FFD700,
+                0 0 12px #FFA500,
+                0 0 18px rgba(255,215,0,0.3);
+        }
+
+        @keyframes epicTwinkle {
+            0%, 100% { 
+                opacity: 0.4; 
+                transform: scale(0.8) rotate(0deg);
+            }
+            25% { 
+                opacity: 1; 
+                transform: scale(1.2) rotate(90deg);
+            }
+            50% { 
+                opacity: 0.6; 
+                transform: scale(1) rotate(180deg);
+            }
+            75% { 
+                opacity: 1; 
+                transform: scale(1.4) rotate(270deg);
+            }
+        }
+
+        /* EPIC SHOOTING STARS */
+        .shooting-star {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border-radius: 50%;
+            box-shadow: 0 0 20px #FFD700;
+            animation: shootingStar 3s linear infinite;
+            z-index: 2;
+        }
+
+        @keyframes shootingStar {
+            0% {
+                transform: translateX(-100px) translateY(-100px);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100vw) translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* ULTRA EPIC HEADER */
+        header {
+            text-align: center;
+            padding: 80px 0 60px 0;
+            background: 
+                linear-gradient(45deg, rgba(255,215,0,0.3), rgba(255,165,0,0.4), rgba(255,140,0,0.3)),
+                radial-gradient(ellipse at center, rgba(255,215,0,0.1) 0%, transparent 70%);
+            border-radius: 0 0 80px 80px;
+            margin-bottom: 60px;
+            box-shadow: 
+                0 20px 60px rgba(255,165,0,0.6),
+                inset 0 0 100px rgba(255,215,0,0.1);
+            border: 3px solid rgba(255,215,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,215,0,0.1), transparent);
+            animation: epicHeaderSweep 6s linear infinite;
+        }
+
+        @keyframes epicHeaderSweep {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .logo-img {
+            max-width: 700px;
+            height: auto;
+            margin-bottom: 30px;
+            filter: 
+                drop-shadow(0 0 30px rgba(255,215,0,0.8))
+                drop-shadow(0 0 60px rgba(255,165,0,0.4));
+            animation: logoFloat 4s ease-in-out infinite;
+            position: relative;
+            z-index: 5;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-10px) scale(1.02); }
+        }
+
+        .tagline {
+            font-family: 'Anton', sans-serif;
+            font-size: 2.2rem;
+            color: #FFD700;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 
+                0 0 20px rgba(255,215,0,0.8),
+                0 0 40px rgba(255,165,0,0.5),
+                0 0 60px rgba(255,140,0,0.3);
+            animation: epicGlow 3s ease-in-out infinite alternate;
+            position: relative;
+            z-index: 5;
+        }
+
+        @keyframes epicGlow {
+            0% { 
+                text-shadow: 
+                    0 0 20px rgba(255,215,0,0.8),
+                    0 0 40px rgba(255,165,0,0.5),
+                    0 0 60px rgba(255,140,0,0.3);
+            }
+            100% { 
+                text-shadow: 
+                    0 0 30px rgba(255,215,0,1),
+                    0 0 60px rgba(255,165,0,0.8),
+                    0 0 90px rgba(255,140,0,0.6);
+            }
+        }
+
+        .event-info {
+            background: 
+                linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,165,0,0.15)),
+                radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+            backdrop-filter: blur(15px);
+            padding: 35px;
+            border-radius: 25px;
+            border: 3px solid rgba(255,215,0,0.6);
+            margin-bottom: 60px;
+            text-align: center;
+            box-shadow: 
+                0 15px 40px rgba(255,165,0,0.4),
+                inset 0 0 50px rgba(255,215,0,0.1);
+            position: relative;
+            z-index: 5;
+            overflow: hidden;
+        }
+
+        .event-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,215,0,0.2), transparent);
+            animation: epicSweep 4s linear infinite;
+        }
+
+        @keyframes epicSweep {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .event-date {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: #FFD700;
+            margin-bottom: 15px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 
+                0 0 15px rgba(255,215,0,0.8),
+                0 0 30px rgba(255,165,0,0.6);
+            position: relative;
+            z-index: 2;
+        }
+
+        .event-status {
+            font-family: 'Bungee', sans-serif;
+            font-size: 1.4rem;
+            color: #FF8C00;
+            font-weight: bold;
+            animation: epicPulse2 2.5s infinite;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 20px rgba(255,140,0,0.8);
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes epicPulse2 {
+            0%, 100% { 
+                opacity: 0.8; 
+                transform: scale(1);
+                text-shadow: 0 0 20px rgba(255,140,0,0.8);
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.05);
+                text-shadow: 
+                    0 0 30px rgba(255,140,0,1),
+                    0 0 60px rgba(255,165,0,0.6);
+            }
+        }
+
+        .section-title {
+            font-family: 'Pirata One', cursive;
+            font-size: 3.5rem;
+            text-align: center;
+            margin-bottom: 50px;
+            background: linear-gradient(45deg, #FFD700, #FF8C00, #FFA500, #FFD700);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255,215,0,0.5);
+            animation: epicTitleShine 4s ease-in-out infinite;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        @keyframes epicTitleShine {
+            0%, 100% { 
+                background-position: 0% 50%;
+                filter: hue-rotate(0deg);
+            }
+            50% { 
+                background-position: 100% 50%;
+                filter: hue-rotate(10deg);
+            }
+        }
+
+        .teams-section {
+            margin-bottom: 60px;
+        }
+
+        .team-card {
+            background: 
+                linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,165,0,0.1)),
+                radial-gradient(circle at top right, rgba(255,215,0,0.1), transparent);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 30px;
+            text-align: center;
+            border: 3px solid rgba(255,215,0,0.3);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,215,0,0.4), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .team-card:hover::before {
+            left: 100%;
+        }
+
+        .team-card:hover {
+            transform: translateY(-15px) scale(1.03) rotateY(5deg);
+            border-color: rgba(255,215,0,0.8);
+            box-shadow: 
+                0 30px 60px rgba(255,215,0,0.5),
+                0 0 50px rgba(255,165,0,0.3);
+            background: 
+                linear-gradient(135deg, rgba(255,215,0,0.25), rgba(255,165,0,0.18)),
+                radial-gradient(circle at center, rgba(255,215,0,0.15), transparent);
+        }
+
+        .team-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #FFD700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 
+                0 0 15px rgba(255,215,0,0.8),
+                0 0 30px rgba(255,165,0,0.4);
+        }
+
+        .team-desc {
+            font-family: 'Cinzel', serif;
+            color: #F5DEB3;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+        }
+
+        .team-members {
+            font-family: 'Anton', sans-serif;
+            font-size: 1rem;
+            color: #FFB84D;
+            font-style: normal;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .brackets-section {
+            background: 
+                linear-gradient(135deg, rgba(255,215,0,0.12), rgba(255,165,0,0.08)),
+                radial-gradient(ellipse at center, rgba(255,215,0,0.1) 0%, transparent 70%);
+            border-radius: 30px;
+            padding: 50px;
+            margin-bottom: 60px;
+            border: 3px solid rgba(255,215,0,0.3);
+            box-shadow: 
+                0 15px 40px rgba(255,165,0,0.3),
+                inset 0 0 50px rgba(255,215,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brackets-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,215,0,0.05) 0%, transparent 70%);
+            animation: epicRotate 20s linear infinite;
+        }
+
+        @keyframes epicRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .match {
+            background: 
+                linear-gradient(135deg, rgba(255,215,0,0.18), rgba(255,165,0,0.12)),
+                radial-gradient(circle at center, rgba(255,215,0,0.1), transparent);
+            border-radius: 20px;
+            padding: 25px;
+            min-width: 220px;
+            text-align: center;
+            border: 3px solid rgba(255,215,0,0.4);
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .match:hover {
+            background: 
+                linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,165,0,0.2)),
+                radial-gradient(circle at center, rgba(255,215,0,0.2), transparent);
+            transform: scale(1.08) rotateZ(2deg);
+            box-shadow: 
+                0 15px 30px rgba(255,165,0,0.4),
+                0 0 40px rgba(255,215,0,0.3);
+        }
+
+        .match-teams {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .match-time {
+            font-family: 'Anton', sans-serif;
+            font-size: 1rem;
+            color: #FFB84D;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .live-indicator {
+            background: linear-gradient(45deg, #FF8C00, #FF6347, #FF8C00);
+            background-size: 200% 200%;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-family: 'Bungee', sans-serif;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-top: 15px;
+            animation: epicBlink 1.5s infinite, epicShine 3s linear infinite;
+            box-shadow: 
+                0 6px 15px rgba(255,140,0,0.6),
+                0 0 30px rgba(255,100,50,0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @keyframes epicBlink {
+            0%, 50% { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+            51%, 100% { 
+                opacity: 0.7; 
+                transform: scale(0.98);
+            }
+        }
+
+        @keyframes epicShine {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .games-section {
+            margin-bottom: 60px;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .game-card {
+            background: 
+                linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,165,0,0.1)),
+                radial-gradient(circle at top left, rgba(255,215,0,0.1), transparent);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 3px solid rgba(255,215,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, transparent, rgba(255,215,0,0.2), transparent);
+            transition: top 0.6s ease;
+        }
+
+        .game-card:hover::before {
+            top: 100%;
+        }
+
+        .game-card:hover {
+            background: 
+                linear-gradient(135deg, rgba(255,215,0,0.25), rgba(255,165,0,0.18)),
+                radial-gradient(circle at center, rgba(255,215,0,0.15), transparent);
+            transform: translateY(-10px) scale(1.05) rotateX(5deg);
+            box-shadow: 
+                0 20px 40px rgba(255,165,0,0.4),
+                0 0 50px rgba(255,215,0,0.2);
+            border-color: rgba(255,215,0,0.6);
+        }
+
+        .game-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #FFD700;
+            margin-bottom: 15px;
+            text-shadow: 
+                0 0 15px rgba(255,215,0,0.6),
+                0 0 30px rgba(255,165,0,0.3);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .game-desc {
+            font-family: 'Cinzel', serif;
+            color: #F5DEB3;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 0;
+            color: #D2B48C;
+            border-top: 3px solid rgba(255,215,0,0.3);
+            background: 
+                linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,165,0,0.05)),
+                radial-gradient(ellipse at center, rgba(255,215,0,0.05) 0%, transparent 70%);
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+        }
+
+        .social-links {
+            margin-top: 30px;
+        }
+
+        .social-links a {
+            font-family: 'Anton', sans-serif;
+            color: #FFD700;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .social-links a:hover {
+            color: #FFA500;
+            text-shadow: 
+                0 0 15px rgba(255,165,0,0.8),
+                0 0 30px rgba(255,215,0,0.4);
+            transform: scale(1.1);
+        }
+
+        /* RESPONSIVE EPIC */
+        @media (max-width: 768px) {
+            .tagline {
+                font-size: 1.6rem;
+                letter-spacing: 2px;
+            }
+            
+            .section-title {
+                font-size: 2.8rem;
+            }
+            
+            .event-date {
+                font-size: 2rem;
+            }
+            
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .bracket {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    <div class="shooting-stars" id="shooting-stars"></div>
+    
+    <div class="container">
+        <header>
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==" alt="SMP Showdown Logo" class="logo-img">
+            <p class="tagline">8 SMPs Battle It Out</p>
+            <div class="event-info">
+                <div class="event-date">CRGN x SMP Showdown</div>
+                <div class="event-date" style="font-size: 1.8rem; margin-bottom: 20px;">September 5th, 2025 @ 12 PM CST</div>
+                <div class="event-status">In Development</div>
+                <div style="font-size: 1.1rem; color: #FFB84D; margin-top: 15px; font-family: 'Orbitron', sans-serif;">
+                    <span id="user-timezone"></span>
+                </div>
+            </div>
+        </header>
+
+        <section class="teams-section">
+            <h2 class="section-title">Competing SMPs</h2>
+            <div style="text-align: center; padding: 80px 30px; background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,165,0,0.06)); border-radius: 25px; border: 3px dashed rgba(255,215,0,0.4); box-shadow: 0 15px 40px rgba(255,165,0,0.2);">
+                <div style="font-size: 4rem; margin-bottom: 25px; opacity: 0.4;">🏗️</div>
+                <h3 style="font-family: 'Pirata One', cursive; font-size: 2.8rem; color: #FFD700; margin-bottom: 20px; text-shadow: 0 0 20px rgba(255,215,0,0.6);">None Yet!</h3>
+                <p style="font-family: 'Cinzel', serif; font-size: 1.3rem; color: #F5DEB3; line-height: 1.7; max-width: 600px; margin: 0 auto;">
+                    We're still forging alliances and gathering the mightiest SMPs across the realm. 
+                    <br><strong>The greatest battle awaits...</strong>
+                </p>
+                <div style="margin-top: 40px; padding: 25px; background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,165,0,0.1)); border-radius: 20px; border: 2px solid rgba(255,215,0,0.5); box-shadow: 0 10px 25px rgba(255,215,0,0.2);">
+                    <p style="font-family: 'Anton', sans-serif; color: #FFD700; font-weight: bold; margin-bottom: 15px; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px;">Think Your SMP Has What It Takes?</p>
+                    <p style="font-family: 'Cinzel', serif; color: #F5DEB3; font-size: 1.1rem;">Join the legendary battle on Discord or Twitter!</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="brackets-section">
+            <h2 class="section-title">Tournament Bracket</h2>
+            <div style="text-align: center; padding: 50px; background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,165,0,0.05)); border-radius: 25px; position: relative; z-index: 2;">
+                <div style="font-size: 3.5rem; margin-bottom: 25px; opacity: 0.5;">🏆</div>
+                <h3 style="font-family: 'Orbitron', sans-serif; font-size: 2.2rem; color: #FFD700; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 20px rgba(255,215,0,0.5);">Epic Tournament Structure</h3>
+                <p style="font-family: 'Cinzel', serif; color: #F5DEB3; line-height: 1.7; font-size: 1.1rem;">
+                    Once our legendary SMPs have assembled, the ultimate bracket of champions will be revealed. 
+                    <br><strong style="color: #FFD700;">Prepare for the most EPIC showdown in Minecraft history!</strong>
+                </p>
+            </div>
+        </section>
+
+        <section class="games-section">
+            <h2 class="section-title">Epic Games of Glory</h2>
+            <div class="games-grid">
+                <div class="game-card">
+                    <h3 class="game-name">Peckish Playoffs</h3>
+                    <p class="game-desc">Classic Survival Games with a twist! Navigate our expansive Japanese-themed arena where teams spawn scattered among rivals. Reunite before grace period ends, survive the closing border, and fight with balanced loot that ensures everyone gets a fair chance at victory!</p>
+                </div>
+                <div class="game-card">
+                    <h3 class="game-name">Block Shuffle</h3>
+                    <p class="game-desc">Quick reflexes meet pattern recognition! Stand on glazed terracotta blocks with unique shapes and patterns. When a pattern is called, find it fast or fall into the void. One wrong step and you're eliminated in this intense survival challenge!</p>
+                </div>
+                <div class="game-card">
+                    <h3 class="game-name">King of the Hill</h3>
+                    <p class="game-desc">Four teams, two arenas, one hilltop to rule! Race to capture and hold the high ground in this classic territory control battle. Arena winners face off in an epic finale - first team to 200 points claims the crown!</p>
+                </div>
+                <div class="game-card">
+                    <h3 class="game-name">Parkour Run</h3>
+                    <p class="game-desc">Navigate winding pathways floating over the endless void at sunset! Earn points at themed checkpoints and bonus points for completing the full course within 10 minutes. Remember: when in doubt, just JUMP!</p>
+                </div>
+                <div class="game-card">
+                    <h3 class="game-name">Hide and Seek</h3>
+                    <p class="game-desc">Sneak through our sus "Skold" space station! Hide behind pipes, zip through vents, and avoid the self-destruct button. Shrunken hiders must evade team seekers in this starry sci-fi thriller. Survival means points!</p>
+                </div>
+                <div class="game-card">
+                    <h3 class="game-name">SMP Triathlon</h3>
+                    <p class="game-desc">Race through our fantasy European mountain castle! Navigate jump pads, levitation zones, and avoid potholes while admiring waterfalls and duels. Placement-based scoring rewards finding the fastest path down the mountain!</p>
+                </div>
+                <div class="game-card">
+                    <h3 class="game-name">The Gauntlet</h3>
+                    <p class="game-desc">The ultimate finale! Top two teams battle head-to-head in an epic 1v1 showdown. But beware - chaotic disasters will strike mid-battle, turning strategy into survival. Only one team can emerge victorious from this final test!</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 SMP Showdown. Forged with ⚔️ for the Minecraft Legends.</p>
+            <div class="social-links">
+                <a href="#">Discord</a>
+                <a href="#">YouTube</a>
+                <a href="#">Twitch</a>
+                <a href="#">Twitter</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Create EPIC animated stars background
+        function createEpicStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 150;
+            
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 4 + 's';
+                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Create EPIC shooting stars
+        function createShootingStars() {
+            const container = document.getElementById('shooting-stars');
+            
+            function createStar() {
+                const star = document.createElement('div');
+                star.className = 'shooting-star';
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                container.appendChild(star);
+                
+                setTimeout(() => {
+                    star.remove();
+                }, 4000);
+            }
+            
+            setInterval(createStar, 3000);
+        }
+
+        // Add EPIC parallax effect
+        function epicParallaxEffect() {
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const stars = document.getElementById('stars');
+                const shootingStars = document.getElementById('shooting-stars');
+                
+                stars.style.transform = `translateY(${scrolled * 0.3}px) rotate(${scrolled * 0.01}deg)`;
+                shootingStars.style.transform = `translateY(${scrolled * 0.5}px)`;
+            });
+        }
+
+        // Add EPIC hover effects to cards
+        function addEpicCardEffects() {
+            const gameCards = document.querySelectorAll('.game-card');
+            const colors = [
+                '#FFD700', '#FFA500', '#FF8C00', '#DAA520', 
+                '#B8860B', '#CD853F', '#DEB887', '#F4A460'
+            ];
+            
+            gameCards.forEach((card, index) => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.borderColor = colors[index % colors.length];
+                    card.style.boxShadow = `
+                        0 25px 50px ${colors[index % colors.length]}60,
+                        0 0 50px ${colors[index % colors.length]}40
+                    `;
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.borderColor = 'rgba(255,215,0,0.3)';
+                    card.style.boxShadow = 'none';
+                });
+            });
+        }
+
+        // EPIC screen flash effect on load
+        function epicLoadEffect() {
+            const flash = document.createElement('div');
+            flash.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: linear-gradient(45deg, #FFD700, #FFA500);
+                z-index: 9999;
+                opacity: 1;
+                pointer-events: none;
+                transition: opacity 1s ease-out;
+            `;
+            document.body.appendChild(flash);
+            
+            setTimeout(() => {
+                flash.style.opacity = '0';
+                setTimeout(() => flash.remove(), 1000);
+            }, 300);
+        }
+
+        // Show user's timezone conversion
+        function showUserTimezone() {
+            const eventDate = new Date('2025-09-05T17:00:00Z'); // 12 PM CST = 5 PM UTC
+            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const userTime = eventDate.toLocaleString('en-US', {
+                timeZone: userTimezone,
+                weekday: 'long',
+                month: 'long', 
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                timeZoneName: 'short'
+            });
+            
+            const timezoneElement = document.getElementById('user-timezone');
+            if (userTimezone !== 'America/Chicago') {
+                timezoneElement.innerHTML = `⚡ That's ${userTime} in your timezone! ⚡`;
+            } else {
+                timezoneElement.innerHTML = `⚡ That's your local time! ⚡`;
+            }
+        }
+
+        // Add epic mouse trail effect
+        function createMouseTrail() {
+            const trail = [];
+            const maxTrail = 10;
+            
+            document.addEventListener('mousemove', (e) => {
+                trail.push({
+                    x: e.clientX,
+                    y: e.clientY,
+                    time: Date.now()
+                });
+                
+                if (trail.length > maxTrail) {
+                    trail.shift();
+                }
+                
+                // Create trail particle
+                const particle = document.createElement('div');
+                particle.style.cssText = `
+                    position: fixed;
+                    width: 4px;
+                    height: 4px;
+                    background: radial-gradient(circle, #FFD700, #FFA500);
+                    border-radius: 50%;
+                    pointer-events: none;
+                    z-index: 1000;
+                    left: ${e.clientX}px;
+                    top: ${e.clientY}px;
+                    box-shadow: 0 0 10px #FFD700;
+                    animation: fadeOut 0.8s ease-out forwards;
+                `;
+                
+                document.body.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 800);
+            });
+        }
+        
+        // Add fadeOut animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                0% { 
+                    opacity: 1; 
+                    transform: scale(1);
+                }
+                100% { 
+                    opacity: 0; 
+                    transform: scale(0.3);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize ALL epic effects
+        document.addEventListener('DOMContentLoaded', () => {
+            epicLoadEffect();
+            createEpicStars();
+            createShootingStars();
+            epicParallaxEffect();
+            addEpicCardEffects();
+            showUserTimezone();
+            createMouseTrail();
+            
+            // Add epic entrance animations
+            const elements = document.querySelectorAll('.game-card, .team-card, .match');
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(50px)';
+                el.style.transition = 'all 0.6s ease';
+                
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMP Showdown - 8 SMPs Battle for Glory</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1100 0%, #2d1f00 50%, #3d2700 100%);
+            color: #fff8e1;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #FFD700;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+            box-shadow: 0 0 4px #FFA500;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 0 40px 0;
+            background: linear-gradient(45deg, rgba(255,215,0,0.2), rgba(255,165,0,0.3), rgba(255,140,0,0.2));
+            border-radius: 0 0 50px 50px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 30px rgba(255,165,0,0.4);
+            border: 2px solid rgba(255,215,0,0.3);
+        }
+
+        .logo {
+            font-size: 4rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #FFD700, #FF4500, #FF1493, #00BFFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(255,215,0,0.5);
+        }
+
+        .tagline {
+            font-size: 1.4rem;
+            color: #ccc;
+            margin-bottom: 30px;
+        }
+
+        .event-info {
+            background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,165,0,0.1));
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 20px;
+            border: 2px solid rgba(255,215,0,0.4);
+            margin-bottom: 50px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(255,165,0,0.3);
+        }
+
+        .event-date {
+            font-size: 2rem;
+            color: #FFD700;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .event-status {
+            font-size: 1.2rem;
+            color: #FF8C00;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .teams-section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(45deg, #FFD700, #FF8C00, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(255,215,0,0.3);
+        }
+
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .team-card {
+            background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,165,0,0.08));
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            border: 2px solid rgba(255,215,0,0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,215,0,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .team-card:hover::before {
+            left: 100%;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(255,215,0,0.7);
+            box-shadow: 0 20px 40px rgba(255,215,0,0.4);
+            background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,165,0,0.12));
+        }
+
+        .team-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #FFD700;
+        }
+
+        .team-desc {
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .team-members {
+            font-size: 0.9rem;
+            color: #aaa;
+            font-style: italic;
+        }
+
+        .brackets-section {
+            background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,165,0,0.05));
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 50px;
+            border: 2px solid rgba(255,215,0,0.2);
+            box-shadow: 0 8px 25px rgba(255,165,0,0.2);
+        }
+
+        .bracket {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .bracket-round {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .match {
+            background: linear-gradient(135deg, rgba(255,215,0,0.12), rgba(255,165,0,0.08));
+            border-radius: 15px;
+            padding: 20px;
+            min-width: 200px;
+            text-align: center;
+            border: 2px solid rgba(255,215,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .match:hover {
+            background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,165,0,0.15));
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(255,165,0,0.3);
+        }
+
+        .match-teams {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .match-time {
+            font-size: 0.9rem;
+            color: #FFB84D;
+        }
+
+        .live-indicator {
+            background: linear-gradient(45deg, #FF8C00, #FF6347);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-top: 10px;
+            animation: blink 1s infinite;
+            box-shadow: 0 4px 10px rgba(255,140,0,0.4);
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.5; }
+        }
+
+        .games-section {
+            margin-bottom: 50px;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .game-card {
+            background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,165,0,0.06));
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255,215,0,0.2);
+        }
+
+        .game-card:hover {
+            background: linear-gradient(135deg, rgba(255,215,0,0.18), rgba(255,165,0,0.12));
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255,165,0,0.3);
+            border-color: rgba(255,215,0,0.4);
+        }
+
+        .game-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 8px rgba(255,215,0,0.3);
+        }
+
+        .game-desc {
+            color: #F5DEB3;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #D2B48C;
+            border-top: 2px solid rgba(255,215,0,0.2);
+            background: linear-gradient(135deg, rgba(255,215,0,0.05), rgba(255,165,0,0.03));
+        }
+
+        .social-links {
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            color: #FFD700;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #FFA500;
+            text-shadow: 0 0 10px rgba(255,165,0,0.5);
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            .tagline {
+                font-size: 1.1rem;
+            }
+            
+            .teams-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .bracket {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <header>
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==" alt="SMP Showdown Logo" class="logo-img" style="max-width: 600px; height: auto; margin-bottom: 20px;">
+            <p class="tagline">8 SMPs Battle It Out</p>
+            <div class="event-info">
+                <div class="event-date">CRGN x SMP Showdown</div>
+                <div class="event-date" style="font-size: 1.5rem; margin-bottom: 15px;">September 5th, 2025 @ 12 PM CST</div>
+                <div class="event-status">In Development</div>
+                <div style="font-size: 1rem; color: #ccc; margin-top: 10px;">
+                    <span id="user-timezone"></span>
+                </div>
+            </div>
+        </header>
+
+        <section class="teams-section">
+            <h2 class="section-title">Competing SMPs</h2>
+            <div style="text-align: center; padding: 60px 20px; background: rgba(255,255,255,0.05); border-radius: 20px; border: 2px dashed rgba(255,255,255,0.2);">
+                <div style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;">🏗️</div>
+                <h3 style="font-size: 2rem; color: #FFD700; margin-bottom: 15px;">None Yet!</h3>
+                <p style="font-size: 1.2rem; color: #ccc; line-height: 1.6; max-width: 500px; margin: 0 auto;">
+                    We're still working on getting SMPs to join the showdown. 
+                    <br>Check back soon for updates!
+                </p>
+                <div style="margin-top: 30px; padding: 20px; background: rgba(255,215,0,0.1); border-radius: 15px; border: 1px solid rgba(255,215,0,0.3);">
+                    <p style="color: #FFD700; font-weight: bold; margin-bottom: 10px;">Want your SMP to compete?</p>
+                    <p style="color: #ccc; font-size: 0.95rem;">Contact us on Discord or Twitter!</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="brackets-section">
+            <h2 class="section-title">Tournament Bracket</h2>
+            <div style="text-align: center; padding: 40px; background: rgba(255,255,255,0.05); border-radius: 20px;">
+                <div style="font-size: 2.5rem; margin-bottom: 20px; opacity: 0.4;">🏆</div>
+                <h3 style="font-size: 1.8rem; color: #4ECDC4; margin-bottom: 15px;">Tournament Structure Coming Soon</h3>
+                <p style="color: #bbb; line-height: 1.6;">
+                    Once we have our competing SMPs confirmed, we'll reveal the bracket format and tournament structure. 
+                    It's going to be epic!
+                </p>
+            </div>
+        </section>
+
+        <section class="games-section">
+            <h2 class="section-title">Competition Games</h2>
+            <div class="games-grid">
+                <div class="game-card">
+                    <h3 class="game-name">Peckish Playoffs</h3>
+                    <p class="game-desc">Classic Survival Games with a twist! Navigate our expansive Japanese-themed arena where teams spawn scattered among rivals. Reunite before grace period ends, survive the closing border, and fight with balanced loot that ensures everyone gets a fair chance at victory!</p>
+                </div>
+                <div class="game-card">
+                    <h3 class="game-name">Block Shuffle</h3>
+                    <p class="game-desc">Quick reflexes meet pattern recognition! Stand on glazed terracotta blocks with unique shapes and patterns. When a pattern is called, find it fast or fall into the void. One wrong step and you're eliminated in this intense survival challenge!</p>
+                </div>
+                <div class="game-card">
+                    <h3 class="game-name">King of the Hill</h3>
+                    <p class="game-desc">Four teams, two arenas, one hilltop to rule! Race to capture and hold the high ground in this classic territory control battle. Arena winners face off in an epic finale - first team to 200 points claims the crown!</p>
+                </div>
+                <div class="game-card">
+                    <h3 class="game-name">Parkour Run</h3>
+                    <p class="game-desc">Navigate winding pathways floating over the endless void at sunset! Earn points at themed checkpoints and bonus points for completing the full course within 10 minutes. Remember: when in doubt, just JUMP!</p>
+                </div>
+                <div class="game-card">
+                    <h3 class="game-name">Hide and Seek</h3>
+                    <p class="game-desc">Sneak through our sus "Skold" space station! Hide behind pipes, zip through vents, and avoid the self-destruct button. Shrunken hiders must evade team seekers in this starry sci-fi thriller. Survival means points!</p>
+                </div>
+                <div class="game-card">
+                    <h3 class="game-name">SMP Triathlon</h3>
+                    <p class="game-desc">Race through our fantasy European mountain castle! Navigate jump pads, levitation zones, and avoid potholes while admiring waterfalls and duels. Placement-based scoring rewards finding the fastest path down the mountain!</p>
+                </div>
+                <div class="game-card">
+                    <h3 class="game-name">The Gauntlet</h3>
+                    <p class="game-desc">The ultimate finale! Top two teams battle head-to-head in an epic 1v1 showdown. But beware - chaotic disasters will strike mid-battle, turning strategy into survival. Only one team can emerge victorious from this final test!</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 SMP Showdown. Made with ❤️ for the Minecraft community.</p>
+            <div class="social-links">
+                <a href="#">Discord</a>
+                <a href="#">YouTube</a>
+                <a href="#">Twitch</a>
+                <a href="#">Twitter</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Create animated stars background
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 100;
+            
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Add smooth scrolling parallax effect
+        function parallaxEffect() {
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const stars = document.getElementById('stars');
+                stars.style.transform = `translateY(${scrolled * 0.5}px)`;
+            });
+        }
+
+        // Add hover effects to team cards
+        function addTeamCardEffects() {
+            const teamCards = document.querySelectorAll('.team-card');
+            const colors = ['#FFD700', '#FFA500', '#FF8C00', '#DAA520', '#B8860B', '#CD853F', '#DEB887', '#F4A460'];
+            
+            teamCards.forEach((card, index) => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.borderColor = colors[index];
+                    card.style.boxShadow = `0 20px 40px ${colors[index]}60`;
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.borderColor = 'rgba(255,215,0,0.2)';
+                    card.style.boxShadow = 'none';
+                });
+            });
+        }
+
+        // Initialize all effects
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            parallaxEffect();
+            addTeamCardEffects();
+            showUserTimezone();
+        });
+
+        // Show user's timezone conversion
+        function showUserTimezone() {
+            const eventDate = new Date('2025-09-05T17:00:00Z'); // 12 PM CST = 5 PM UTC
+            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const userTime = eventDate.toLocaleString('en-US', {
+                timeZone: userTimezone,
+                weekday: 'long',
+                month: 'long', 
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                timeZoneName: 'short'
+            });
+            
+            const timezoneElement = document.getElementById('user-timezone');
+            if (userTimezone !== 'America/Chicago') {
+                timezoneElement.innerHTML = `That's ${userTime} in your timezone!`;
+            } else {
+                timezoneElement.innerHTML = `That's your local time!`;
+            }
+        }
+
+        // Add countdown timer (optional - you can set a real date)
+        function startCountdown() {
+            // Example: Set your event date here
+            // const eventDate = new Date('2025-09-15T19:00:00').getTime();
+            // You can uncomment and modify the above line with your actual event date
+            
+            // For now, just showing "Coming Soon" as in the HTML
+        }
+    </script>
+</body>
+</html>
