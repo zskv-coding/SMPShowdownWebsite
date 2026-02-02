@@ -257,6 +257,60 @@ section h1 {
     height: 100%;
 }
 
+/* Teams Grid */
+.teams-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-top: 4rem;
+}
+
+.team-card-live {
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 2px solid #2a2a2a;
+    transition: transform 0.3s ease;
+}
+
+.team-card-live:hover {
+    transform: translateY(-5px);
+}
+
+.team-card-live h3 {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.player-slots {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.player-slot {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.6rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #888;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Team Colors */
+.team-card-live.red h3 { color: #ff4d4d; border-color: #ff4d4d; }
+.team-card-live.orange h3 { color: #ff944d; border-color: #ff944d; }
+.team-card-live.yellow h3 { color: #ffff4d; border-color: #ffff4d; }
+.team-card-live.green h3 { color: #4dff4d; border-color: #4dff4d; }
+.team-card-live.aqua h3 { color: #4dffff; border-color: #4dffff; }
+.team-card-live.blue h3 { color: #4d4dff; border-color: #4d4dff; }
+.team-card-live.purple h3 { color: #b34dff; border-color: #b34dff; }
+.team-card-live.pink h3 { color: #ff4db3; border-color: #ff4db3; }
+
 @media (max-width: 768px) {
     section h1 {
         font-size: 2rem;
