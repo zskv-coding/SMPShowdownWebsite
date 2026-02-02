@@ -114,6 +114,40 @@ section h1 {
     font-weight: 600;
 }
 
+.countdown-container {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 4rem;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 2rem;
+    border-radius: 20px;
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
+}
+
+.countdown-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 100px;
+}
+
+.countdown-item span {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+}
+
+.countdown-item label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: var(--primary-orange);
+    font-weight: 700;
+    margin-top: 0.5rem;
+    letter-spacing: 2px;
+}
+
 .social-links {
     display: flex;
     gap: 1.5rem;
