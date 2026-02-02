@@ -1,0 +1,146 @@
+:root {
+    --primary-orange: #ff8c00;
+    --gold: #ffd700;
+    --dark-bg: #121212;
+    --card-bg: #1e1e1e;
+    --text-white: #ffffff;
+    --accent-gradient: linear-gradient(135deg, #ff8c00 0%, #ffd700 100%);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: var(--dark-bg);
+    color: var(--text-white);
+    line-height: 1.6;
+}
+
+h1, h2, .logo, button {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 5%;
+    background: rgba(18, 18, 18, 0.95);
+    border-bottom: 3px solid var(--primary-orange);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 1.8rem;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-links button {
+    background: transparent;
+    border: none;
+    color: var(--text-white);
+    padding: 0.5rem 1rem;
+    margin-left: 1rem;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.nav-links button.active {
+    color: var(--primary-orange);
+}
+
+.nav-links button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 1rem;
+    right: 1rem;
+    height: 3px;
+    background: var(--gold);
+}
+
+main {
+    padding: 4rem 10%;
+    min-height: 80vh;
+}
+
+section h1 {
+    font-size: 3rem;
+    margin-bottom: 3rem;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Games Grid */
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.game-card {
+    background: var(--card-bg);
+    padding: 3rem 2rem;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 150px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.game-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(255, 140, 0, 0.2);
+    color: var(--gold);
+}
+
+/* Live Section */
+.stream-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    aspect-ratio: 16 / 9;
+    border: 4px solid var(--primary-orange);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 0 40px rgba(255, 140, 0, 0.3);
+}
+
+#twitch-embed {
+    width: 100%;
+    height: 100%;
+}
+
+@media (max-width: 768px) {
+    section h1 {
+        font-size: 2rem;
+    }
+    nav {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}

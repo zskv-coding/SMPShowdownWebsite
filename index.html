@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMP Showdown</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <div class="logo">SMP SHOWDOWN</div>
+        <div class="nav-links">
+            <button onclick="showSection('games')" id="btn-games" class="active">GAMES</button>
+            <button onclick="showSection('live')" id="btn-live">LIVE</button>
+        </div>
+    </nav>
+
+    <main>
+        <section id="games">
+            <h1>THE GAMES</h1>
+            <div class="games-grid">
+                <div class="game-card">Peckish Playoffs</div>
+                <div class="game-card">SMP Triathlon</div>
+                <div class="game-card">Parkour Run</div>
+                <div class="game-card">KOTH</div>
+                <div class="game-card">Block Shuffle</div>
+                <div class="game-card">Hide and Seek</div>
+                <div class="game-card">Chromatic Clash</div>
+            </div>
+        </section>
+
+        <section id="live" class="hidden">
+            <h1>WATCH LIVE</h1>
+            <div class="stream-container">
+                <div id="twitch-embed"></div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://embed.twitch.tv/v1/embed.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
