@@ -87,6 +87,63 @@ section h1 {
     display: none;
 }
 
+/* Home Section */
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-top: 5vh;
+}
+
+.hero h1 {
+    font-size: 5rem;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+}
+
+.description {
+    font-size: 1.5rem;
+    max-width: 800px;
+    margin: 0 auto 3rem auto;
+    color: #cccccc;
+    font-weight: 600;
+}
+
+.social-links {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.social-btn {
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 900;
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    border: 2px solid var(--primary-orange);
+    color: var(--text-white);
+}
+
+.social-btn:hover {
+    background: var(--primary-orange);
+    color: var(--dark-bg);
+    transform: scale(1.05);
+}
+
+.social-btn.twitch:hover { background: #9146FF; border-color: #9146FF; color: white; }
+.social-btn.discord:hover { background: #5865F2; border-color: #5865F2; color: white; }
+.social-btn.twitter:hover { background: #1DA1F2; border-color: #1DA1F2; color: white; }
+.social-btn.youtube:hover { background: #FF0000; border-color: #FF0000; color: white; }
+
 /* Games Grid */
 .games-grid {
     display: grid;
