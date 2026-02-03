@@ -15,15 +15,18 @@ function showSection(sectionId) {
     setTimeout(() => {
         performSectionSwitch(sectionId);
         
-        // Start wipe out
-        transition.classList.add('wipe-out');
-        transition.classList.remove('active');
-        
-        // Clean up classes after animation
+        // Hold slightly longer for the bounce to be visible
         setTimeout(() => {
-            transition.classList.remove('wipe-out');
-        }, 500);
-    }, 500);
+            // Start wipe out
+            transition.classList.add('wipe-out');
+            transition.classList.remove('active');
+            
+            // Clean up classes after animation
+            setTimeout(() => {
+                transition.classList.remove('wipe-out');
+            }, 600);
+        }, 300);
+    }, 600);
 }
 
 function performSectionSwitch(sectionId) {
