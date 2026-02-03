@@ -299,6 +299,7 @@ section h1 {
 .social-btn.twitch:hover { background: #9146FF; border-color: #9146FF; color: white; }
 .social-btn.discord:hover { background: #5865F2; border-color: #5865F2; color: white; }
 .social-btn.twitter:hover { background: #1DA1F2; border-color: #1DA1F2; color: white; }
+.social-btn.bluesky:hover { background: #0085FF; border-color: #0085FF; color: white; }
 .social-btn.youtube:hover { background: #FF0000; border-color: #FF0000; color: white; }
 
 /* Games Grid */
