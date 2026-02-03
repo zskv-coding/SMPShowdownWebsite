@@ -64,8 +64,9 @@ async function updateLiveScores() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
 
-        const response = await fetch('https://apismpshowdown.vercel.app/api/scores', {
-            signal: controller.signal
+        const response = await fetch('/api/scores', {
+            signal: controller.signal,
+            cache: 'no-store'
         });
         clearTimeout(timeoutId);
         
@@ -74,13 +75,20 @@ async function updateLiveScores() {
         }
         
         const data = await response.json();
+        console.log('API Data received:', data);
 
-        // 1. Group Players by Team
+        // 1. Group Players by Team and Filter Duplicates
         const playersByTeam = {};
         teams.forEach(t => playersByTeam[t] = []);
         
+        const seenPlayers = new Set();
+        
         if (data.players && Array.isArray(data.players)) {
             data.players.forEach(player => {
+                // Prevent duplicates across all teams
+                if (seenPlayers.has(player.username)) return;
+                seenPlayers.add(player.username);
+
                 const teamName = player.team.toLowerCase()
                     .replace(/team/g, '')
                     .replace(/_/g, '')
@@ -139,12 +147,11 @@ async function updateLiveScores() {
 
     } catch (error) {
         console.error('Score Update Failed:', error);
-        clearLoading(); // Ensure Loading... is removed on error
         
-        // Fill empty or loading containers with TBD on failure
+        // On failure, fill all containers with TBD to avoid showing stale data
         teams.forEach(t => {
             const container = document.getElementById(`players-${t}`);
-            if (container && (container.innerHTML === '' || container.innerHTML.includes('Loading...'))) {
+            if (container) {
                 let html = '';
                 for (let i = 0; i < 5; i++) {
                     html += `<div class="player-slot tbd">TBD</div>`;
