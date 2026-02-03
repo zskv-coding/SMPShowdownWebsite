@@ -23,19 +23,28 @@ function showSection(sectionId) {
 
 // Initialize Twitch Embed
 document.addEventListener('DOMContentLoaded', () => {
-    new Twitch.Embed("twitch-embed", {
-        width: "100%",
-        height: "100%",
-        channel: "smpshowdown",
-        parent: [window.location.hostname, "localhost"]
-    });
+    // Start Live Scores Update immediately
+    updateLiveScores();
+    setInterval(updateLiveScores, 30000); // Update every 30 seconds
 
     // Start Countdown
     startCountdown();
 
-    // Start Live Scores Update
-    updateLiveScores();
-    setInterval(updateLiveScores, 30000); // Update every 30 seconds
+    // Initialize Twitch Embed with safety check
+    try {
+        if (typeof Twitch !== 'undefined') {
+            new Twitch.Embed("twitch-embed", {
+                width: "100%",
+                height: "100%",
+                channel: "smpshowdown",
+                parent: [window.location.hostname, "localhost"]
+            });
+        } else {
+            console.warn('Twitch Embed Script not loaded yet.');
+        }
+    } catch (e) {
+        console.error('Twitch Embed failed to load:', e);
+    }
 });
 
 async function updateLiveScores() {
