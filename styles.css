@@ -354,13 +354,146 @@ section h1 {
     box-shadow: 0 15px 40px rgba(255, 140, 0, 0.2);
 }
 
-.team-card-live:hover {
-    border-color: var(--gold);
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.15);
+/* Players Page Styling */
+.players-tab-content {
+    background: transparent !important;
+    border: none !important;
+    display: block !important;
+    padding: 0 !important;
 }
 
-/* Live Section */
+.players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+}
+
+.player-card {
+    background: var(--card-bg);
+    border: 2px solid #2a2a2a;
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.player-card:hover {
+    transform: translateY(-10px) scale(1.05);
+    border-color: var(--gold);
+    box-shadow: 0 10px 25px rgba(255, 215, 0, 0.2);
+}
+
+.player-head {
+    width: 80px;
+    height: 80px;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+}
+
+.player-name {
+    font-weight: 700;
+    color: var(--text-white);
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+/* Modal Styling */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(8px);
+}
+
+.modal-content {
+    background: var(--card-bg);
+    border: 3px solid var(--gold);
+    border-radius: 24px;
+    padding: 3rem;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    text-align: center;
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.15);
+    animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes modalPop {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 2.5rem;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-btn:hover {
+    color: var(--primary-orange);
+}
+
+.modal-player-body {
+    width: 120px;
+    image-rendering: pixelated;
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+}
+
+#modal-player-details h2 {
+    font-size: 2.5rem;
+    color: var(--gold);
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.stats-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stat-label {
+    color: #aaa;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.stat-value {
+    color: var(--text-white);
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--primary-orange);
+}
 .stream-container {
     width: 100%;
     max-width: 1000px;

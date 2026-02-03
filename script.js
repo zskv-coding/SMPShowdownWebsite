@@ -5,7 +5,7 @@ function showSection(sectionId) {
     });
 
     // Remove active class from all buttons
-    document.querySelectorAll('.nav-links button').forEach(button => {
+    document.querySelectorAll('.centered-nav button').forEach(button => {
         button.classList.remove('active');
     });
 
@@ -30,6 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize Bubbly Background
     initBubbles();
+
+    // Load Players Data
+    loadPlayers();
 
     // Initialize Twitch Embed with safety check
     try {
@@ -235,4 +238,87 @@ function createBubble(container) {
     bubble.addEventListener('animationiteration', () => {
         bubble.style.left = `${Math.random() * 100}%`;
     });
+}
+
+async function loadPlayers() {
+    const playersContainer = document.querySelector('.players-tab-content');
+    if (!playersContainer) return;
+
+    try {
+        const response = await fetch('stats');
+        if (!response.ok) throw new Error('Failed to fetch stats');
+        
+        const text = await response.text();
+        const lines = text.trim().split('\n');
+        const players = [];
+
+        // Skip header line
+        for (let i = 1; i < lines.length; i++) {
+            const [username, uuid, won, played] = lines[i].split('\t');
+            if (username && uuid) {
+                players.push({ username, uuid, won, played });
+            }
+        }
+
+        let html = '<div class="players-grid">';
+        players.forEach(player => {
+            html += `
+                <div class="player-card" onclick="showPlayerStats('${player.username}', '${player.uuid}', ${player.won}, ${player.played})">
+                    <img src="https://mc-heads.net/avatar/${player.uuid}/100" alt="${player.username}" class="player-head">
+                    <div class="player-name">${player.username}</div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        playersContainer.innerHTML = html;
+
+    } catch (error) {
+        console.error('Error loading players:', error);
+        playersContainer.innerHTML = '<p style="text-align: center; color: #ff6b6b;">Failed to load player list.</p>';
+    }
+}
+
+function showPlayerStats(username, uuid, won, played) {
+    const modal = document.getElementById('player-modal');
+    const modalContent = document.getElementById('modal-player-details');
+    
+    if (!modal || !modalContent) return;
+
+    modalContent.innerHTML = `
+        <img src="https://mc-heads.net/body/${uuid}/150" alt="${username}" class="modal-player-body">
+        <h2>${username}</h2>
+        <div class="stats-info">
+            <div class="stat-item">
+                <span class="stat-label">Events Won</span>
+                <span class="stat-value">${won}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Events Played</span>
+                <span class="stat-value">${played}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Win Rate</span>
+                <span class="stat-value">${played > 0 ? Math.round((won / played) * 100) : 0}%</span>
+            </div>
+        </div>
+    `;
+
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+}
+
+function closeModal() {
+    const modal = document.getElementById('player-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+    }
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('player-modal');
+    if (event.target == modal) {
+        closeModal();
+    }
 }
