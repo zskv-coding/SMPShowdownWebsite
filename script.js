@@ -1,3 +1,5 @@
+console.log('SMP Showdown Script Loaded');
+
 function showSection(sectionId) {
     // Hide all sections
     document.querySelectorAll('main section').forEach(section => {
@@ -39,10 +41,28 @@ document.addEventListener('DOMContentLoaded', () => {
 async function updateLiveScores() {
     const teams = ['red', 'orange', 'yellow', 'green', 'aqua', 'blue', 'purple', 'pink'];
     
+    // Helper to clear "Loading..." and reset scores
+    const clearLoading = () => {
+        teams.forEach(t => {
+            const container = document.getElementById(`players-${t}`);
+            // Only clear if it actually contains "Loading..." to avoid flicker
+            if (container && container.innerHTML.includes('Loading...')) {
+                container.innerHTML = '';
+            }
+        });
+    };
+
     try {
         console.log('Fetching scores...');
-        // Reverting to absolute URL as the frontend might be on GitHub Pages
-        const response = await fetch('https://apismpshowdown.vercel.app/api/scores');
+        
+        // Add a timeout to the fetch
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+
+        const response = await fetch('https://apismpshowdown.vercel.app/api/scores', {
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
         
         if (!response.ok) {
             console.error('API Response not OK:', response.status);
@@ -52,7 +72,7 @@ async function updateLiveScores() {
         const data = await response.json();
         console.log('Scores data received:', data);
 
-        // 0. Clear all containers first to remove "Loading..."
+        // Clear everything before rendering new data
         teams.forEach(t => {
             const container = document.getElementById(`players-${t}`);
             if (container) container.innerHTML = '';
@@ -67,7 +87,6 @@ async function updateLiveScores() {
                     .replace(/team/g, '')
                     .replace(/_/g, '')
                     .trim();
-                console.log(`Updating team: ${name} with score ${team.score}`);
                 const scoreElement = document.getElementById(`score-${name}`);
                 if (scoreElement) scoreElement.innerText = Number(team.score).toLocaleString();
             });
@@ -110,13 +129,17 @@ async function updateLiveScores() {
 
     } catch (error) {
         console.error('Score Update Failed:', error);
-        // Fallback: Clear loading and show TBD
+        clearLoading(); // Ensure Loading... is removed on error
+        
+        // Fill all empty containers with TBD on failure
         teams.forEach(t => {
             const container = document.getElementById(`players-${t}`);
-            if (container && container.innerHTML.includes('Loading...')) {
-                container.innerHTML = '';
+            if (container && container.innerHTML === '') {
                 for (let i = 0; i < 5; i++) {
-                    container.innerHTML += '<div class="player-slot tbd">TBD</div>';
+                    const slot = document.createElement('div');
+                    slot.className = 'player-slot tbd';
+                    slot.innerText = 'TBD';
+                    container.appendChild(slot);
                 }
             }
         });
