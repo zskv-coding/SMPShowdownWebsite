@@ -2,6 +2,31 @@
 let allPlayersData = {};
 
 function showSection(sectionId) {
+    const transition = document.getElementById('tab-transition');
+    if (!transition) {
+        performSectionSwitch(sectionId);
+        return;
+    }
+
+    // Start wipe in
+    transition.classList.remove('wipe-out');
+    transition.classList.add('active');
+
+    setTimeout(() => {
+        performSectionSwitch(sectionId);
+        
+        // Start wipe out
+        transition.classList.add('wipe-out');
+        transition.classList.remove('active');
+        
+        // Clean up classes after animation
+        setTimeout(() => {
+            transition.classList.remove('wipe-out');
+        }, 500);
+    }, 500);
+}
+
+function performSectionSwitch(sectionId) {
     // Hide all sections
     document.querySelectorAll('main section').forEach(section => {
         section.classList.add('hidden');
@@ -16,7 +41,8 @@ function showSection(sectionId) {
     document.getElementById(sectionId).classList.remove('hidden');
 
     // Add active class to clicked button
-    document.getElementById(`btn-${sectionId}`).classList.add('active');
+    const btn = document.getElementById(`btn-${sectionId}`);
+    if (btn) btn.classList.add('active');
 
     // Scroll to top
     window.scrollTo(0, 0);
