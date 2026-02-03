@@ -52,6 +52,14 @@ async function updateLiveScores() {
         const data = await response.json();
         console.log('Scores data received:', data);
 
+        // 0. Clear all containers first to remove "Loading..."
+        teams.forEach(t => {
+            const container = document.getElementById(`players-${t}`);
+            if (container) container.innerHTML = '';
+            const scoreElement = document.getElementById(`score-${t}`);
+            if (scoreElement) scoreElement.innerText = '0';
+        });
+
         // 1. Update Team Scores
         if (data.teams && Array.isArray(data.teams)) {
             data.teams.forEach(team => {
@@ -66,12 +74,6 @@ async function updateLiveScores() {
         }
 
         // 2. Process Players
-        // Clear all containers first to remove "Loading..."
-        teams.forEach(t => {
-            const container = document.getElementById(`players-${t}`);
-            if (container) container.innerHTML = '';
-        });
-
         if (data.players && Array.isArray(data.players)) {
             data.players.forEach(player => {
                 const teamName = player.team.toLowerCase()
