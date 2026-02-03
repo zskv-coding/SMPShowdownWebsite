@@ -40,19 +40,26 @@ async function updateLiveScores() {
     const teams = ['red', 'orange', 'yellow', 'green', 'aqua', 'blue', 'purple', 'pink'];
     
     try {
-        // Use relative path for API calls
-        const response = await fetch('/api/scores');
-        if (!response.ok) throw new Error('API Error');
+        console.log('Fetching scores...');
+        // Reverting to absolute URL as the frontend might be on GitHub Pages
+        const response = await fetch('https://apismpshowdown.vercel.app/api/scores');
+        
+        if (!response.ok) {
+            console.error('API Response not OK:', response.status);
+            throw new Error(`API Error: ${response.status}`);
+        }
+        
         const data = await response.json();
+        console.log('Scores data received:', data);
 
         // 1. Update Team Scores
         if (data.teams && Array.isArray(data.teams)) {
             data.teams.forEach(team => {
-                // Robust name matching: "Red Team", "Red", "team_red" all become "red"
                 const name = team.team.toLowerCase()
                     .replace(/team/g, '')
                     .replace(/_/g, '')
                     .trim();
+                console.log(`Updating team: ${name} with score ${team.score}`);
                 const scoreElement = document.getElementById(`score-${name}`);
                 if (scoreElement) scoreElement.innerText = Number(team.score).toLocaleString();
             });
@@ -80,6 +87,8 @@ async function updateLiveScores() {
                 }
             });
         }
+        
+        console.log('Scores update complete');
         
         // 3. Fill empty or partial teams with TBD slots
         teams.forEach(t => {
