@@ -1,3 +1,6 @@
+// Global state to store player stats for cross-tab linking
+let allPlayersData = {};
+
 function showSection(sectionId) {
     // Hide all sections
     document.querySelectorAll('main section').forEach(section => {
@@ -149,7 +152,19 @@ async function updateLiveScores() {
                 // Add actual players
                 players.forEach(player => {
                     const score = player.score !== undefined && player.score !== null ? Number(player.score).toLocaleString() : '0';
-                    html += `<div class="player-slot"><span>${player.username}</span> <span class="player-score">${score}</span></div>`;
+                    const username = player.username;
+                    const lowerName = username.toLowerCase();
+                    
+                    if (allPlayersData[lowerName]) {
+                        const p = allPlayersData[lowerName];
+                        html += `
+                            <div class="player-slot clickable" onclick="showPlayerStats('${p.username}', '${p.uuid}', ${p.won}, ${p.played})">
+                                <span>${username}</span> 
+                                <span class="player-score">${score}</span>
+                            </div>`;
+                    } else {
+                        html += `<div class="player-slot"><span>${username}</span> <span class="player-score">${score}</span></div>`;
+                    }
                 });
 
                 // Fill with TBD slots to maintain consistent height
@@ -251,12 +266,15 @@ async function loadPlayers() {
         const text = await response.text();
         const lines = text.trim().split('\n');
         const players = [];
+        allPlayersData = {}; // Reset global data
 
         // Skip header line
         for (let i = 1; i < lines.length; i++) {
             const [username, uuid, won, played] = lines[i].split('\t');
             if (username && uuid) {
-                players.push({ username, uuid, won, played });
+                const playerData = { username, uuid, won: Number(won), played: Number(played) };
+                players.push(playerData);
+                allPlayersData[username.toLowerCase()] = playerData;
             }
         }
 

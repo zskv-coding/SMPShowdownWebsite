@@ -617,6 +617,17 @@ section:not(.hidden) {
     align-items: center;
 }
 
+.player-slot.clickable {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.player-slot.clickable:hover {
+    background: rgba(255, 215, 0, 0.1);
+    border-color: var(--gold);
+    transform: scale(1.02);
+}
+
 .player-slot.tbd {
     color: #555;
     justify-content: center;
