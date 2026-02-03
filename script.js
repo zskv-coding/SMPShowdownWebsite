@@ -3,35 +3,35 @@ let allPlayersData = {};
 
 function showSection(sectionId) {
     const transition = document.getElementById('tab-transition');
-    if (!transition) {
+    const bg = transition.querySelector('.transition-bg');
+    if (!transition || !bg) {
         performSectionSwitch(sectionId);
         return;
     }
 
-    // Reset transition state for a fresh wipe
-    transition.style.transition = 'none';
+    // Reset transition state instantly
+    bg.style.transition = 'none';
     transition.classList.remove('active', 'wipe-out');
-    // Force reflow
-    transition.offsetHeight;
-    transition.style.transition = '';
+    bg.offsetHeight; // Force reflow
+    bg.style.transition = '';
 
-    // Start wipe in (from -150% to -15%)
+    // Start wipe in
     transition.classList.add('active');
 
     setTimeout(() => {
         performSectionSwitch(sectionId);
         
-        // Hold for the bounce effect
+        // Hold for the bounce effect to complete
         setTimeout(() => {
-            // Wipe out (from -15% to 110%)
+            // Wipe out to the right
             transition.classList.add('wipe-out');
             
-            // Remove active after it's gone to prevent jumping back
+            // Clean up once fully off-screen
             setTimeout(() => {
                 transition.classList.remove('active', 'wipe-out');
-            }, 600);
-        }, 400);
-    }, 600);
+            }, 800);
+        }, 600);
+    }, 800);
 }
 
 function performSectionSwitch(sectionId) {
