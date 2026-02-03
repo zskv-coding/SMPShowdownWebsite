@@ -287,10 +287,19 @@ section h1 {
 .team-card-live h3 {
     font-size: 1.4rem;
     text-transform: uppercase;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
     padding-bottom: 0.5rem;
     border-bottom: 3px solid rgba(255, 255, 255, 0.1);
     width: 100%;
+}
+
+.team-score {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .player-slots {
@@ -302,13 +311,27 @@ section h1 {
 
 .player-slot {
     background: rgba(0, 0, 0, 0.4);
-    padding: 0.8rem;
+    padding: 0.8rem 1.2rem;
     border-radius: 12px;
     font-size: 1rem;
     font-weight: 600;
     color: #ffffff;
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.player-slot.tbd {
+    color: #555;
+    justify-content: center;
+}
+
+.player-score {
+    color: var(--gold);
+    font-size: 0.9rem;
+    opacity: 0.9;
 }
 
 .player-slot:hover {

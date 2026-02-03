@@ -30,7 +30,60 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Start Countdown
     startCountdown();
+
+    // Start Live Scores Update
+    updateLiveScores();
+    setInterval(updateLiveScores, 30000); // Update every 30 seconds
 });
+
+async function updateLiveScores() {
+    try {
+        // REPLACE THIS URL with your deployed Vercel URL later
+        const response = await fetch('https://your-vercel-app.vercel.app/api/scores');
+        const data = await response.json();
+
+        if (data.teams) {
+            data.teams.forEach(team => {
+                const scoreElement = document.getElementById(`score-${team.team.toLowerCase()}`);
+                if (scoreElement) scoreElement.innerText = team.score.toLocaleString();
+            });
+        }
+
+        if (data.players) {
+            // Clear existing slots first
+            const teams = ['red', 'orange', 'yellow', 'green', 'aqua', 'blue', 'purple', 'pink'];
+            teams.forEach(t => {
+                const container = document.getElementById(`players-${t}`);
+                if (container) container.innerHTML = '';
+            });
+
+            data.players.forEach(player => {
+                const container = document.getElementById(`players-${player.team.toLowerCase()}`);
+                if (container) {
+                    const slot = document.createElement('div');
+                    slot.className = 'player-slot';
+                    slot.innerHTML = `<span>${player.username}</span> <span class="player-score">${player.score.toLocaleString()}</span>`;
+                    container.appendChild(slot);
+                }
+            });
+            
+            // Fill empty slots with "TBD" if less than 5
+            teams.forEach(t => {
+                const container = document.getElementById(`players-${t}`);
+                if (container && container.children.length < 5) {
+                    for (let i = container.children.length; i < 5; i++) {
+                        const slot = document.createElement('div');
+                        slot.className = 'player-slot tbd';
+                        slot.innerText = 'TBD';
+                        container.appendChild(slot);
+                    }
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Error fetching scores:', error);
+    }
+}
 
 function startCountdown() {
     const targetDate = new Date("February 15, 2026 14:00:00 CST").getTime();
