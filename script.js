@@ -19,7 +19,7 @@ function showSection(sectionId) {
     window.scrollTo(0, 0);
 }
 
-// Initialize Twitch Embed
+// Initialize Everything
 document.addEventListener('DOMContentLoaded', () => {
     // Start Live Scores Update immediately
     updateLiveScores();
@@ -27,6 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Start Countdown
     startCountdown();
+
+    // Initialize Bubbly Background
+    initBubbles();
+
+    // Click Effects
+    document.addEventListener('mousedown', createClickBubble);
 
     // Initialize Twitch Embed with safety check
     try {
@@ -187,4 +193,50 @@ function startCountdown() {
 
     update();
     setInterval(update, 1000);
+}
+
+function initBubbles() {
+    const container = document.getElementById('bubbles-container');
+    const bubbleCount = 15;
+
+    for (let i = 0; i < bubbleCount; i++) {
+        createBubble(container);
+    }
+}
+
+function createBubble(container) {
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    
+    const size = Math.random() * 60 + 20;
+    const left = Math.random() * 100;
+    const duration = Math.random() * 10 + 10;
+    const delay = Math.random() * 10;
+
+    bubble.style.width = `${size}px`;
+    bubble.style.height = `${size}px`;
+    bubble.style.left = `${left}%`;
+    bubble.style.setProperty('--duration', `${duration}s`);
+    bubble.style.animationDelay = `${delay}s`;
+
+    container.appendChild(bubble);
+
+    // Re-create bubble after it finishes its animation
+    bubble.addEventListener('animationiteration', () => {
+        bubble.style.left = `${Math.random() * 100}%`;
+    });
+}
+
+function createClickBubble(e) {
+    const bubble = document.createElement('div');
+    bubble.className = 'click-bubble';
+    
+    bubble.style.left = `${e.clientX}px`;
+    bubble.style.top = `${e.clientY}px`;
+    
+    document.body.appendChild(bubble);
+    
+    setTimeout(() => {
+        bubble.remove();
+    }, 600);
 }
