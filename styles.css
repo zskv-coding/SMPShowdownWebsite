@@ -618,6 +618,19 @@ section:not(.hidden) {
     align-items: center;
 }
 
+.player-slot-info {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.slot-head {
+    width: 24px;
+    height: 24px;
+    image-rendering: pixelated;
+    border-radius: 4px;
+}
+
 .player-slot.clickable {
     cursor: pointer;
     transition: all 0.2s ease;

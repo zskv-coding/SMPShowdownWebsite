@@ -159,11 +159,21 @@ async function updateLiveScores() {
                         const p = allPlayersData[lowerName];
                         html += `
                             <div class="player-slot clickable" onclick="showPlayerStats('${p.username}', '${p.uuid}', ${p.won}, ${p.played})">
-                                <span>${username}</span> 
+                                <div class="player-slot-info">
+                                    <img src="https://mc-heads.net/avatar/${p.uuid}/24" alt="" class="slot-head">
+                                    <span>${username}</span>
+                                </div>
                                 <span class="player-score">${score}</span>
                             </div>`;
                     } else {
-                        html += `<div class="player-slot"><span>${username}</span> <span class="player-score">${score}</span></div>`;
+                        html += `
+                            <div class="player-slot">
+                                <div class="player-slot-info">
+                                    <img src="https://mc-heads.net/avatar/${username}/24" alt="" class="slot-head">
+                                    <span>${username}</span>
+                                </div>
+                                <span class="player-score">${score}</span>
+                            </div>`;
                     }
                 });
 
