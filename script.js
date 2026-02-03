@@ -1,5 +1,3 @@
-console.log('SMP Showdown Script Loaded');
-
 function showSection(sectionId) {
     // Hide all sections
     document.querySelectorAll('main section').forEach(section => {
@@ -25,7 +23,7 @@ function showSection(sectionId) {
 document.addEventListener('DOMContentLoaded', () => {
     // Start Live Scores Update immediately
     updateLiveScores();
-    setInterval(updateLiveScores, 30000); // Update every 30 seconds
+    setInterval(updateLiveScores, 5000); // Update every 5 seconds
 
     // Start Countdown
     startCountdown();
@@ -62,8 +60,6 @@ async function updateLiveScores() {
     };
 
     try {
-        console.log('Fetching scores...');
-        
         // Add a timeout to the fetch
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
@@ -74,64 +70,69 @@ async function updateLiveScores() {
         clearTimeout(timeoutId);
         
         if (!response.ok) {
-            console.error('API Response not OK:', response.status);
             throw new Error(`API Error: ${response.status}`);
         }
         
         const data = await response.json();
-        console.log('Scores data received:', data);
 
-        // Clear everything before rendering new data
-        teams.forEach(t => {
-            const container = document.getElementById(`players-${t}`);
-            if (container) container.innerHTML = '';
-            const scoreElement = document.getElementById(`score-${t}`);
-            if (scoreElement) scoreElement.innerText = '0';
-        });
-
-        // 1. Update Team Scores
-        if (data.teams && Array.isArray(data.teams)) {
-            data.teams.forEach(team => {
-                const name = team.team.toLowerCase()
-                    .replace(/team/g, '')
-                    .replace(/_/g, '')
-                    .trim();
-                const scoreElement = document.getElementById(`score-${name}`);
-                if (scoreElement) scoreElement.innerText = Number(team.score).toLocaleString();
-            });
-        }
-
-        // 2. Process Players
+        // 1. Group Players by Team
+        const playersByTeam = {};
+        teams.forEach(t => playersByTeam[t] = []);
+        
         if (data.players && Array.isArray(data.players)) {
             data.players.forEach(player => {
                 const teamName = player.team.toLowerCase()
                     .replace(/team/g, '')
                     .replace(/_/g, '')
                     .trim();
-                const container = document.getElementById(`players-${teamName}`);
-                if (container) {
-                    const slot = document.createElement('div');
-                    slot.className = 'player-slot';
-                    slot.innerHTML = `<span>${player.username}</span> <span class="player-score">${Number(player.score).toLocaleString()}</span>`;
-                    container.appendChild(slot);
+                if (playersByTeam[teamName]) {
+                    playersByTeam[teamName].push(player);
                 }
             });
         }
-        
-        console.log('Scores update complete');
-        
-        // 3. Fill empty or partial teams with TBD slots
+
+        // 2. Map Team Scores
+        const teamScores = {};
+        if (data.teams && Array.isArray(data.teams)) {
+            data.teams.forEach(team => {
+                const name = team.team.toLowerCase()
+                    .replace(/team/g, '')
+                    .replace(/_/g, '')
+                    .trim();
+                teamScores[name] = team.score;
+            });
+        }
+
+        // 3. Update DOM without full clear to prevent flicker
         teams.forEach(t => {
+            // Update Team Score
+            const scoreElement = document.getElementById(`score-${t}`);
+            if (scoreElement) {
+                const score = teamScores[t] !== undefined ? Number(teamScores[t]).toLocaleString() : '0';
+                if (scoreElement.innerText !== score) {
+                    scoreElement.innerText = score;
+                }
+            }
+
+            // Update Player Slots
             const container = document.getElementById(`players-${t}`);
             if (container) {
-                const currentCount = container.children.length;
-                if (currentCount < 5) {
-                    for (let i = currentCount; i < 5; i++) {
-                        const slot = document.createElement('div');
-                        slot.className = 'player-slot tbd';
-                        slot.innerText = 'TBD';
-                        container.appendChild(slot);
-                    }
+                let html = '';
+                const players = playersByTeam[t];
+                
+                // Add actual players
+                players.forEach(player => {
+                    html += `<div class="player-slot"><span>${player.username}</span> <span class="player-score">${Number(player.score).toLocaleString()}</span></div>`;
+                });
+
+                // Fill with TBD slots to maintain consistent height
+                for (let i = players.length; i < 5; i++) {
+                    html += `<div class="player-slot tbd">TBD</div>`;
+                }
+
+                // Only update DOM if content changed
+                if (container.innerHTML !== html) {
+                    container.innerHTML = html;
                 }
             }
         });
@@ -140,16 +141,15 @@ async function updateLiveScores() {
         console.error('Score Update Failed:', error);
         clearLoading(); // Ensure Loading... is removed on error
         
-        // Fill all empty containers with TBD on failure
+        // Fill empty or loading containers with TBD on failure
         teams.forEach(t => {
             const container = document.getElementById(`players-${t}`);
-            if (container && container.innerHTML === '') {
+            if (container && (container.innerHTML === '' || container.innerHTML.includes('Loading...'))) {
+                let html = '';
                 for (let i = 0; i < 5; i++) {
-                    const slot = document.createElement('div');
-                    slot.className = 'player-slot tbd';
-                    slot.innerText = 'TBD';
-                    container.appendChild(slot);
+                    html += `<div class="player-slot tbd">TBD</div>`;
                 }
+                container.innerHTML = html;
             }
         });
     }
