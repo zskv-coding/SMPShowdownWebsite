@@ -37,69 +37,69 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function updateLiveScores() {
+    const teams = ['red', 'orange', 'yellow', 'green', 'aqua', 'blue', 'purple', 'pink'];
+    
     try {
-        // REPLACE THIS URL with your actual Vercel URL
         const response = await fetch('https://apismpshowdown.vercel.app/api/scores');
-        if (!response.ok) throw new Error('Network response was not ok');
-        
+        if (!response.ok) throw new Error('API Error');
         const data = await response.json();
 
-        if (data.teams) {
+        // 1. Update Team Scores
+        if (data.teams && Array.isArray(data.teams)) {
             data.teams.forEach(team => {
-                // Remove " Team" if it exists in the name for matching IDs
-                const teamId = team.team.toLowerCase().replace(' team', '').trim();
-                const scoreElement = document.getElementById(`score-${teamId}`);
-                if (scoreElement) scoreElement.innerText = team.score.toLocaleString();
+                // Robust name matching: "Red Team", "Red", "team_red" all become "red"
+                const name = team.team.toLowerCase().replace('team', '').replace('_', '').trim();
+                const scoreElement = document.getElementById(`score-${name}`);
+                if (scoreElement) scoreElement.innerText = Number(team.score).toLocaleString();
             });
         }
 
-        if (data.players) {
-            const teams = ['red', 'orange', 'yellow', 'green', 'aqua', 'blue', 'purple', 'pink'];
-            
-            // Clear existing slots
-            teams.forEach(t => {
-                const container = document.getElementById(`players-${t}`);
-                if (container) container.innerHTML = '';
-            });
+        // 2. Process Players
+        // Clear all containers first to remove "Loading..."
+        teams.forEach(t => {
+            const container = document.getElementById(`players-${t}`);
+            if (container) container.innerHTML = '';
+        });
 
+        if (data.players && Array.isArray(data.players)) {
             data.players.forEach(player => {
-                const teamId = player.team.toLowerCase().replace(' team', '').trim();
-                const container = document.getElementById(`players-${teamId}`);
+                const teamName = player.team.toLowerCase().replace('team', '').replace('_', '').trim();
+                const container = document.getElementById(`players-${teamName}`);
                 if (container) {
                     const slot = document.createElement('div');
                     slot.className = 'player-slot';
-                    slot.innerHTML = `<span>${player.username}</span> <span class="player-score">${player.score.toLocaleString()}</span>`;
+                    slot.innerHTML = `<span>${player.username}</span> <span class="player-score">${Number(player.score).toLocaleString()}</span>`;
                     container.appendChild(slot);
                 }
             });
-            
-            // Fill empty slots with "TBD"
-            teams.forEach(t => {
-                const container = document.getElementById(`players-${t}`);
-                if (container && container.children.length === 0) {
-                    for (let i = 0; i < 5; i++) {
-                        const slot = document.createElement('div');
-                        slot.className = 'player-slot tbd';
-                        slot.innerText = 'TBD';
-                        container.appendChild(slot);
-                    }
-                } else if (container && container.children.length < 5) {
-                    for (let i = container.children.length; i < 5; i++) {
+        }
+        
+        // 3. Fill empty or partial teams with TBD slots
+        teams.forEach(t => {
+            const container = document.getElementById(`players-${t}`);
+            if (container) {
+                const currentCount = container.children.length;
+                if (currentCount < 5) {
+                    for (let i = currentCount; i < 5; i++) {
                         const slot = document.createElement('div');
                         slot.className = 'player-slot tbd';
                         slot.innerText = 'TBD';
                         container.appendChild(slot);
                     }
                 }
-            });
-        }
+            }
+        });
+
     } catch (error) {
-        console.error('Error fetching scores:', error);
-        // If it fails, show TBD instead of stuck loading
-        const containers = document.querySelectorAll('.player-slots');
-        containers.forEach(c => {
-            if (c.innerHTML.includes('Loading...')) {
-                c.innerHTML = '<div class="player-slot tbd">Offline</div>';
+        console.error('Score Update Failed:', error);
+        // Fallback: Clear loading and show TBD
+        teams.forEach(t => {
+            const container = document.getElementById(`players-${t}`);
+            if (container && container.innerHTML.includes('Loading...')) {
+                container.innerHTML = '';
+                for (let i = 0; i < 5; i++) {
+                    container.innerHTML += '<div class="player-slot tbd">TBD</div>';
+                }
             }
         });
     }
