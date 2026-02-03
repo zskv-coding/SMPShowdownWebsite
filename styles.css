@@ -522,15 +522,16 @@ section h1 {
 /* Teams Grid */
 .teams-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
     margin-top: 4rem;
+    justify-content: center;
 }
 
 .team-card-live {
     background: var(--card-bg);
-    border-radius: 20px;
-    padding: 2rem;
+    border-radius: 24px;
+    padding: 2.5rem;
     border: 2px solid #2a2a2a;
     transition: all 0.3s ease;
     display: flex;
@@ -579,10 +580,10 @@ section:not(.hidden) {
 }
 
 .team-card-live h3 {
-    font-size: 1.4rem;
+    font-size: 1.8rem;
     text-transform: uppercase;
-    margin-bottom: 0.5rem;
-    padding-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.8rem;
     border-bottom: 3px solid rgba(255, 255, 255, 0.1);
     width: 100%;
 }
