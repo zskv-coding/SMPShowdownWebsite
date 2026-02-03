@@ -12,25 +12,25 @@
 </head>
 <body class="bubbly-bg">
     <div class="bubbles-container" id="bubbles-container"></div>
-    <nav>
-        <div class="logo-container" onclick="showSection('home')" style="cursor: pointer;">
-            <img src="logo-icon.png" alt="SMP Showdown Logo" class="logo-img">
+    
+    <header class="main-header">
+        <div class="banner-container">
+            <img src="lobby-image.png" alt="" class="banner-bg">
+            <div class="banner-content">
+                <img src="logo-icon.png" alt="SMP Showdown Logo" class="main-logo" onclick="showSection('home')">
+                <nav class="centered-nav">
+                    <button onclick="showSection('home')" id="btn-home" class="active">HOME</button>
+                    <button onclick="showSection('games')" id="btn-games">GAMES</button>
+                    <button onclick="showSection('players')" id="btn-players">PLAYERS</button>
+                    <button onclick="showSection('live')" id="btn-live">LIVE</button>
+                </nav>
+            </div>
         </div>
-        <div class="nav-links">
-            <button onclick="showSection('home')" id="btn-home" class="active">HOME</button>
-            <button onclick="showSection('games')" id="btn-games">GAMES</button>
-            <button onclick="showSection('players')" id="btn-players">PLAYERS</button>
-            <button onclick="showSection('live')" id="btn-live">LIVE</button>
-        </div>
-    </nav>
+    </header>
 
     <main>
         <section id="home">
             <div class="hero">
-                <div class="hero-logo-container">
-                    <img src="lobby-image.png" alt="" class="hero-bg-image">
-                    <img src="logo-icon.png" alt="SMP Showdown Logo" class="hero-logo">
-                </div>
                 <p class="description">An all-inclusive semi-competitive Minecraft event tailored to feature SMPs of all sizes, all at once!</p>
                 
                 <div class="countdown-container">

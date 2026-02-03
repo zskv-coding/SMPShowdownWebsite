@@ -66,71 +66,90 @@ h1, h2, h3, .logo, button {
     letter-spacing: 1px;
 }
 
-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem 5%;
-    background: rgba(18, 18, 18, 0.95);
-    border-bottom: 3px solid var(--primary-orange);
-    position: sticky;
-    top: 0;
+.main-header {
+    width: 100%;
+    position: relative;
     z-index: 100;
 }
 
-.logo-container {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.logo-img {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.logo-container:hover .logo-img {
-    transform: scale(1.1) rotate(5deg);
-}
-
-/* Hero Styles Update */
-.hero-logo-container {
+.banner-container {
     position: relative;
     width: 100%;
-    max-width: 600px;
-    margin-bottom: 2rem;
+    height: 400px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    padding: 2rem;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-.hero-bg-image {
+.banner-bg {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: blur(8px) brightness(0.6);
-    border-radius: 30px;
+    filter: brightness(0.4) blur(4px);
     z-index: -1;
-    opacity: 0.8;
+    transform: scale(1.1);
 }
 
-.hero-logo {
-    width: 100%;
-    max-width: 500px;
+.banner-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding-top: 2rem;
+}
+
+.main-logo {
+    width: 400px;
     height: auto;
     object-fit: contain;
+    cursor: pointer;
     filter: drop-shadow(0 0 20px rgba(255, 140, 0, 0.4));
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     animation: float 4s ease-in-out infinite;
 }
 
-.hero h1 {
-    display: none; /* Removed as we are using the logo image now */
+.main-logo:hover {
+    transform: scale(1.05) rotate(2deg);
+    filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.6));
+}
+
+.centered-nav {
+    display: flex;
+    gap: 2rem;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.centered-nav button {
+    background: transparent;
+    border: none;
+    color: var(--text-white);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.centered-nav button:hover {
+    color: var(--gold);
+    transform: scale(1.1);
+}
+
+.centered-nav button.active {
+    color: var(--primary-orange);
+    text-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
 }
 
 /* Game Images */
@@ -166,44 +185,9 @@ nav {
     justify-content: center;
 }
 
-.nav-links button {
-    background: transparent;
-    border: none;
-    color: var(--text-white);
-    padding: 0.5rem 1rem;
-    margin-left: 1rem;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
-}
-
-.nav-links button:hover {
-    color: var(--gold);
-    transform: scale(1.1);
-}
-
-.nav-links button:active {
-    transform: scale(0.95);
-}
-
-.nav-links button.active {
-    color: var(--primary-orange);
-}
-
-.nav-links button.active::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 1rem;
-    right: 1rem;
-    height: 3px;
-    background: var(--gold);
-}
-
 main {
-    padding: 4rem 10%;
-    min-height: 80vh;
+    padding: 2rem 10%;
+    min-height: 60vh;
 }
 
 section h1 {
@@ -429,29 +413,6 @@ section h1 {
 .team-card-live:nth-child(3n) .team-icon {
     animation-delay: 1s;
     animation-duration: 4s;
-}
-
-.click-bubble {
-    position: fixed;
-    width: 20px;
-    height: 20px;
-    background: rgba(255, 215, 0, 0.4);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%) scale(0);
-    animation: click-pop 0.6s ease-out forwards;
-}
-
-@keyframes click-pop {
-    0% {
-        transform: translate(-50%, -50%) scale(0);
-        opacity: 1;
-    }
-    100% {
-        transform: translate(-50%, -50%) scale(4);
-        opacity: 0;
-    }
 }
 
 /* Floating Animations */

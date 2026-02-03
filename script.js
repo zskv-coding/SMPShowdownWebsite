@@ -31,9 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Bubbly Background
     initBubbles();
 
-    // Click Effects
-    document.addEventListener('mousedown', createClickBubble);
-
     // Initialize Twitch Embed with safety check
     try {
         if (typeof Twitch !== 'undefined') {
@@ -225,18 +222,4 @@ function createBubble(container) {
     bubble.addEventListener('animationiteration', () => {
         bubble.style.left = `${Math.random() * 100}%`;
     });
-}
-
-function createClickBubble(e) {
-    const bubble = document.createElement('div');
-    bubble.className = 'click-bubble';
-    
-    bubble.style.left = `${e.clientX}px`;
-    bubble.style.top = `${e.clientY}px`;
-    
-    document.body.appendChild(bubble);
-    
-    setTimeout(() => {
-        bubble.remove();
-    }, 600);
 }
