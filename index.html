@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SMP Showdown</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,10 +13,14 @@
 <body class="bubbly-bg">
     <div class="bubbles-container" id="bubbles-container"></div>
     <nav>
-        <div class="logo">SMP SHOWDOWN</div>
+        <div class="logo-container">
+            <img src="logo-icon.png" alt="SMP Showdown Logo" class="logo-img">
+            <div class="logo">SMP SHOWDOWN</div>
+        </div>
         <div class="nav-links">
             <button onclick="showSection('home')" id="btn-home" class="active">HOME</button>
             <button onclick="showSection('games')" id="btn-games">GAMES</button>
+            <button onclick="showSection('players')" id="btn-players">PLAYERS</button>
             <button onclick="showSection('live')" id="btn-live">LIVE</button>
         </div>
     </nav>
@@ -58,6 +63,10 @@
             <h1>THE GAMES</h1>
             <div class="games-grid">
                 <div class="game-card">
+                    <div class="game-images">
+                        <img src="peckish1.png" alt="Peckish 1" class="game-img">
+                        <img src="peckish2.png" alt="Peckish 2" class="game-img">
+                    </div>
                     <h2>Peckish Playoffs</h2>
                     <div class="game-desc">
                         <p>The classic Survival Games meets a new style! Be careful not to get lost in our expansive Japanese style map, it may be a little easier than before! You will not spawn next to all of your teammates, but rather, be randomly shuffled amongst your rivals. Make sure to meet up with your team before the grace period ends!</p>
@@ -67,6 +76,10 @@
                 </div>
 
                 <div class="game-card">
+                    <div class="game-images">
+                        <img src="triathlon1.png" alt="Triathlon 1" class="game-img">
+                        <img src="triathlon2.png" alt="Triathlon 2" class="game-img">
+                    </div>
                     <h2>SMP Triathlon</h2>
                     <div class="game-desc">
                         <p>Race to be the fastest on our fantasy-European-mountain-castle map! (yes it's a complex theme okay?) Don't get distracted by the duels or waterfalls, or you might miss a jump pad or spot of levitation... Avoid the potholes and cobwebs blocking your path, and make sure not to fall off the mountain entirely! We don't want to do that kind of paperwork.</p>
@@ -75,6 +88,10 @@
                 </div>
 
                 <div class="game-card">
+                    <div class="game-images">
+                        <img src="parkour1.png" alt="Parkour 1" class="game-img">
+                        <img src="parkour2.png" alt="Parkour 2" class="game-img">
+                    </div>
                     <h2>Parkour Run</h2>
                     <div class="game-desc">
                         <p>Enjoy winding pathways at sunset floating over the vast.. empty... all consuming void... AAH sorry! Points are awarded by getting to checkpoints, stationed between each themed obstacle. Anybody who manages to finish the entire course in the ten minute time limit will get bonus points!</p>
@@ -83,6 +100,10 @@
                 </div>
 
                 <div class="game-card">
+                    <div class="game-images">
+                        <img src="koth1.png" alt="KOTH 1" class="game-img">
+                        <img src="koth2.png" alt="KOTH 2" class="game-img">
+                    </div>
                     <h2>KOTH</h2>
                     <div class="game-desc">
                         <p>Welcome to King of the Hill! It's a basic game. 4 teams will be in each area (2 arenas). You will all race to the top of the hill, and try and capture the capture point (by standing on it)! The team who wins in each arena will go into a finale with the other winning team! First team to 200 points wins.</p>
@@ -90,6 +111,10 @@
                 </div>
 
                 <div class="game-card">
+                    <div class="game-images">
+                        <img src="shuffle1.png" alt="Shuffle 1" class="game-img">
+                        <img src="shuffle2.png" alt="Shuffle 2" class="game-img">
+                    </div>
                     <h2>Block Shuffle</h2>
                     <div class="game-desc">
                         <p>Block Shuffle is an intense survival minigame where players have to quickly find and stand on the correct block type or get eliminated.</p>
@@ -98,6 +123,10 @@
                 </div>
 
                 <div class="game-card">
+                    <div class="game-images">
+                        <img src="hideseek1.png" alt="Hide and Seek 1" class="game-img">
+                        <img src="hideseek2.png" alt="Hide and Seek 2" class="game-img">
+                    </div>
                     <h2>Hide and Seek</h2>
                     <div class="game-desc">
                         <p>Sneak behind pipes and cabling, zip between rooms with our vent system, meet an iconic Platypus - Scientist duo, and gaze into the starry abyss! Make sure not to press the self-destruct button or turn off the shields... Spread out and try not to get caught in our sus... "Skold" map! Hiders will be shrunk down to fit in small spaces, seeking safety from one chosen player of each team with the sole goal of hunting down every single hider.</p>
@@ -106,11 +135,22 @@
                 </div>
 
                 <div class="game-card">
+                    <div class="game-images">
+                        <img src="clash1.png" alt="Clash 1" class="game-img">
+                        <img src="clash2.png" alt="Clash 2" class="game-img">
+                    </div>
                     <h2>Chromatic Clash</h2>
                     <div class="game-desc">
                         <p>Description coming soon!</p>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <section id="players" class="hidden">
+            <h1>PLAYERS</h1>
+            <div class="players-tab-content">
+                <p style="text-align: center; font-size: 1.2rem; color: #aaa;">Player lists coming soon!</p>
             </div>
         </section>
 
