@@ -40,7 +40,8 @@ async function updateLiveScores() {
     const teams = ['red', 'orange', 'yellow', 'green', 'aqua', 'blue', 'purple', 'pink'];
     
     try {
-        const response = await fetch('https://apismpshowdown.vercel.app/api/scores');
+        // Use relative path for API calls
+        const response = await fetch('/api/scores');
         if (!response.ok) throw new Error('API Error');
         const data = await response.json();
 
@@ -48,7 +49,10 @@ async function updateLiveScores() {
         if (data.teams && Array.isArray(data.teams)) {
             data.teams.forEach(team => {
                 // Robust name matching: "Red Team", "Red", "team_red" all become "red"
-                const name = team.team.toLowerCase().replace('team', '').replace('_', '').trim();
+                const name = team.team.toLowerCase()
+                    .replace(/team/g, '')
+                    .replace(/_/g, '')
+                    .trim();
                 const scoreElement = document.getElementById(`score-${name}`);
                 if (scoreElement) scoreElement.innerText = Number(team.score).toLocaleString();
             });
@@ -63,7 +67,10 @@ async function updateLiveScores() {
 
         if (data.players && Array.isArray(data.players)) {
             data.players.forEach(player => {
-                const teamName = player.team.toLowerCase().replace('team', '').replace('_', '').trim();
+                const teamName = player.team.toLowerCase()
+                    .replace(/team/g, '')
+                    .replace(/_/g, '')
+                    .trim();
                 const container = document.getElementById(`players-${teamName}`);
                 if (container) {
                     const slot = document.createElement('div');
