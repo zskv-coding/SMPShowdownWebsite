@@ -8,24 +8,29 @@ function showSection(sectionId) {
         return;
     }
 
-    // Start wipe in
-    transition.classList.remove('wipe-out');
+    // Reset transition state for a fresh wipe
+    transition.style.transition = 'none';
+    transition.classList.remove('active', 'wipe-out');
+    // Force reflow
+    transition.offsetHeight;
+    transition.style.transition = '';
+
+    // Start wipe in (from -150% to -15%)
     transition.classList.add('active');
 
     setTimeout(() => {
         performSectionSwitch(sectionId);
         
-        // Hold slightly longer for the bounce to be visible
+        // Hold for the bounce effect
         setTimeout(() => {
-            // Start wipe out
+            // Wipe out (from -15% to 110%)
             transition.classList.add('wipe-out');
-            transition.classList.remove('active');
             
-            // Clean up classes after animation
+            // Remove active after it's gone to prevent jumping back
             setTimeout(() => {
-                transition.classList.remove('wipe-out');
+                transition.classList.remove('active', 'wipe-out');
             }, 600);
-        }, 300);
+        }, 400);
     }, 600);
 }
 

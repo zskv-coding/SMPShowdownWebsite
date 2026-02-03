@@ -676,47 +676,46 @@ section:not(.hidden) {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 150%; /* Wider to cover skew gaps */
     height: 100%;
     background: linear-gradient(135deg, #ff8c00 0%, #ffd700 100%);
     z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
-    transform: translateX(-100%) skewX(-15deg);
+    transform: translateX(-150%) skewX(-15deg); /* Further off screen */
     transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
     pointer-events: none;
-    overflow: hidden;
 }
 
 .tab-transition.active {
-    transform: translateX(0) skewX(0deg);
+    transform: translateX(-15%) skewX(-15deg); /* Centered considering the 150% width */
     pointer-events: all;
 }
 
 .tab-transition.wipe-out {
-    transform: translateX(100%) skewX(15deg);
+    transform: translateX(110%) skewX(-15deg); /* Wipe off to the right */
 }
 
 .transition-content {
     text-align: center;
+    transform: skewX(15deg); /* Un-skew the content */
 }
 
 .transition-crown {
-    width: 250px;
+    width: 350px; /* Even bigger crown */
     height: auto;
-    filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4));
 }
 
 .tab-transition.active .transition-crown {
-    animation: crownBounce 0.6s ease-out forwards;
+    animation: crownBounce 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
 @keyframes crownBounce {
-    0% { transform: scale(0.5) translateY(100px); opacity: 0; }
-    50% { transform: scale(1.2) translateY(-20px); opacity: 1; }
-    100% { transform: scale(1) translateY(0); opacity: 1; }
+    0% { transform: scale(0.3) translateY(200px) rotate(-20deg); opacity: 0; }
+    60% { transform: scale(1.6) translateY(-100px) rotate(10deg); opacity: 1; }
+    100% { transform: scale(1) translateY(0) rotate(0deg); opacity: 1; }
 }
 
 @media (max-width: 768px) {
