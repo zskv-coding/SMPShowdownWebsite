@@ -70,7 +70,8 @@ async function updateLiveScores() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
 
-        const response = await fetch('/api/scores', {
+        // Use absolute URL for the API
+        const response = await fetch('https://apismpshowdown.vercel.app/api/scores', {
             signal: controller.signal,
             cache: 'no-store'
         });
@@ -90,18 +91,23 @@ async function updateLiveScores() {
         const seenPlayers = new Set();
         
         if (data.players && Array.isArray(data.players)) {
+            console.log(`Processing ${data.players.length} players...`);
             data.players.forEach(player => {
                 // Prevent duplicates across all teams
                 if (!player.username || seenPlayers.has(player.username)) return;
                 seenPlayers.add(player.username);
 
                 if (!player.team) return;
-                const teamName = player.team.toLowerCase()
+                const rawTeam = player.team.toLowerCase();
+                const teamName = rawTeam
                     .replace(/team/g, '')
                     .replace(/_/g, '')
                     .trim();
+                
                 if (playersByTeam[teamName]) {
                     playersByTeam[teamName].push(player);
+                } else {
+                    console.log(`Skipping player ${player.username} from unknown team: ${player.team} (${teamName})`);
                 }
             });
         }
@@ -109,6 +115,7 @@ async function updateLiveScores() {
         // 2. Map Team Scores
         const teamScores = {};
         if (data.teams && Array.isArray(data.teams)) {
+            console.log(`Processing ${data.teams.length} teams...`);
             data.teams.forEach(team => {
                 if (!team.team) return;
                 const name = team.team.toLowerCase()
