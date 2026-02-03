@@ -63,6 +63,9 @@ async function updateLiveScores() {
     };
 
     try {
+        // Clear Loading state if present
+        clearLoading();
+
         // Add a timeout to the fetch
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
@@ -89,9 +92,10 @@ async function updateLiveScores() {
         if (data.players && Array.isArray(data.players)) {
             data.players.forEach(player => {
                 // Prevent duplicates across all teams
-                if (seenPlayers.has(player.username)) return;
+                if (!player.username || seenPlayers.has(player.username)) return;
                 seenPlayers.add(player.username);
 
+                if (!player.team) return;
                 const teamName = player.team.toLowerCase()
                     .replace(/team/g, '')
                     .replace(/_/g, '')
@@ -106,6 +110,7 @@ async function updateLiveScores() {
         const teamScores = {};
         if (data.teams && Array.isArray(data.teams)) {
             data.teams.forEach(team => {
+                if (!team.team) return;
                 const name = team.team.toLowerCase()
                     .replace(/team/g, '')
                     .replace(/_/g, '')
@@ -133,7 +138,8 @@ async function updateLiveScores() {
                 
                 // Add actual players
                 players.forEach(player => {
-                    html += `<div class="player-slot"><span>${player.username}</span> <span class="player-score">${Number(player.score).toLocaleString()}</span></div>`;
+                    const score = player.score !== undefined && player.score !== null ? Number(player.score).toLocaleString() : '0';
+                    html += `<div class="player-slot"><span>${player.username}</span> <span class="player-score">${score}</span></div>`;
                 });
 
                 // Fill with TBD slots to maintain consistent height
