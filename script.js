@@ -168,7 +168,30 @@ async function updateLiveScores() {
             });
         }
 
-        // 3. Update DOM without full clear to prevent flicker
+        // 3. Sort and Reorder Teams
+        const teamData = teams.map((t, index) => ({
+            id: t,
+            score: teamScores[t] || 0,
+            originalIndex: index
+        }));
+
+        // Sort: Score Descending, then Original Index Ascending
+        teamData.sort((a, b) => {
+            if (b.score !== a.score) return b.score - a.score;
+            return a.originalIndex - b.originalIndex;
+        });
+
+        const teamsContainer = document.querySelector('.teams-container');
+        if (teamsContainer) {
+            teamData.forEach(team => {
+                const teamElement = document.getElementById(`team-${team.id}`);
+                if (teamElement) {
+                    teamsContainer.appendChild(teamElement);
+                }
+            });
+        }
+
+        // 4. Update DOM content (scores and players)
         teams.forEach(t => {
             // Update Team Score
             const scoreElement = document.getElementById(`score-${t}`);
