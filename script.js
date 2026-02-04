@@ -3,31 +3,33 @@ let allPlayersData = {};
 
 function showSection(sectionId) {
     const transition = document.getElementById('tab-transition');
-    const bg = transition.querySelector('.transition-bg');
+    const bg = transition?.querySelector('.transition-bg');
     if (!transition || !bg) {
         performSectionSwitch(sectionId);
         return;
     }
 
-    // Reset transition state instantly
+    // 1. Prepare: Hide display and move to start position instantly
+    transition.style.display = 'flex';
     bg.style.transition = 'none';
     transition.classList.remove('active', 'wipe-out');
-    bg.offsetHeight; // Force reflow
-    bg.style.transition = '';
-
-    // Start wipe in
+    void transition.offsetWidth; // Force layout
+    
+    // 2. Wipe In
+    bg.style.transition = 'transform 0.8s cubic-bezier(0.77, 0, 0.175, 1)';
     transition.classList.add('active');
 
     setTimeout(() => {
+        // Change section when screen is covered
         performSectionSwitch(sectionId);
         
-        // Hold for the bounce effect to complete
         setTimeout(() => {
-            // Wipe out to the right
+            // 3. Wipe Out
             transition.classList.add('wipe-out');
             
-            // Clean up once fully off-screen
+            // 4. Cleanup: Hide the whole container after it moves off screen
             setTimeout(() => {
+                transition.style.display = 'none';
                 transition.classList.remove('active', 'wipe-out');
             }, 800);
         }, 600);
