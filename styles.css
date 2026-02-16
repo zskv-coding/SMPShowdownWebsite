@@ -743,6 +743,56 @@ section:not(.hidden) {
     100% { transform: scale(1) translateY(0) rotate(0deg); opacity: 1; }
 }
 
+/* Winner Announcement */
+.winner-announcement {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 2rem;
+    border-radius: 24px;
+    margin-bottom: 3rem;
+    border: 4px solid var(--gold);
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+    animation: winnerPulse 2s infinite ease-in-out;
+}
+
+.winner-announcement.orange {
+    border-color: #ff944d;
+    box-shadow: 0 0 30px rgba(255, 148, 77, 0.4);
+}
+
+.winner-crown {
+    width: 60px;
+    height: auto;
+    filter: drop-shadow(0 0 10px var(--gold));
+}
+
+.winner-text {
+    text-align: center;
+}
+
+.winner-text h2 {
+    font-size: 2.5rem;
+    color: #ff944d;
+    margin-bottom: 0.5rem !important;
+    padding-bottom: 0 !important;
+    border-bottom: none !important;
+    text-shadow: 0 0 15px rgba(255, 148, 77, 0.5);
+}
+
+.winner-text p {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-white);
+}
+
+@keyframes winnerPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
 @media (max-width: 768px) {
     section h1 {
         font-size: 2rem;
