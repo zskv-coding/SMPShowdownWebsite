@@ -217,18 +217,9 @@ async function updateLiveScores() {
                     if (allPlayersData[lowerName]) {
                         const p = allPlayersData[lowerName];
                         html += `
-                            <div class="player-slot clickable" onclick="showPlayerStats('${p.username}', '${p.uuid}', ${p.won}, ${p.played})">
+                            <div class="player-slot clickable" onclick="showPlayerStats('${p.username}', '${p.uuid}', ${p.won}, ${p.played}, '${p.event1}')">
                                 <div class="player-slot-info">
                                     <img src="https://mc-heads.net/avatar/${p.uuid}/24" alt="" class="slot-head">
-                                    <span>${username}</span>
-                                </div>
-                                <span class="player-score">${score}</span>
-                            </div>`;
-                    } else {
-                        html += `
-                            <div class="player-slot">
-                                <div class="player-slot-info">
-                                    <img src="https://mc-heads.net/avatar/${username}/24" alt="" class="slot-head">
                                     <span>${username}</span>
                                 </div>
                                 <span class="player-score">${score}</span>
@@ -339,9 +330,9 @@ async function loadPlayers() {
 
         // Skip header line
         for (let i = 1; i < lines.length; i++) {
-            const [username, uuid, won, played] = lines[i].split('\t');
+            const [username, uuid, won, played, event1] = lines[i].split('\t');
             if (username && uuid) {
-                const playerData = { username, uuid, won: Number(won), played: Number(played) };
+                const playerData = { username, uuid, won: Number(won), played: Number(played), event1: event1 || '0' };
                 players.push(playerData);
                 allPlayersData[username.toLowerCase()] = playerData;
             }
@@ -350,7 +341,7 @@ async function loadPlayers() {
         let html = '<div class="players-grid">';
         players.forEach(player => {
             html += `
-                <div class="player-card" onclick="showPlayerStats('${player.username}', '${player.uuid}', ${player.won}, ${player.played})">
+                <div class="player-card" onclick="showPlayerStats('${player.username}', '${player.uuid}', ${player.won}, ${player.played}, '${player.event1}')">
                     <img src="https://mc-heads.net/avatar/${player.uuid}/100" alt="${player.username}" class="player-head">
                     <div class="player-name">${player.username}</div>
                 </div>
@@ -365,7 +356,7 @@ async function loadPlayers() {
     }
 }
 
-function showPlayerStats(username, uuid, won, played) {
+function showPlayerStats(username, uuid, won, played, event1) {
     const modal = document.getElementById('player-modal');
     const modalContent = document.getElementById('modal-player-details');
     
@@ -386,6 +377,10 @@ function showPlayerStats(username, uuid, won, played) {
             <div class="stat-item">
                 <span class="stat-label">Win Rate</span>
                 <span class="stat-value">${played > 0 ? Math.round((won / played) * 100) : 0}%</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Last Event Score</span>
+                <span class="stat-value">${Number(event1).toLocaleString()}</span>
             </div>
         </div>
     `;
