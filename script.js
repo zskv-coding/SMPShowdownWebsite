@@ -397,10 +397,141 @@ function closeModal() {
     }
 }
 
-// Close modal when clicking outside
-window.onclick = function(event) {
-    const modal = document.getElementById('player-modal');
-    if (event.target == modal) {
-        closeModal();
+/* Applications Logic */
+const APP_QUESTIONS = {
+    'Builder': [
+        { label: 'Portfolio Link (Imgur/Google Drive):', name: 'portfolio', type: 'text', required: true },
+        { label: 'Previous Experience:', name: 'experience', type: 'textarea', required: true },
+        { label: 'Why do you want to join?', name: 'why', type: 'textarea', required: true }
+    ],
+    'Playtester': [
+        { label: 'Have you played SMP Showdown before?', name: 'played_before', type: 'select', options: ['Yes', 'No'], required: true },
+        { label: 'What is your favorite game mode?', name: 'favorite_mode', type: 'text', required: true },
+        { label: 'Availability (Days/Hours):', name: 'availability', type: 'text', required: true }
+    ],
+    'Sound/Music Designer': [
+        { label: 'Link to your work (SoundCloud/YouTube):', name: 'portfolio', type: 'text', required: true },
+        { label: 'Software used:', name: 'software', type: 'text', required: true },
+        { label: 'Previous projects:', name: 'projects', type: 'textarea', required: true }
+    ],
+    'Coding': [
+        { label: 'GitHub Profile Link:', name: 'github', type: 'text', required: true },
+        { label: 'Languages known:', name: 'languages', type: 'text', required: true },
+        { label: 'Why do you want to help with coding?', name: 'why', type: 'textarea', required: true }
+    ]
+};
+
+function openAppForm(type) {
+    const modal = document.getElementById('app-modal');
+    const title = document.getElementById('app-type-title');
+    const typeInput = document.getElementById('app-type-input');
+    const questionsContainer = document.getElementById('dynamic-questions');
+    const form = document.getElementById('application-form');
+    const status = document.getElementById('form-status');
+
+    if (!modal || !APP_QUESTIONS[type]) return;
+
+    title.innerText = `${type} Application`;
+    typeInput.value = type;
+    status.classList.add('hidden');
+    form.reset();
+
+    questionsContainer.innerHTML = '';
+    APP_QUESTIONS[type].forEach(q => {
+        const group = document.createElement('div');
+        group.className = 'form-group';
+        
+        const label = document.createElement('label');
+        label.innerText = q.label;
+        group.appendChild(label);
+
+        let input;
+        if (q.type === 'textarea') {
+            input = document.createElement('textarea');
+            input.rows = 4;
+        } else if (q.type === 'select') {
+            input = document.createElement('select');
+            q.options.forEach(opt => {
+                const o = document.createElement('option');
+                o.value = opt;
+                o.text = opt;
+                input.appendChild(o);
+            });
+        } else {
+            input = document.createElement('input');
+            input.type = q.type;
+        }
+
+        input.name = q.name;
+        input.id = `app-${q.name}`;
+        input.required = q.required;
+        group.appendChild(input);
+        questionsContainer.appendChild(group);
+    });
+
+    modal.style.display = 'flex';
+    modal.classList.remove('hidden');
+}
+
+function closeAppModal() {
+    const modal = document.getElementById('app-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        modal.classList.add('hidden');
     }
 }
+
+// Form Submission
+document.getElementById('application-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const status = document.getElementById('form-status');
+    const submitBtn = form.querySelector('.submit-btn');
+    
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    
+    submitBtn.disabled = true;
+    submitBtn.innerText = 'Submitting...';
+    status.innerText = 'Sending application...';
+    status.className = 'form-status-msg';
+    status.classList.remove('hidden');
+
+    try {
+        const response = await fetch('/api/applications', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            status.innerText = 'Application submitted successfully!';
+            status.classList.add('success');
+            form.reset();
+            setTimeout(closeAppModal, 2000);
+        } else {
+            const errData = await response.json();
+            throw new Error(errData.message || 'Failed to submit application');
+        }
+    } catch (err) {
+        console.error('Submission Error:', err);
+        status.innerText = 'Error: ' + err.message;
+        status.classList.add('error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Submit Application';
+    }
+});
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const playerModal = document.getElementById('player-modal');
+    const appModal = document.getElementById('app-modal');
+    if (event.target == playerModal) {
+        closeModal();
+    }
+    if (event.target == appModal) {
+        closeAppModal();
+    }
+}
+

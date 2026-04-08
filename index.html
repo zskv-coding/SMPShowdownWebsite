@@ -43,6 +43,7 @@
                     <button onclick="showSection('games')" id="btn-games">GAMES</button>
                     <button onclick="showSection('players')" id="btn-players">PLAYERS</button>
                     <button onclick="showSection('live')" id="btn-live">LIVE</button>
+                    <button onclick="showSection('applications')" id="btn-applications">APPLICATIONS</button>
                 </nav>
             </div>
         </div>
@@ -259,7 +260,41 @@
                 </div>
             </div>
         </section>
-    </main>
+
+        <section id="applications" class="hidden">
+            <h1>APPLICATIONS</h1>
+            <p class="section-subtitle">Choose an application type to apply for SMP Showdown!</p>
+            <div class="applications-grid">
+                <button class="app-btn builder" onclick="openAppForm('Builder')">Builder Applications</button>
+                <button class="app-btn playtester" onclick="openAppForm('Playtester')">Playtester Applications</button>
+                <button class="app-btn sound" onclick="openAppForm('Sound/Music Designer')">Sound/Music Designer Applications</button>
+                <button class="app-btn coding" onclick="openAppForm('Coding')">Coding Applications</button>
+            </div>
+        </section>
+
+        <div id="app-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close-btn" onclick="closeAppModal()">&times;</span>
+                <h2 id="app-type-title">Builder Application</h2>
+                <form id="application-form">
+                    <input type="hidden" id="app-type-input" name="app-type">
+                    <div class="form-group">
+                        <label for="app-username">Minecraft Username:</label>
+                        <input type="text" id="app-username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="app-discord">Discord Tag:</label>
+                        <input type="text" id="app-discord" name="discord" required placeholder="username">
+                    </div>
+                    <div id="dynamic-questions">
+                        <!-- Questions will be injected here -->
+                    </div>
+                    <button type="submit" class="submit-btn">Submit Application</button>
+                </form>
+                <div id="form-status" class="form-status-msg hidden"></div>
+            </div>
+        </div>
+     </main>
 
     <div id="player-modal" class="modal hidden">
         <div class="modal-content">
