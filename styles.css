@@ -910,13 +910,13 @@ section:not(.hidden) {
 
 .form-question-card {
     background: #fff;
-    margin: 0 12px 12px 12px;
+    margin: 0 12px 20px 12px;
     padding: 24px;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12);
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
 }
 
 .question-label {
@@ -924,6 +924,9 @@ section:not(.hidden) {
     color: #202124;
     font-weight: 500;
     font-family: 'Open Sans', sans-serif;
+    display: block;
+    width: 100%;
+    margin-bottom: 4px;
 }
 
 .required-asterisk {
