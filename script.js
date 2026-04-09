@@ -446,7 +446,7 @@ const APP_DATA = {
                     { label: 'Why do you have an interest in building for SMP Showdown?', name: 'interest', type: 'textarea', required: true },
                     { label: 'How would you describe your building style/skill?', name: 'style', type: 'textarea', required: true },
                     { label: 'Do you have any examples of your builds?', name: 'has_examples', type: 'text', required: true },
-                    { label: 'Please submit your builds below (if you have examples)', name: 'portfolio_links', type: 'textarea', required: false }
+                    { label: 'Please submit your builds below (if you have examples)', name: 'portfolio_file', type: 'file', required: false }
                 ]
             },
             {
@@ -474,6 +474,7 @@ const APP_DATA = {
                 fields: [
                     { label: 'How much experience do you have in coding MC Plugins, Datapacks, and more?', name: 'experience', type: 'textarea', required: true },
                     { label: 'What are some things that you have coded?', name: 'portfolio', type: 'textarea', required: true },
+                    { label: 'Submit your code samples (ZIP/Files)', name: 'code_samples', type: 'file', required: false },
                     { label: 'Are you fine with working alone on a Plugin Project?', name: 'work_alone', type: 'select', options: ['Yes', 'No'], required: true },
                     { label: 'Do you understand that you can be removed from the staff team at any moment?', name: 'understand_removal', type: 'select', options: ['Yes', 'No'], required: true },
                     { label: 'Other:', name: 'other_info', type: 'textarea', required: false }
@@ -495,7 +496,7 @@ const APP_DATA = {
             {
                 title: 'Section 2 of 3: Experience',
                 fields: [
-                    { label: 'Please attach some examples of your work below:', name: 'portfolio', type: 'textarea', required: true },
+                    { label: 'Please attach some examples of your work below:', name: 'portfolio_file', type: 'file', required: true },
                     { label: 'Are you wanting to-do Sound Effects, Music, or both?', name: 'role_type', type: 'text', required: true }
                 ]
             },
@@ -511,6 +512,7 @@ const APP_DATA = {
 
 let currentStep = 0;
 let currentAppData = null;
+let formAnswers = {};
 
 function openAppForm(type) {
     const modal = document.getElementById('app-modal');
@@ -518,6 +520,7 @@ function openAppForm(type) {
     if (!modal || !currentAppData) return;
 
     currentStep = 0;
+    formAnswers = {}; // Clear previous answers
     document.getElementById('app-type-input').value = type;
     document.getElementById('app-type-title').innerText = currentAppData.title;
     document.getElementById('app-description').innerText = currentAppData.description;
@@ -538,25 +541,29 @@ function renderStep() {
     html += `</div>`;
     
     section.fields.forEach(f => {
+        const savedValue = formAnswers[f.name] || '';
         html += `<div class="form-question-card">`;
         if (f.type === 'info') {
             html += `<p class="info-text">${f.label}</p>`;
         } else {
             html += `<label class="question-label">${f.label}${f.required ? ' <span class="required-asterisk">*</span>' : ''}</label>`;
             if (f.type === 'textarea') {
-                html += `<textarea name="${f.name}" required="${f.required}" rows="3" placeholder="Your answer"></textarea>`;
+                html += `<textarea name="${f.name}" required="${f.required}" rows="3" placeholder="Your answer">${savedValue}</textarea>`;
             } else if (f.type === 'select') {
                 html += `<select name="${f.name}" required="${f.required}">
-                    <option value="" disabled selected>Choose</option>
-                    ${f.options.map(o => `<option value="${o}">${o}</option>`).join('')}
+                    <option value="" disabled ${!savedValue ? 'selected' : ''}>Choose</option>
+                    ${f.options.map(o => `<option value="${o}" ${savedValue === o ? 'selected' : ''}>${o}</option>`).join('')}
                 </select>`;
             } else if (f.type === 'checkbox') {
+                const checked = formAnswers[f.name] === 'on' ? 'checked' : '';
                 html += `<div class="checkbox-container">
-                    <input type="checkbox" name="${f.name}" required="${f.required}" class="checkbox-input" id="check-${f.name}">
+                    <input type="checkbox" name="${f.name}" required="${f.required}" class="checkbox-input" id="check-${f.name}" ${checked}>
                     <label for="check-${f.name}" class="checkbox-label">I agree/understand</label>
                 </div>`;
+            } else if (f.type === 'file') {
+                html += `<input type="file" name="${f.name}" required="${f.required}" class="file-input">`;
             } else {
-                html += `<input type="${f.type}" name="${f.name}" required="${f.required}" ${f.validation ? `data-validation="${f.validation}"` : ''} placeholder="Your answer">`;
+                html += `<input type="${f.type}" name="${f.name}" required="${f.required}" ${f.validation ? `data-validation="${f.validation}"` : ''} placeholder="Your answer" value="${savedValue}">`;
             }
         }
         html += `</div>`;
@@ -576,8 +583,19 @@ function renderStep() {
     container.innerHTML = html;
 }
 
+function saveCurrentAnswers() {
+    const form = document.getElementById('application-form');
+    const formData = new FormData(form);
+    for (const [key, value] of formData.entries()) {
+        // Files cannot be easily stored in state and re-rendered in inputs due to security, 
+        // so we don't save file values to formAnswers to avoid "clearing" logic issues
+        if (!(value instanceof File)) {
+            formAnswers[key] = value;
+        }
+    }
+}
+
 function changeStep(delta) {
-    // Validate current fields before moving forward
     if (delta > 0) {
         const currentFields = document.getElementById('dynamic-questions').querySelectorAll('[required]');
         for (let field of currentFields) {
@@ -592,6 +610,7 @@ function changeStep(delta) {
         }
     }
     
+    saveCurrentAnswers();
     currentStep += delta;
     renderStep();
 }
@@ -607,11 +626,12 @@ function closeAppModal() {
 // Form Submission
 document.getElementById('application-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    saveCurrentAnswers();
+    
     const form = e.target;
     const status = document.getElementById('form-status');
     const submitBtn = form.querySelector('.submit-btn');
     
-    // Final validation for the last step
     const validationFields = form.querySelectorAll('[data-validation]');
     for (let field of validationFields) {
         if (field.value !== field.dataset.validation) {
@@ -621,7 +641,12 @@ document.getElementById('application-form')?.addEventListener('submit', async (e
     }
 
     const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
+    // Add previously saved answers that might not be on current page
+    Object.keys(formAnswers).forEach(key => {
+        if (!formData.has(key)) {
+            formData.append(key, formAnswers[key]);
+        }
+    });
     
     submitBtn.disabled = true;
     submitBtn.innerText = 'Submitting...';
@@ -632,8 +657,7 @@ document.getElementById('application-form')?.addEventListener('submit', async (e
     try {
         const response = await fetch('/api/applications', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            body: formData // Send as FormData for file support
         });
 
         if (response.ok) {

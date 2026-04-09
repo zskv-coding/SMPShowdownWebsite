@@ -4,6 +4,7 @@
   "type": "module",
   "main": "scores.js",
   "dependencies": {
-    "mysql2": "^3.9.2"
+    "mysql2": "^3.9.2",
+    "formidable": "^3.5.1"
   }
 }
