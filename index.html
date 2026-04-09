@@ -273,23 +273,17 @@
         </section>
 
         <div id="app-modal" class="modal hidden">
-            <div class="modal-content">
+            <div class="modal-content app-modal-content">
                 <span class="close-btn" onclick="closeAppModal()">&times;</span>
-                <h2 id="app-type-title">Builder Application</h2>
+                <div id="app-header">
+                    <h2 id="app-type-title">Builder Application</h2>
+                    <p id="app-description" class="app-description"></p>
+                </div>
                 <form id="application-form">
                     <input type="hidden" id="app-type-input" name="app-type">
-                    <div class="form-group">
-                        <label for="app-username">Minecraft Username:</label>
-                        <input type="text" id="app-username" name="username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="app-discord">Discord Tag:</label>
-                        <input type="text" id="app-discord" name="discord" required placeholder="username">
-                    </div>
                     <div id="dynamic-questions">
                         <!-- Questions will be injected here -->
                     </div>
-                    <button type="submit" class="submit-btn">Submit Application</button>
                 </form>
                 <div id="form-status" class="form-status-msg hidden"></div>
             </div>

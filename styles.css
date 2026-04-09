@@ -453,6 +453,7 @@ section h1 {
     color: #888;
     cursor: pointer;
     transition: color 0.3s;
+    z-index: 10;
 }
 
 .close-btn:hover {
@@ -503,6 +504,7 @@ section h1 {
     font-weight: 900;
     color: var(--primary-orange);
 }
+
 .stream-container {
     width: 100%;
     max-width: 1000px;
@@ -634,7 +636,6 @@ section:not(.hidden) {
 
 .player-slot.clickable {
     cursor: pointer;
-    transition: all 0.2s ease;
 }
 
 .player-slot.clickable:hover {
@@ -726,7 +727,7 @@ section:not(.hidden) {
 }
 
 .transition-crown {
-    width: 500px; /* Even bigger */
+    width: 500px;
     height: auto;
     filter: drop-shadow(0 30px 60px rgba(0,0,0,0.5));
     display: block;
@@ -801,4 +802,212 @@ section:not(.hidden) {
         flex-direction: column;
         gap: 1rem;
     }
+}
+
+/* Applications Section */
+.applications-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2.5rem;
+    margin-top: 4rem;
+    justify-content: center;
+}
+
+.app-btn {
+    padding: 2.5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+    color: white;
+    background: var(--card-bg);
+    border: 3px solid #2a2a2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.2;
+    letter-spacing: 1px;
+}
+
+.app-btn:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+}
+
+.app-btn.builder { border-color: var(--primary-orange); color: var(--primary-orange); }
+.app-btn.playtester { border-color: #2ed573; color: #2ed573; }
+.app-btn.sound { border-color: var(--gold); color: var(--gold); }
+.app-btn.coding { border-color: #1e90ff; color: #1e90ff; }
+
+.app-btn.builder:hover { background: var(--primary-orange); color: white; }
+.app-btn.playtester:hover { background: #2ed573; color: white; }
+.app-btn.sound:hover { background: var(--gold); color: white; }
+.app-btn.coding:hover { background: #1e90ff; color: white; }
+
+/* Enhanced Application Styles - Google Forms Inspired */
+.app-modal-content {
+    max-width: 750px;
+    background: #f0f2f5;
+    padding: 0;
+    border-radius: 12px;
+    overflow-y: auto;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+#app-header {
+    background: #fff;
+    border-top: 10px solid var(--primary-orange);
+    border-radius: 8px 8px 4px 4px;
+    margin: 12px;
+    padding: 24px;
+    text-align: left;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+#app-type-title {
+    color: #202124;
+    font-size: 32px;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 12px;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.app-description {
+    color: #202124;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.form-section-header {
+    background: var(--primary-orange);
+    margin: 0 12px 12px 12px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+.section-title {
+    color: white;
+    font-size: 18px;
+    margin: 0;
+    border: none;
+    padding: 0;
+}
+
+.form-question-card {
+    background: #fff;
+    margin: 0 12px 12px 12px;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.question-label {
+    font-size: 16px;
+    color: #202124;
+    font-weight: 500;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.required-asterisk {
+    color: #d93025;
+}
+
+.form-question-card input[type="text"],
+.form-question-card input[type="email"],
+.form-question-card textarea,
+.form-question-card select {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #dadce0;
+    background: none;
+    padding: 8px 0;
+    border-radius: 0;
+    color: #202124;
+    font-size: 14px;
+    transition: border-bottom 0.3s;
+}
+
+.form-question-card input:focus,
+.form-question-card textarea:focus,
+.form-question-card select:focus {
+    outline: none;
+    border-bottom: 2px solid var(--primary-orange);
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.checkbox-label {
+    font-size: 14px;
+    color: #202124;
+}
+
+.form-nav {
+    margin: 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.nav-btn, .submit-btn {
+    padding: 10px 24px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Google Sans', Roboto, Arial, sans-serif;
+    text-transform: none;
+    letter-spacing: .25px;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s;
+}
+
+.nav-btn.prev {
+    background: none;
+    color: var(--primary-orange);
+}
+
+.nav-btn.next, .submit-btn {
+    background: var(--primary-orange);
+    color: #fff;
+}
+
+.nav-btn:hover {
+    background: rgba(255, 140, 0, 0.04);
+}
+
+.submit-btn:hover, .nav-btn.next:hover {
+    background: #e67e00;
+    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.30), 0 1px 3px 1px rgba(60,64,67,0.15);
+}
+
+.info-text {
+    background: #f8f9fa;
+    border-radius: 4px;
+    padding: 16px;
+    color: #5f6368;
+    font-size: 14px;
+    line-height: 1.5;
+    border-left: 4px solid #dadce0;
 }

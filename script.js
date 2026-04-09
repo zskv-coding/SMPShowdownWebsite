@@ -519,6 +519,8 @@ function openAppForm(type) {
 
     currentStep = 0;
     document.getElementById('app-type-input').value = type;
+    document.getElementById('app-type-title').innerText = currentAppData.title;
+    document.getElementById('app-description').innerText = currentAppData.description;
     document.getElementById('form-status').classList.add('hidden');
     document.getElementById('application-form').reset();
     
@@ -529,31 +531,32 @@ function openAppForm(type) {
 
 function renderStep() {
     const container = document.getElementById('dynamic-questions');
-    const title = document.getElementById('app-type-title');
     const section = currentAppData.sections[currentStep];
     
-    title.innerText = currentAppData.title;
-    
-    let html = `<p class="app-description">${currentAppData.description}</p>`;
+    let html = `<div class="form-section-header">`;
     html += `<h3 class="section-title">${section.title}</h3>`;
+    html += `</div>`;
     
     section.fields.forEach(f => {
-        html += `<div class="form-group">`;
+        html += `<div class="form-question-card">`;
         if (f.type === 'info') {
             html += `<p class="info-text">${f.label}</p>`;
         } else {
-            html += `<label>${f.label}${f.required ? ' *' : ''}</label>`;
+            html += `<label class="question-label">${f.label}${f.required ? ' <span class="required-asterisk">*</span>' : ''}</label>`;
             if (f.type === 'textarea') {
-                html += `<textarea name="${f.name}" required="${f.required}" rows="3"></textarea>`;
+                html += `<textarea name="${f.name}" required="${f.required}" rows="3" placeholder="Your answer"></textarea>`;
             } else if (f.type === 'select') {
                 html += `<select name="${f.name}" required="${f.required}">
-                    <option value="" disabled selected>Select an option</option>
+                    <option value="" disabled selected>Choose</option>
                     ${f.options.map(o => `<option value="${o}">${o}</option>`).join('')}
                 </select>`;
             } else if (f.type === 'checkbox') {
-                html += `<input type="checkbox" name="${f.name}" required="${f.required}" class="checkbox-input">`;
+                html += `<div class="checkbox-container">
+                    <input type="checkbox" name="${f.name}" required="${f.required}" class="checkbox-input" id="check-${f.name}">
+                    <label for="check-${f.name}" class="checkbox-label">I agree/understand</label>
+                </div>`;
             } else {
-                html += `<input type="${f.type}" name="${f.name}" required="${f.required}" ${f.validation ? `data-validation="${f.validation}"` : ''}>`;
+                html += `<input type="${f.type}" name="${f.name}" required="${f.required}" ${f.validation ? `data-validation="${f.validation}"` : ''} placeholder="Your answer">`;
             }
         }
         html += `</div>`;
