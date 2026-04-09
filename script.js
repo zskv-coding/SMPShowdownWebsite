@@ -681,11 +681,19 @@ document.getElementById('application-form')?.addEventListener('submit', async (e
     status.classList.remove('hidden');
 
     try {
-        // Use full URL to avoid potential relative path issues on some hosting setups
-        const response = await fetch('/api/applications', {
+        // Updated to use relative path which is standard for Vercel /api routes
+        const response = await fetch('api/applications', {
             method: 'POST',
             body: formData
         });
+
+        // First check if the response is actually JSON
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const text = await response.text();
+            console.error("Non-JSON response received:", text);
+            throw new Error("Server error: Received HTML instead of JSON. Check if /api/applications.js exists on the server.");
+        }
 
         const result = await response.json();
 
