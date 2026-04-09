@@ -57,12 +57,18 @@ export default async function handler(req, res) {
                 // Create Embeds based on Form Structure
                 const embeds = [];
                 
-                // Header Embed
-                embeds.push({
-                    title: `📢 New ${type} Application`,
-                    description: `**From:** ${username} (${discord})\n**Time:** ${new Date().toLocaleString()}`,
-                    color: 0xFFA500,
-                });
+        // Header Embed
+        const headerEmbed = {
+            title: `📢 New ${type} Application`,
+            description: `**From:** ${username} (${discord})\n**Time:** ${new Date().toLocaleString()}`,
+            color: 0xFFA500,
+        };
+
+        if (data.drive_folder_url) {
+            headerEmbed.description += `\n\n📁 **[View Uploaded Files in Google Drive](${data.drive_folder_url})**`;
+        }
+
+        embeds.push(headerEmbed);
 
                 if (formStructure) {
                     formStructure.forEach(section => {

@@ -590,7 +590,8 @@ function renderStep() {
 
 
 const VERCEL_BACKEND_URL = 'https://smp-showdown-website.vercel.app'; 
-const DRIVE_UPLOAD_URL = 'https://script.google.com/macros/s/AKfycbxtdEAoQHHjqFhEKUE4xM1pl32ZyjfeXNX1_9zOHRPlRI4E_kjj7ITEKOheHLBhy44U/exec'; 
+const DRIVE_UPLOAD_URL = 'https://script.google.com/macros/s/AKfycbxj_dEaGur0jqJCOQYCjuAXkkjZwrpsoH8obgZXLquLRq5Y6GAKAjWr-g_R8aHVfgil/exec'; 
+const DRIVE_FOLDER_URL = 'https://drive.google.com/drive/u/0/folders/1dOIpLc5bBj9cjTUpeNDHrlVWIZS6NrQV';
 
 async function handleFileChange(input) {
     const feedback = document.getElementById(`feedback-${input.name}`);
@@ -602,18 +603,18 @@ async function handleFileChange(input) {
         
         feedback.style.display = 'block';
         feedback.classList.remove('error');
-        feedback.innerText = `⏳ Preparing upload... (${sizeMB.toFixed(1)}MB)`;
+        feedback.innerText = `⏳ Uploading to Drive...`;
+
+        // Get username for file naming
+        const username = formAnswers['username'] || formAnswers['mc_name'] || 'Unknown';
 
         // GOOGLE DRIVE UPLOAD LOGIC
         try {
-            feedback.innerText = `🚀 Uploading to Google Drive...`;
-            
             const reader = new FileReader();
             reader.onload = async function(e) {
                 const base64Content = e.target.result.split(',')[1];
                 
                 try {
-                    // Standard fetch with no-cors works best with text/plain for GAS
                     await fetch(DRIVE_UPLOAD_URL, {
                         method: 'POST',
                         mode: 'no-cors', 
@@ -623,12 +624,14 @@ async function handleFileChange(input) {
                         body: JSON.stringify({
                             filename: file.name,
                             mimeType: file.type,
-                            base64: base64Content
+                            base64: base64Content,
+                            username: username
                         })
                     });
 
                     feedback.innerText = `✅ Sent to Google Drive!`;
                     formAnswers[input.name] = `(UPLOADED TO DRIVE) File: ${file.name}`;
+                    formAnswers['drive_folder_url'] = DRIVE_FOLDER_URL;
                 } catch (fetchErr) {
                     console.error('Fetch Error:', fetchErr);
                     feedback.innerText = `❌ Error: ${fetchErr.message}`;
