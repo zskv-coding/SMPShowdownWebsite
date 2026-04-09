@@ -584,6 +584,9 @@ function renderStep() {
     container.innerHTML = html;
 }
 
+
+const VERCEL_BACKEND_URL = 'https://smp-showdown-website.vercel.app'; 
+
 function handleFileChange(input) {
     const feedback = document.getElementById(`feedback-${input.name}`);
     if (!feedback) return;
@@ -595,8 +598,11 @@ function handleFileChange(input) {
         feedback.style.display = 'block';
         feedback.classList.remove('error');
         
-        if (sizeMB > 25) {
-            feedback.innerText = `⚠️ File too large (${sizeMB.toFixed(1)}MB). Max 25MB for Discord.`;
+
+        const limit = 4.5; 
+        
+        if (sizeMB > limit) {
+            feedback.innerText = `⚠️ File too large (${sizeMB.toFixed(1)}MB). Max ${limit}MB for Vercel Free tier.`;
             feedback.classList.add('error');
             input.value = ''; // Reset
         } else {
@@ -681,8 +687,12 @@ document.getElementById('application-form')?.addEventListener('submit', async (e
     status.classList.remove('hidden');
 
     try {
-        // Updated to use relative path which is standard for Vercel /api routes
-        const response = await fetch('api/applications', {
+
+        const apiPath = VERCEL_BACKEND_URL 
+            ? `${VERCEL_BACKEND_URL.replace(/\/$/, '')}/api/applications`
+            : 'api/applications';
+
+        const response = await fetch(apiPath, {
             method: 'POST',
             body: formData
         });
