@@ -590,7 +590,7 @@ function renderStep() {
 
 
 const VERCEL_BACKEND_URL = 'https://smp-showdown-website.vercel.app'; 
-const DRIVE_UPLOAD_URL = 'https://script.google.com/macros/s/AKfycbwwCOM8Jjmu4ZzP6YPAocdo0R7-9FkydDpaILogTqkTsgujpQTyc3e65oy4VvojR8_V/exec'; 
+const DRIVE_UPLOAD_URL = 'https://script.google.com/macros/s/AKfycbxtdEAoQHHjqFhEKUE4xM1pl32ZyjfeXNX1_9zOHRPlRI4E_kjj7ITEKOheHLBhy44U/exec'; 
 
 async function handleFileChange(input) {
     const feedback = document.getElementById(`feedback-${input.name}`);
@@ -613,14 +613,12 @@ async function handleFileChange(input) {
                 const base64Content = e.target.result.split(',')[1];
                 
                 try {
-                    // Google Apps Script is extremely picky about CORS. 
-                    // Using text/plain and no-cors is the most reliable "one-way" way to hit it.
-                    // However, we need to ensure the body is just a string.
+                    // Standard fetch with no-cors works best with text/plain for GAS
                     await fetch(DRIVE_UPLOAD_URL, {
                         method: 'POST',
                         mode: 'no-cors', 
                         headers: {
-                            'Content-Type': 'text/plain;charset=utf-8'
+                            'Content-Type': 'text/plain'
                         },
                         body: JSON.stringify({
                             filename: file.name,
@@ -629,10 +627,7 @@ async function handleFileChange(input) {
                         })
                     });
 
-                    // Since we use no-cors, we can't read the response directly, 
-                    // so we mark as "Uploaded" and hope for the best. 
-                    // If it still fails, the error is likely in the Apps Script side.
-                    feedback.innerText = `✅ Sent to Google Drive! (Check folder)`;
+                    feedback.innerText = `✅ Sent to Google Drive!`;
                     formAnswers[input.name] = `(UPLOADED TO DRIVE) File: ${file.name}`;
                 } catch (fetchErr) {
                     console.error('Fetch Error:', fetchErr);
