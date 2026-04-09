@@ -848,10 +848,10 @@ section:not(.hidden) {
 .app-btn.sound:hover { background: var(--gold); color: white; }
 .app-btn.coding:hover { background: #1e90ff; color: white; }
 
-/* Enhanced Application Styles - Google Forms Inspired */
+/* Enhanced Application Styles - Google Forms Inspired (Dark Mode) */
 .app-modal-content {
     max-width: 750px;
-    background: #f0f2f5;
+    background: #121212; /* Match body bg */
     padding: 0;
     border-radius: 12px;
     overflow-y: auto;
@@ -859,20 +859,21 @@ section:not(.hidden) {
     display: flex;
     flex-direction: column;
     gap: 0;
+    border: 1px solid #333;
 }
 
 #app-header {
-    background: #fff;
+    background: #1e1e1e;
     border-top: 10px solid var(--primary-orange);
     border-radius: 8px 8px 4px 4px;
     margin: 12px;
     padding: 24px;
     text-align: left;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
 #app-type-title {
-    color: #202124;
+    color: var(--text-white);
     font-size: 32px;
     font-family: 'Montserrat', sans-serif;
     margin-bottom: 12px;
@@ -881,7 +882,7 @@ section:not(.hidden) {
 }
 
 .app-description {
-    color: #202124;
+    color: #bbb;
     font-size: 14px;
     line-height: 1.5;
     margin-bottom: 0;
@@ -897,7 +898,7 @@ section:not(.hidden) {
     padding: 12px 24px;
     border-radius: 8px;
     color: white;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
 .section-title {
@@ -909,19 +910,20 @@ section:not(.hidden) {
 }
 
 .form-question-card {
-    background: #fff;
+    background: #1e1e1e;
     margin: 0 12px 20px 12px;
     padding: 24px;
     border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
     display: flex;
     flex-direction: column;
     gap: 12px;
+    border: 1px solid #333;
 }
 
 .question-label {
     font-size: 16px;
-    color: #202124;
+    color: var(--text-white);
     font-weight: 500;
     font-family: 'Open Sans', sans-serif;
     display: block;
@@ -930,7 +932,7 @@ section:not(.hidden) {
 }
 
 .required-asterisk {
-    color: #d93025;
+    color: #ff4d4d;
 }
 
 .form-question-card input[type="text"],
@@ -939,13 +941,13 @@ section:not(.hidden) {
 .form-question-card select {
     width: 100%;
     border: none;
-    border-bottom: 1px solid #dadce0;
-    background: none;
-    padding: 8px 0;
-    border-radius: 0;
-    color: #202124;
+    border-bottom: 1px solid #444;
+    background: rgba(0,0,0,0.2);
+    padding: 12px 8px;
+    border-radius: 4px 4px 0 0;
+    color: white;
     font-size: 14px;
-    transition: border-bottom 0.3s;
+    transition: all 0.3s;
 }
 
 .form-question-card input:focus,
@@ -953,6 +955,19 @@ section:not(.hidden) {
 .form-question-card select:focus {
     outline: none;
     border-bottom: 2px solid var(--primary-orange);
+    background: rgba(255, 140, 0, 0.05);
+}
+
+.file-feedback {
+    font-size: 13px;
+    color: #2ed573;
+    margin-top: 8px;
+    font-weight: 600;
+    display: none;
+}
+
+.file-feedback.error {
+    color: #ff4757;
 }
 
 .checkbox-container {
@@ -963,7 +978,7 @@ section:not(.hidden) {
 
 .checkbox-label {
     font-size: 14px;
-    color: #202124;
+    color: #ccc;
 }
 
 .form-nav {
@@ -977,18 +992,18 @@ section:not(.hidden) {
     padding: 10px 24px;
     border-radius: 4px;
     font-size: 14px;
-    font-weight: 500;
-    font-family: 'Google Sans', Roboto, Arial, sans-serif;
-    text-transform: none;
-    letter-spacing: .25px;
+    font-weight: 700;
+    font-family: 'Fredoka', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: .5px;
     cursor: pointer;
     border: none;
-    transition: background 0.2s;
+    transition: all 0.2s;
 }
 
 .nav-btn.prev {
-    background: none;
-    color: var(--primary-orange);
+    background: #333;
+    color: white;
 }
 
 .nav-btn.next, .submit-btn {
@@ -997,20 +1012,21 @@ section:not(.hidden) {
 }
 
 .nav-btn:hover {
-    background: rgba(255, 140, 0, 0.04);
+    filter: brightness(1.2);
+    transform: translateY(-1px);
 }
 
 .submit-btn:hover, .nav-btn.next:hover {
     background: #e67e00;
-    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.30), 0 1px 3px 1px rgba(60,64,67,0.15);
+    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
 }
 
 .info-text {
-    background: #f8f9fa;
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 4px;
     padding: 16px;
-    color: #5f6368;
+    color: #aaa;
     font-size: 14px;
     line-height: 1.5;
-    border-left: 4px solid #dadce0;
+    border-left: 4px solid #444;
 }

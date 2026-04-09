@@ -561,7 +561,8 @@ function renderStep() {
                     <label for="check-${f.name}" class="checkbox-label">I agree/understand</label>
                 </div>`;
             } else if (f.type === 'file') {
-                html += `<input type="file" name="${f.name}" required="${f.required}" class="file-input">`;
+                html += `<input type="file" name="${f.name}" required="${f.required}" class="file-input" onchange="handleFileChange(this)">
+                         <div id="feedback-${f.name}" class="file-feedback"></div>`;
             } else {
                 html += `<input type="${f.type}" name="${f.name}" required="${f.required}" ${f.validation ? `data-validation="${f.validation}"` : ''} placeholder="Your answer" value="${savedValue}">`;
             }
@@ -583,16 +584,41 @@ function renderStep() {
     container.innerHTML = html;
 }
 
-function saveCurrentAnswers() {
-    const form = document.getElementById('application-form');
-    const formData = new FormData(form);
-    for (const [key, value] of formData.entries()) {
-        // Files cannot be easily stored in state and re-rendered in inputs due to security, 
-        // so we don't save file values to formAnswers to avoid "clearing" logic issues
-        if (!(value instanceof File)) {
-            formAnswers[key] = value;
+function handleFileChange(input) {
+    const feedback = document.getElementById(`feedback-${input.name}`);
+    if (!feedback) return;
+
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const sizeMB = file.size / (1024 * 1024);
+        
+        feedback.style.display = 'block';
+        feedback.classList.remove('error');
+        
+        if (sizeMB > 25) {
+            feedback.innerText = `⚠️ File too large (${sizeMB.toFixed(1)}MB). Max 25MB for Discord.`;
+            feedback.classList.add('error');
+            input.value = ''; // Reset
+        } else {
+            feedback.innerText = `✅ Selected: ${file.name} (${sizeMB.toFixed(1)}MB)`;
         }
+    } else {
+        feedback.style.display = 'none';
     }
+}
+
+function saveCurrentAnswers() {
+    const container = document.getElementById('dynamic-questions');
+    const inputs = container.querySelectorAll('input, textarea, select');
+    
+    inputs.forEach(input => {
+        if (input.type === 'file') return;
+        if (input.type === 'checkbox') {
+            formAnswers[input.name] = input.checked ? 'on' : '';
+        } else {
+            formAnswers[input.name] = input.value;
+        }
+    });
 }
 
 function changeStep(delta) {
@@ -655,18 +681,20 @@ document.getElementById('application-form')?.addEventListener('submit', async (e
     status.classList.remove('hidden');
 
     try {
+        // Use full URL to avoid potential relative path issues on some hosting setups
         const response = await fetch('/api/applications', {
             method: 'POST',
-            body: formData // Send as FormData for file support
+            body: formData
         });
+
+        const result = await response.json();
 
         if (response.ok) {
             status.innerText = 'Application submitted successfully!';
             status.classList.add('success');
             setTimeout(closeAppModal, 2000);
         } else {
-            const errData = await response.json();
-            throw new Error(errData.message || 'Failed to submit application');
+            throw new Error(result.message || result.error || 'Failed to submit application');
         }
     } catch (err) {
         console.error('Submission Error:', err);
@@ -690,4 +718,5 @@ window.onclick = function(event) {
         closeAppModal();
     }
 }
+
 
