@@ -67,9 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Start Countdown
     startCountdown();
 
-    // Initialize Bee Background
-    initBees();
-
     // Load Players Data
     loadPlayers();
 
@@ -284,35 +281,9 @@ function startCountdown() {
 }
 
 function initBees() {
-    const container = document.getElementById('bubbles-container');
-    const beeCount = 10;
-
-    for (let i = 0; i < beeCount; i++) {
-        createBee(container);
-    }
 }
 
 function createBee(container) {
-    const bee = document.createElement('div');
-    bee.className = 'bee';
-    
-    const size = Math.random() * 40 + 20;
-    const left = Math.random() * 100;
-    const duration = Math.random() * 10 + 10;
-    const delay = Math.random() * 15;
-
-    bee.style.width = `${size}px`;
-    bee.style.height = `${size}px`;
-    bee.style.left = `${left}%`;
-    bee.style.setProperty('--duration', `${duration}s`);
-    bee.style.animationDelay = `${delay}s`;
-
-    container.appendChild(bee);
-
-    // Re-create bee after it finishes its animation
-    bee.addEventListener('animationiteration', () => {
-        bee.style.left = `${Math.random() * 100}%`;
-    });
 }
 
 async function loadPlayers() {

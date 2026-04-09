@@ -21,8 +21,8 @@ body {
     overflow-x: hidden;
 }
 
-/* Bubbly Background */
-.bubbles-container {
+/* Bee Background */
+.bee-container {
     position: fixed;
     top: 0;
     left: 0;
@@ -33,35 +33,8 @@ body {
     overflow: hidden;
 }
 
-.bee {
-    position: absolute;
-    background-image: url('sd_bee_nocrown.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    bottom: -100px;
-    animation: float-up var(--duration) linear infinite;
-    opacity: 0.8;
-    z-index: -1;
-}
-
-@keyframes float-up {
-    0% {
-        transform: translateY(0) translateX(0) rotate(0deg);
-        opacity: 0;
-    }
-    10% {
-        opacity: 0.8;
-    }
-    50% {
-        transform: translateY(-60vh) translateX(20px) rotate(10deg);
-    }
-    90% {
-        opacity: 0.8;
-    }
-    100% {
-        transform: translateY(-120vh) translateX(-20px) rotate(-10deg);
-        opacity: 0;
-    }
+.bee-bg {
+    background-color: var(--hive-black);
 }
 
 h1, h2, h3, .logo, button {
