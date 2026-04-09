@@ -1,7 +1,6 @@
 import mysql from 'mysql2/promise';
 import formidable from 'formidable';
 import fs from 'fs/promises';
-import { Readable } from 'stream';
 
 export const config = {
     api: {
@@ -10,55 +9,75 @@ export const config = {
 };
 
 export default async function handler(req, res) {
+    // 1. IMPROVED CORS HEADERS
+    const origin = req.headers.origin;
+    res.setHeader('Access-Control-Allow-Origin', origin || '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
+
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Method Not Allowed' });
     }
 
     const form = formidable({
         keepExtensions: true,
-        maxFileSize: 25 * 1024 * 1024, // 25MB limit (Discord's limit is usually 25MB)
+        maxFileSize: 10 * 1024 * 1024,
+        allowEmptyFiles: true,
+        minFileSize: 0
     });
 
     try {
         const [fields, files] = await form.parse(req);
         
-        // Flatten fields (formidable returns arrays)
         const data = {};
         for (const key in fields) {
             data[key] = fields[key][0];
         }
 
-        const username = data.username || 'Unknown';
-        const discord = data.discord || 'Unknown';
+        const username = data.username || data.mc_name || 'Unknown';
+        const discord = data.discord || data.discord_name || 'Unknown';
         const type = data['app-type'] || 'General';
 
-        // 1. Send to Discord Webhook
+        // 2. DISCORD WEBHOOK
         const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
         if (DISCORD_WEBHOOK_URL) {
             try {
                 const discordForm = new FormData();
                 
+                const formatValue = (val) => {
+                    const str = String(val || 'N/A');
+                    return str.length > 1020 ? str.substring(0, 1020) + '...' : str;
+                };
+
                 const embed = {
                     title: `New ${type} Application`,
                     color: 0xFFA500,
-                    fields: Object.entries(data).map(([key, value]) => ({
-                        name: key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' '),
-                        value: value || 'N/A',
-                        inline: false
-                    })),
+                    fields: Object.entries(data)
+                        .filter(([key]) => key !== 'app-type')
+                        .map(([key, value]) => ({
+                            name: key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' '),
+                            value: formatValue(value),
+                            inline: false
+                        })),
                     timestamp: new Date().toISOString()
                 };
 
                 discordForm.append('payload_json', JSON.stringify({ embeds: [embed] }));
 
-                // Add files to Discord request
+                let fileIndex = 0;
                 for (const key in files) {
-                    const fileArray = files[key];
-                    for (let i = 0; i < fileArray.length; i++) {
-                        const file = fileArray[i];
-                        const fileContent = await fs.readFile(file.filepath);
-                        const blob = new Blob([fileContent], { type: file.mimetype });
-                        discordForm.append(`file${i}`, blob, file.originalFilename);
+                    const fileArray = Array.isArray(files[key]) ? files[key] : [files[key]];
+                    for (const file of fileArray) {
+                        if (file && file.filepath && file.size > 0) {
+                            const fileContent = await fs.readFile(file.filepath);
+                            const blob = new Blob([fileContent], { type: file.mimetype });
+                            discordForm.append(`file${fileIndex}`, blob, file.originalFilename || 'upload.png');
+                            fileIndex++;
+                        }
                     }
                 }
 
@@ -71,7 +90,7 @@ export default async function handler(req, res) {
             }
         }
 
-        // 2. Save to MySQL
+        // 3. Save to MySQL
         let connection;
         try {
             if (process.env.MYSQL_HOST) {
@@ -82,18 +101,6 @@ export default async function handler(req, res) {
                     database: process.env.MYSQL_DATABASE,
                     port: process.env.MYSQL_PORT || 3306,
                 });
-
-                await connection.execute(`
-                    CREATE TABLE IF NOT EXISTS applications (
-                        id INT AUTO_INCREMENT PRIMARY KEY,
-                        type VARCHAR(255) NOT NULL,
-                        username VARCHAR(255) NOT NULL,
-                        discord VARCHAR(255) NOT NULL,
-                        form_data JSON NOT NULL,
-                        has_files BOOLEAN DEFAULT FALSE,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                `);
 
                 await connection.execute(
                     'INSERT INTO applications (type, username, discord, form_data, has_files) VALUES (?, ?, ?, ?, ?)',
@@ -106,11 +113,12 @@ export default async function handler(req, res) {
             if (connection) await connection.end();
         }
 
-        res.status(200).json({ message: 'Application submitted successfully' });
+        return res.status(200).json({ success: true, message: 'Application submitted successfully' });
 
     } catch (error) {
         console.error('Processing Error:', error);
-        res.status(500).json({ 
+        return res.status(500).json({ 
+            success: false,
             error: 'Failed to process application', 
             message: error.message 
         });

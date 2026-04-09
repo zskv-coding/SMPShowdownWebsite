@@ -561,8 +561,12 @@ function renderStep() {
                     <label for="check-${f.name}" class="checkbox-label">I agree/understand</label>
                 </div>`;
             } else if (f.type === 'file') {
-                html += `<input type="file" name="${f.name}" required="${f.required}" class="file-input" onchange="handleFileChange(this)">
-                         <div id="feedback-${f.name}" class="file-feedback"></div>`;
+                const hasFile = formAnswers[f.name] instanceof File;
+                const isRequired = f.required && !hasFile;
+                html += `<input type="file" name="${f.name}" ${isRequired ? 'required="true"' : ''} class="file-input" onchange="handleFileChange(this)">
+                         <div id="feedback-${f.name}" class="file-feedback" style="display: ${hasFile ? 'block' : 'none'}">
+                            ${hasFile ? `✅ Selected: ${formAnswers[f.name].name} (${(formAnswers[f.name].size / (1024 * 1024)).toFixed(1)}MB)` : ''}
+                         </div>`;
             } else {
                 html += `<input type="${f.type}" name="${f.name}" required="${f.required}" ${f.validation ? `data-validation="${f.validation}"` : ''} placeholder="Your answer" value="${savedValue}">`;
             }
@@ -597,19 +601,21 @@ function handleFileChange(input) {
         
         feedback.style.display = 'block';
         feedback.classList.remove('error');
-        
 
         const limit = 4.5; 
         
         if (sizeMB > limit) {
-            feedback.innerText = `⚠️ File too large (${sizeMB.toFixed(1)}MB). Max ${limit}MB for Vercel Free tier.`;
+            feedback.innerText = `⚠️ File too large (${sizeMB.toFixed(1)}MB). Max ${limit}MB for Vercel.`;
             feedback.classList.add('error');
-            input.value = ''; // Reset
+            input.value = '';
+            delete formAnswers[input.name];
         } else {
             feedback.innerText = `✅ Selected: ${file.name} (${sizeMB.toFixed(1)}MB)`;
+            formAnswers[input.name] = file; // Store the actual File object
         }
     } else {
         feedback.style.display = 'none';
+        delete formAnswers[input.name];
     }
 }
 
@@ -673,10 +679,20 @@ document.getElementById('application-form')?.addEventListener('submit', async (e
     }
 
     const formData = new FormData(form);
-    // Add previously saved answers that might not be on current page
+    
+    // Add all saved answers (including files from previous steps)
     Object.keys(formAnswers).forEach(key => {
-        if (!formData.has(key)) {
-            formData.append(key, formAnswers[key]);
+        const value = formAnswers[key];
+        // If it's a file from a previous step, it won't be in current formData
+        // If it's a regular field from a previous step, it won't be in current formData
+        if (!formData.has(key) || (value instanceof File)) {
+            // If current formData has the key but it's an empty file, replace it with saved file
+            if (value instanceof File) {
+                formData.delete(key);
+                formData.append(key, value);
+            } else {
+                formData.append(key, value);
+            }
         }
     });
     
@@ -684,31 +700,36 @@ document.getElementById('application-form')?.addEventListener('submit', async (e
     submitBtn.innerText = 'Submitting...';
     status.innerText = 'Sending application...';
     status.className = 'form-status-msg';
-    status.classList.remove('hidden');
+    status.classList.remove('hidden', 'success', 'error');
 
     try {
-
         const apiPath = VERCEL_BACKEND_URL 
             ? `${VERCEL_BACKEND_URL.replace(/\/$/, '')}/api/applications`
             : 'api/applications';
 
+        console.log('Submitting to:', apiPath);
+
         const response = await fetch(apiPath, {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
         });
 
-        // First check if the response is actually JSON
         const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
+        let result;
+        
+        if (contentType && contentType.includes("application/json")) {
+            result = await response.json();
+        } else {
             const text = await response.text();
-            console.error("Non-JSON response received:", text);
-            throw new Error("Server error: Received HTML instead of JSON. Check if /api/applications.js exists on the server.");
+            console.error("Server returned non-JSON:", text);
+            throw new Error(`Server Error: Expected JSON but got ${contentType || 'unknown'}. Please ensure DISCORD_WEBHOOK_URL is set in Vercel environment variables.`);
         }
 
-        const result = await response.json();
-
         if (response.ok) {
-            status.innerText = 'Application submitted successfully!';
+            status.innerText = '✅ Application submitted successfully!';
             status.classList.add('success');
             setTimeout(closeAppModal, 2000);
         } else {
@@ -716,7 +737,7 @@ document.getElementById('application-form')?.addEventListener('submit', async (e
         }
     } catch (err) {
         console.error('Submission Error:', err);
-        status.innerText = 'Error: ' + err.message;
+        status.innerText = '❌ Error: ' + err.message;
         status.classList.add('error');
     } finally {
         submitBtn.disabled = false;
