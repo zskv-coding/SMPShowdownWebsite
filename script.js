@@ -398,79 +398,199 @@ function closeModal() {
 }
 
 /* Applications Logic */
-const APP_QUESTIONS = {
-    'Builder': [
-        { label: 'Portfolio Link (Imgur/Google Drive):', name: 'portfolio', type: 'text', required: true },
-        { label: 'Previous Experience:', name: 'experience', type: 'textarea', required: true },
-        { label: 'Why do you want to join?', name: 'why', type: 'textarea', required: true }
-    ],
-    'Playtester': [
-        { label: 'Have you played SMP Showdown before?', name: 'played_before', type: 'select', options: ['Yes', 'No'], required: true },
-        { label: 'What is your favorite game mode?', name: 'favorite_mode', type: 'text', required: true },
-        { label: 'Availability (Days/Hours):', name: 'availability', type: 'text', required: true }
-    ],
-    'Sound/Music Designer': [
-        { label: 'Link to your work (SoundCloud/YouTube):', name: 'portfolio', type: 'text', required: true },
-        { label: 'Software used:', name: 'software', type: 'text', required: true },
-        { label: 'Previous projects:', name: 'projects', type: 'textarea', required: true }
-    ],
-    'Coding': [
-        { label: 'GitHub Profile Link:', name: 'github', type: 'text', required: true },
-        { label: 'Languages known:', name: 'languages', type: 'text', required: true },
-        { label: 'Why do you want to help with coding?', name: 'why', type: 'textarea', required: true }
-    ]
+const APP_DATA = {
+    'Playtester': {
+        title: 'SMP Showdown | Playtester Application',
+        description: 'Apply to be a playtester for SMP Showdown!',
+        sections: [
+            {
+                title: 'General Information',
+                fields: [
+                    { label: 'Preferred name?', name: 'preferred_name', type: 'text', required: true },
+                    { label: 'Discord name?', name: 'discord', type: 'text', required: true },
+                    { label: 'Minecraft username?', name: 'username', type: 'text', required: true }
+                ]
+            },
+            {
+                title: 'Agreements',
+                fields: [
+                    { label: 'Do you promise not to record the playtesting session unless instructed by the Head of Playtesting?', name: 'promise_no_record', type: 'select', options: ['Yes', 'No'], required: true },
+                    { label: 'Do you promise that you will not release, stream, or otherwise make your footage of the SMP Showdown Playtesting Sessions public in any way?', name: 'promise_no_leak', type: 'select', options: ['Yes', 'No'], required: true },
+                    { label: 'Do you understand that we will REVOKE your playtester role if you violate playtester policy?', name: 'understand_revoke', type: 'select', options: ['Yes', 'No'], required: true }
+                ]
+            },
+            {
+                title: 'Availability & Final Acknowledgement',
+                fields: [
+                    { label: 'What time & days are you typically free?', name: 'availability', type: 'textarea', required: true },
+                    { label: 'By typing "I understand" you acknowledge that SMP Showdown has all rights to remove you as a playtester and ban you from anything SMP Showdown related if you break any of the playtesting rules or leak anything.', type: 'info' },
+                    { label: 'If you agree. Please type "I understand."', name: 'agreement_text', type: 'text', required: true, validation: 'I understand' }
+                ]
+            }
+        ]
+    },
+    'Builder': {
+        title: 'SMP Showdown | Builder Application',
+        description: 'Welcome to the SMP Showdown Builder Applications! By filling out this application, you understand that you may not be accepted as a staff member.',
+        sections: [
+            {
+                title: 'Section 1 of 3',
+                fields: [
+                    { label: 'Discord Username', name: 'discord', type: 'text', required: true },
+                    { label: 'Minecraft Username', name: 'username', type: 'text', required: true }
+                ]
+            },
+            {
+                title: 'Section 2 of 3: Builder Questions',
+                fields: [
+                    { label: 'Why do you have an interest in building for SMP Showdown?', name: 'interest', type: 'textarea', required: true },
+                    { label: 'How would you describe your building style/skill?', name: 'style', type: 'textarea', required: true },
+                    { label: 'Do you have any examples of your builds?', name: 'has_examples', type: 'text', required: true },
+                    { label: 'Please submit your builds below (if you have examples)', name: 'portfolio_links', type: 'textarea', required: false }
+                ]
+            },
+            {
+                title: 'Section 3 of 3: General Questions',
+                fields: [
+                    { label: 'Have you ever worked with someone ON the current staff team?', name: 'staff_connection', type: 'text', required: true },
+                    { label: 'By checking this box, you understand SMP Showdown has full right to remove you from the staff team at ANY time.', name: 'understand_removal', type: 'checkbox', required: true }
+                ]
+            }
+        ]
+    },
+    'Coding': {
+        title: 'SMP Showdown | Coder Applications',
+        description: 'Are you looking to code for a MC Event? Then you\'ve come to the right spot! Apply for SMP Showdown coder below!',
+        sections: [
+            {
+                title: 'Section 1 of 2',
+                fields: [
+                    { label: 'MC Name:', name: 'username', type: 'text', required: true },
+                    { label: 'Discord Name:', name: 'discord', type: 'text', required: true }
+                ]
+            },
+            {
+                title: 'Section 2 of 2: Questions',
+                fields: [
+                    { label: 'How much experience do you have in coding MC Plugins, Datapacks, and more?', name: 'experience', type: 'textarea', required: true },
+                    { label: 'What are some things that you have coded?', name: 'portfolio', type: 'textarea', required: true },
+                    { label: 'Are you fine with working alone on a Plugin Project?', name: 'work_alone', type: 'select', options: ['Yes', 'No'], required: true },
+                    { label: 'Do you understand that you can be removed from the staff team at any moment?', name: 'understand_removal', type: 'select', options: ['Yes', 'No'], required: true },
+                    { label: 'Other:', name: 'other_info', type: 'textarea', required: false }
+                ]
+            }
+        ]
+    },
+    'Sound/Music Designer': {
+        title: 'SMP Showdown | Music Artist Applications',
+        description: 'If you are filling out this application, you are interested in becoming a Music artist for SMP Showdown.',
+        sections: [
+            {
+                title: 'Section 1 of 3',
+                fields: [
+                    { label: 'Discord Username', name: 'discord', type: 'text', required: true },
+                    { label: 'Minecraft Username', name: 'username', type: 'text', required: true }
+                ]
+            },
+            {
+                title: 'Section 2 of 3: Experience',
+                fields: [
+                    { label: 'Please attach some examples of your work below:', name: 'portfolio', type: 'textarea', required: true },
+                    { label: 'Are you wanting to-do Sound Effects, Music, or both?', name: 'role_type', type: 'text', required: true }
+                ]
+            },
+            {
+                title: 'Section 3 of 3: Acknowledgement',
+                fields: [
+                    { label: 'Do you understand that you can be removed from the Sound design team at any moment?', name: 'understand_removal', type: 'select', options: ['Yes', 'No'], required: true }
+                ]
+            }
+        ]
+    }
 };
+
+let currentStep = 0;
+let currentAppData = null;
 
 function openAppForm(type) {
     const modal = document.getElementById('app-modal');
-    const title = document.getElementById('app-type-title');
-    const typeInput = document.getElementById('app-type-input');
-    const questionsContainer = document.getElementById('dynamic-questions');
-    const form = document.getElementById('application-form');
-    const status = document.getElementById('form-status');
+    currentAppData = APP_DATA[type];
+    if (!modal || !currentAppData) return;
 
-    if (!modal || !APP_QUESTIONS[type]) return;
-
-    title.innerText = `${type} Application`;
-    typeInput.value = type;
-    status.classList.add('hidden');
-    form.reset();
-
-    questionsContainer.innerHTML = '';
-    APP_QUESTIONS[type].forEach(q => {
-        const group = document.createElement('div');
-        group.className = 'form-group';
-        
-        const label = document.createElement('label');
-        label.innerText = q.label;
-        group.appendChild(label);
-
-        let input;
-        if (q.type === 'textarea') {
-            input = document.createElement('textarea');
-            input.rows = 4;
-        } else if (q.type === 'select') {
-            input = document.createElement('select');
-            q.options.forEach(opt => {
-                const o = document.createElement('option');
-                o.value = opt;
-                o.text = opt;
-                input.appendChild(o);
-            });
-        } else {
-            input = document.createElement('input');
-            input.type = q.type;
-        }
-
-        input.name = q.name;
-        input.id = `app-${q.name}`;
-        input.required = q.required;
-        group.appendChild(input);
-        questionsContainer.appendChild(group);
-    });
-
+    currentStep = 0;
+    document.getElementById('app-type-input').value = type;
+    document.getElementById('form-status').classList.add('hidden');
+    document.getElementById('application-form').reset();
+    
+    renderStep();
     modal.style.display = 'flex';
     modal.classList.remove('hidden');
+}
+
+function renderStep() {
+    const container = document.getElementById('dynamic-questions');
+    const title = document.getElementById('app-type-title');
+    const section = currentAppData.sections[currentStep];
+    
+    title.innerText = currentAppData.title;
+    
+    let html = `<p class="app-description">${currentAppData.description}</p>`;
+    html += `<h3 class="section-title">${section.title}</h3>`;
+    
+    section.fields.forEach(f => {
+        html += `<div class="form-group">`;
+        if (f.type === 'info') {
+            html += `<p class="info-text">${f.label}</p>`;
+        } else {
+            html += `<label>${f.label}${f.required ? ' *' : ''}</label>`;
+            if (f.type === 'textarea') {
+                html += `<textarea name="${f.name}" required="${f.required}" rows="3"></textarea>`;
+            } else if (f.type === 'select') {
+                html += `<select name="${f.name}" required="${f.required}">
+                    <option value="" disabled selected>Select an option</option>
+                    ${f.options.map(o => `<option value="${o}">${o}</option>`).join('')}
+                </select>`;
+            } else if (f.type === 'checkbox') {
+                html += `<input type="checkbox" name="${f.name}" required="${f.required}" class="checkbox-input">`;
+            } else {
+                html += `<input type="${f.type}" name="${f.name}" required="${f.required}" ${f.validation ? `data-validation="${f.validation}"` : ''}>`;
+            }
+        }
+        html += `</div>`;
+    });
+
+    html += `<div class="form-nav">`;
+    if (currentStep > 0) {
+        html += `<button type="button" class="nav-btn prev" onclick="changeStep(-1)">Back</button>`;
+    }
+    if (currentStep < currentAppData.sections.length - 1) {
+        html += `<button type="button" class="nav-btn next" onclick="changeStep(1)">Next</button>`;
+    } else {
+        html += `<button type="submit" class="submit-btn">Submit Application</button>`;
+    }
+    html += `</div>`;
+
+    container.innerHTML = html;
+}
+
+function changeStep(delta) {
+    // Validate current fields before moving forward
+    if (delta > 0) {
+        const currentFields = document.getElementById('dynamic-questions').querySelectorAll('[required]');
+        for (let field of currentFields) {
+            if (!field.checkValidity()) {
+                field.reportValidity();
+                return;
+            }
+            if (field.dataset.validation && field.value !== field.dataset.validation) {
+                alert(`Please type "${field.dataset.validation}" exactly.`);
+                return;
+            }
+        }
+    }
+    
+    currentStep += delta;
+    renderStep();
 }
 
 function closeAppModal() {
@@ -488,6 +608,15 @@ document.getElementById('application-form')?.addEventListener('submit', async (e
     const status = document.getElementById('form-status');
     const submitBtn = form.querySelector('.submit-btn');
     
+    // Final validation for the last step
+    const validationFields = form.querySelectorAll('[data-validation]');
+    for (let field of validationFields) {
+        if (field.value !== field.dataset.validation) {
+            alert(`Please type "${field.dataset.validation}" exactly.`);
+            return;
+        }
+    }
+
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
     
@@ -507,7 +636,6 @@ document.getElementById('application-form')?.addEventListener('submit', async (e
         if (response.ok) {
             status.innerText = 'Application submitted successfully!';
             status.classList.add('success');
-            form.reset();
             setTimeout(closeAppModal, 2000);
         } else {
             const errData = await response.json();
@@ -519,9 +647,10 @@ document.getElementById('application-form')?.addEventListener('submit', async (e
         status.classList.add('error');
     } finally {
         submitBtn.disabled = false;
-        submitBtn.innerText = 'Submit Application';
+        submitBtn.innerText = currentStep < currentAppData.sections.length - 1 ? 'Next' : 'Submit Application';
     }
 });
+
 
 // Close modal when clicking outside
 window.onclick = function(event) {
