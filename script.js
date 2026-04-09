@@ -590,8 +590,9 @@ function renderStep() {
 
 
 const VERCEL_BACKEND_URL = 'https://smp-showdown-website.vercel.app'; 
+const DRIVE_UPLOAD_URL = 'https://script.google.com/macros/s/AKfycbwwCOM8Jjmu4ZzP6YPAocdo0R7-9FkydDpaILogTqkTsgujpQTyc3e65oy4VvojR8_V/exec'; 
 
-function handleFileChange(input) {
+async function handleFileChange(input) {
     const feedback = document.getElementById(`feedback-${input.name}`);
     if (!feedback) return;
 
@@ -601,18 +602,48 @@ function handleFileChange(input) {
         
         feedback.style.display = 'block';
         feedback.classList.remove('error');
+        feedback.innerText = `⏳ Preparing upload... (${sizeMB.toFixed(1)}MB)`;
 
-        const limit = 4.5; 
-        
-        if (sizeMB > limit) {
-            feedback.innerText = `⚠️ File too large (${sizeMB.toFixed(1)}MB). Max ${limit}MB for Vercel.`;
+        // GOOGLE DRIVE UPLOAD LOGIC
+        try {
+            feedback.innerText = `🚀 Uploading to Google Drive...`;
+            
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const base64Content = e.target.result.split(',')[1];
+                
+                try {
+                    // We must use 'cors' and text/plain for Apps Script to avoid preflight issues 
+                    // or just use form-style submission. Standard JSON often fails CORS on GAS.
+                    const response = await fetch(DRIVE_UPLOAD_URL, {
+                        method: 'POST',
+                        mode: 'no-cors', // Essential for GAS
+                        headers: {
+                            'Content-Type': 'text/plain'
+                        },
+                        body: JSON.stringify({
+                            filename: file.name,
+                            mimeType: file.type,
+                            base64: base64Content
+                        })
+                    });
+
+                    feedback.innerText = `✅ Uploaded: ${file.name} to Google Drive!`;
+                    formAnswers[input.name] = `(UPLOADED TO DRIVE) File: ${file.name}`;
+                } catch (fetchErr) {
+                    console.error('Fetch Error:', fetchErr);
+                    feedback.innerText = `❌ Error: ${fetchErr.message}`;
+                    feedback.classList.add('error');
+                }
+            };
+            reader.readAsDataURL(file);
+
+        } catch (err) {
+            console.error('Drive Upload Error:', err);
+            feedback.innerText = `❌ Drive Upload Failed: ${err.message}`;
             feedback.classList.add('error');
-            input.value = '';
-            delete formAnswers[input.name];
-        } else {
-            feedback.innerText = `✅ Selected: ${file.name} (${sizeMB.toFixed(1)}MB)`;
-            formAnswers[input.name] = file; // Store the actual File object
         }
+
     } else {
         feedback.style.display = 'none';
         delete formAnswers[input.name];
@@ -683,10 +714,7 @@ document.getElementById('application-form')?.addEventListener('submit', async (e
     // Add all saved answers (including files from previous steps)
     Object.keys(formAnswers).forEach(key => {
         const value = formAnswers[key];
-        // If it's a file from a previous step, it won't be in current formData
-        // If it's a regular field from a previous step, it won't be in current formData
         if (!formData.has(key) || (value instanceof File)) {
-            // If current formData has the key but it's an empty file, replace it with saved file
             if (value instanceof File) {
                 formData.delete(key);
                 formData.append(key, value);
@@ -695,6 +723,16 @@ document.getElementById('application-form')?.addEventListener('submit', async (e
             }
         }
     });
+
+    // Capture field labels and section structure for better Discord formatting
+    const structure = [];
+    currentAppData.sections.forEach(sec => {
+        const fields = sec.fields
+            .filter(f => f.name && f.type !== 'info')
+            .map(f => ({ name: f.name, label: f.label }));
+        structure.push({ title: sec.title, fields });
+    });
+    formData.append('form_structure', JSON.stringify(structure));
     
     submitBtn.disabled = true;
     submitBtn.innerText = 'Submitting...';

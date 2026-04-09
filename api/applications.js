@@ -41,6 +41,7 @@ export default async function handler(req, res) {
         const username = data.username || data.mc_name || 'Unknown';
         const discord = data.discord || data.discord_name || 'Unknown';
         const type = data['app-type'] || 'General';
+        const formStructure = data.form_structure ? JSON.parse(data.form_structure) : null;
 
         // 2. DISCORD WEBHOOK
         const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
@@ -53,26 +54,66 @@ export default async function handler(req, res) {
                     return str.length > 1020 ? str.substring(0, 1020) + '...' : str;
                 };
 
-                const embed = {
-                    title: `New ${type} Application`,
+                // Create Embeds based on Form Structure
+                const embeds = [];
+                
+                // Header Embed
+                embeds.push({
+                    title: `📢 New ${type} Application`,
+                    description: `**From:** ${username} (${discord})\n**Time:** ${new Date().toLocaleString()}`,
                     color: 0xFFA500,
-                    fields: Object.entries(data)
-                        .filter(([key]) => key !== 'app-type')
-                        .map(([key, value]) => ({
-                            name: key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' '),
-                            value: formatValue(value),
-                            inline: false
-                        })),
-                    timestamp: new Date().toISOString()
-                };
+                });
 
-                discordForm.append('payload_json', JSON.stringify({ embeds: [embed] }));
+                if (formStructure) {
+                    formStructure.forEach(section => {
+                        const fields = section.fields
+                            .map(f => {
+                                const answer = data[f.name];
+                                if (!answer) return null;
+                                return {
+                                    name: f.label,
+                                    value: formatValue(answer),
+                                    inline: false
+                                };
+                            })
+                            .filter(f => f !== null);
 
+                        if (fields.length > 0) {
+                            embeds.push({
+                                title: section.title,
+                                color: 0xFFA500,
+                                fields: fields
+                            });
+                        }
+                    });
+                } else {
+                    // Fallback to simple list if structure is missing
+                    embeds.push({
+                        title: "Application Details",
+                        color: 0xFFA500,
+                        fields: Object.entries(data)
+                            .filter(([key]) => !['app-type', 'form_structure'].includes(key))
+                            .map(([key, value]) => ({
+                                name: key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' '),
+                                value: formatValue(value),
+                                inline: false
+                            }))
+                    });
+                }
+
+                discordForm.append('payload_json', JSON.stringify({ embeds }));
+
+                // 3. ATTACH REMAINING BINARY FILES (if any)
                 let fileIndex = 0;
                 for (const key in files) {
                     const fileArray = Array.isArray(files[key]) ? files[key] : [files[key]];
                     for (const file of fileArray) {
-                        if (file && file.filepath && file.size > 0) {
+                        // Only attach if it's a real file and not an empty placeholder
+                        // (If it was uploaded to Drive, 'data[key]' contains the string note, 
+                        // and 'files[key]' might still exist but shouldn't be attached if we want to save bandwidth)
+                        const wasUploadedToDrive = typeof data[key] === 'string' && data[key].includes('UPLOADED TO DRIVE');
+                        
+                        if (file && file.filepath && file.size > 0 && !wasUploadedToDrive) {
                             const fileContent = await fs.readFile(file.filepath);
                             const blob = new Blob([fileContent], { type: file.mimetype });
                             discordForm.append(`file${fileIndex}`, blob, file.originalFilename || 'upload.png');
