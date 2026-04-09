@@ -1,10 +1,10 @@
 :root {
-    --primary-orange: #ff8c00;
-    --gold: #ffd700;
-    --dark-bg: #121212;
-    --card-bg: #1e1e1e;
+    --honey-yellow: #FFC107;
+    --deep-amber: #FFA000;
+    --hive-black: #1A1A1A;
+    --card-bg: #242424;
     --text-white: #ffffff;
-    --accent-gradient: linear-gradient(135deg, #ff8c00 0%, #ffd700 100%);
+    --accent-gradient: linear-gradient(135deg, #FFC107 0%, #FFA000 100%);
 }
 
 * {
@@ -15,7 +15,7 @@
 
 body {
     font-family: 'Fredoka', sans-serif;
-    background-color: var(--dark-bg);
+    background-color: var(--hive-black);
     color: var(--text-white);
     line-height: 1.6;
     overflow-x: hidden;
@@ -33,29 +33,33 @@ body {
     overflow: hidden;
 }
 
-.bubble {
+.bee {
     position: absolute;
-    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1), rgba(255, 215, 0, 0.05));
-    border-radius: 50%;
+    background-image: url('sd_bee_nocrown.png');
+    background-size: contain;
+    background-repeat: no-repeat;
     bottom: -100px;
     animation: float-up var(--duration) linear infinite;
-    opacity: 0.5;
-    filter: blur(2px);
+    opacity: 0.8;
+    z-index: -1;
 }
 
 @keyframes float-up {
     0% {
-        transform: translateY(0) rotate(0deg);
+        transform: translateY(0) translateX(0) rotate(0deg);
         opacity: 0;
     }
     10% {
-        opacity: 0.5;
+        opacity: 0.8;
+    }
+    50% {
+        transform: translateY(-60vh) translateX(20px) rotate(10deg);
     }
     90% {
-        opacity: 0.5;
+        opacity: 0.8;
     }
     100% {
-        transform: translateY(-120vh) rotate(360deg);
+        transform: translateY(-120vh) translateX(-20px) rotate(-10deg);
         opacity: 0;
     }
 }
@@ -111,14 +115,14 @@ h1, h2, h3, .logo, button {
     height: auto;
     object-fit: contain;
     cursor: pointer;
-    filter: drop-shadow(0 0 20px rgba(255, 140, 0, 0.4));
+    filter: drop-shadow(0 0 20px rgba(255, 193, 7, 0.4));
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     animation: float 4s ease-in-out infinite;
 }
 
 .main-logo:hover {
     transform: scale(1.05) rotate(2deg);
-    filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.6));
+    filter: drop-shadow(0 0 30px rgba(255, 160, 0, 0.6));
 }
 
 .centered-nav {
@@ -145,13 +149,13 @@ h1, h2, h3, .logo, button {
 }
 
 .centered-nav button:hover {
-    color: var(--gold);
+    color: var(--honey-yellow);
     transform: scale(1.1);
 }
 
 .centered-nav button.active {
-    color: var(--primary-orange);
-    text-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
+    color: var(--deep-amber);
+    text-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
 }
 
 /* Game Images */
@@ -173,7 +177,7 @@ h1, h2, h3, .logo, button {
 
 .game-img:hover {
     transform: scale(1.05);
-    border-color: var(--primary-orange);
+    border-color: var(--deep-amber);
 }
 
 .players-tab-content {
@@ -236,7 +240,7 @@ section h1 {
     background: rgba(0, 0, 0, 0.4);
     padding: 2rem;
     border-radius: 20px;
-    border: 2px solid var(--gold);
+    border: 2px solid var(--honey-yellow);
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
 }
 
@@ -249,7 +253,7 @@ section h1 {
 .countdown-item span {
     font-size: 3.5rem;
     font-weight: 700;
-    color: var(--gold);
+    color: var(--honey-yellow);
     line-height: 1;
     display: inline-block;
     transition: transform 0.2s ease;
@@ -263,7 +267,7 @@ section h1 {
 .countdown-item label {
     font-size: 0.9rem;
     text-transform: uppercase;
-    color: var(--primary-orange);
+    color: var(--deep-amber);
     font-weight: 700;
     margin-top: 0.5rem;
     letter-spacing: 2px;
@@ -284,14 +288,14 @@ section h1 {
     font-family: 'Montserrat', sans-serif;
     text-transform: uppercase;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border: 2px solid var(--primary-orange);
+    border: 2px solid var(--deep-amber);
     color: var(--text-white);
     background: rgba(0, 0, 0, 0.2);
 }
 
 .social-btn:hover {
-    background: var(--primary-orange);
-    color: var(--dark-bg);
+    background: var(--deep-amber);
+    color: var(--hive-black);
     transform: scale(1.1) rotate(2deg);
     box-shadow: 0 5px 15px rgba(255, 140, 0, 0.4);
 }
@@ -325,10 +329,10 @@ section h1 {
 }
 
 .game-card h2 {
-    color: var(--gold);
+    color: var(--honey-yellow);
     font-size: 2rem;
     text-transform: uppercase;
-    border-bottom: 2px solid var(--primary-orange);
+    border-bottom: 2px solid var(--deep-amber);
     padding-bottom: 0.5rem;
     display: inline-block;
     align-self: flex-start;
@@ -349,16 +353,16 @@ section h1 {
 }
 
 .game-desc .points {
-    color: var(--gold);
+    color: var(--honey-yellow);
     font-weight: 700;
     padding: 1rem;
     background: rgba(255, 215, 0, 0.05);
-    border-left: 4px solid var(--gold);
+    border-left: 4px solid var(--honey-yellow);
     font-style: italic;
 }
 
 .game-card:hover {
-    border-color: var(--primary-orange);
+    border-color: var(--deep-amber);
     transform: translateY(-10px) scale(1.02);
     box-shadow: 0 15px 40px rgba(255, 140, 0, 0.2);
 }
@@ -394,7 +398,7 @@ section h1 {
 
 .player-card:hover {
     transform: translateY(-10px) scale(1.05);
-    border-color: var(--gold);
+    border-color: var(--honey-yellow);
     box-shadow: 0 10px 25px rgba(255, 215, 0, 0.2);
 }
 
@@ -429,7 +433,7 @@ section h1 {
 
 .modal-content {
     background: var(--card-bg);
-    border: 3px solid var(--gold);
+    border: 3px solid var(--honey-yellow);
     border-radius: 24px;
     padding: 3rem;
     max-width: 500px;
@@ -457,7 +461,7 @@ section h1 {
 }
 
 .close-btn:hover {
-    color: var(--primary-orange);
+    color: var(--deep-amber);
 }
 
 .modal-player-body {
@@ -469,7 +473,7 @@ section h1 {
 
 #modal-player-details h2 {
     font-size: 2.5rem;
-    color: var(--gold);
+    color: var(--honey-yellow);
     margin-bottom: 2rem;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -502,7 +506,7 @@ section h1 {
     color: var(--text-white);
     font-size: 1.5rem;
     font-weight: 900;
-    color: var(--primary-orange);
+    color: var(--deep-amber);
 }
 
 .stream-container {
@@ -510,7 +514,7 @@ section h1 {
     max-width: 1000px;
     margin: 0 auto;
     aspect-ratio: 16 / 9;
-    border: 4px solid var(--primary-orange);
+    border: 4px solid var(--deep-amber);
     border-radius: 8px;
     overflow: hidden;
     background: #000;
@@ -594,7 +598,7 @@ section:not(.hidden) {
 .team-score {
     font-size: 1.1rem;
     font-weight: 700;
-    color: var(--gold);
+    color: var(--honey-yellow);
     margin-bottom: 1.5rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -640,7 +644,7 @@ section:not(.hidden) {
 
 .player-slot.clickable:hover {
     background: rgba(255, 215, 0, 0.1);
-    border-color: var(--gold);
+    border-color: var(--honey-yellow);
     transform: scale(1.02);
 }
 
@@ -650,14 +654,14 @@ section:not(.hidden) {
 }
 
 .player-score {
-    color: var(--gold);
+    color: var(--honey-yellow);
     font-size: 0.9rem;
     opacity: 0.9;
 }
 
 .player-slot:hover {
     background: rgba(255, 255, 255, 0.1);
-    border-color: var(--gold);
+    border-color: var(--honey-yellow);
     transform: scale(1.05);
     z-index: 1;
 }
@@ -754,7 +758,7 @@ section:not(.hidden) {
     padding: 2rem;
     border-radius: 24px;
     margin-bottom: 3rem;
-    border: 4px solid var(--gold);
+    border: 4px solid var(--honey-yellow);
     box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
     animation: winnerPulse 2s infinite ease-in-out;
 }
@@ -767,7 +771,7 @@ section:not(.hidden) {
 .winner-crown {
     width: 60px;
     height: auto;
-    filter: drop-shadow(0 0 10px var(--gold));
+    filter: drop-shadow(0 0 10px var(--honey-yellow));
 }
 
 .winner-text {
@@ -838,14 +842,14 @@ section:not(.hidden) {
     box-shadow: 0 15px 30px rgba(0,0,0,0.5);
 }
 
-.app-btn.builder { border-color: var(--primary-orange); color: var(--primary-orange); }
+.app-btn.builder { border-color: var(--deep-amber); color: var(--deep-amber); }
 .app-btn.playtester { border-color: #2ed573; color: #2ed573; }
-.app-btn.sound { border-color: var(--gold); color: var(--gold); }
+.app-btn.sound { border-color: var(--honey-yellow); color: var(--honey-yellow); }
 .app-btn.coding { border-color: #1e90ff; color: #1e90ff; }
 
-.app-btn.builder:hover { background: var(--primary-orange); color: white; }
+.app-btn.builder:hover { background: var(--deep-amber); color: white; }
 .app-btn.playtester:hover { background: #2ed573; color: white; }
-.app-btn.sound:hover { background: var(--gold); color: white; }
+.app-btn.sound:hover { background: var(--honey-yellow); color: white; }
 .app-btn.coding:hover { background: #1e90ff; color: white; }
 
 /* Enhanced Application Styles - Google Forms Inspired (Dark Mode) */
@@ -864,7 +868,7 @@ section:not(.hidden) {
 
 #app-header {
     background: #1e1e1e;
-    border-top: 10px solid var(--primary-orange);
+    border-top: 10px solid var(--deep-amber);
     border-radius: 8px 8px 4px 4px;
     margin: 12px;
     padding: 24px;
@@ -893,7 +897,7 @@ section:not(.hidden) {
 }
 
 .form-section-header {
-    background: var(--primary-orange);
+    background: var(--deep-amber);
     margin: 0 12px 12px 12px;
     padding: 12px 24px;
     border-radius: 8px;
@@ -954,7 +958,7 @@ section:not(.hidden) {
 .form-question-card textarea:focus,
 .form-question-card select:focus {
     outline: none;
-    border-bottom: 2px solid var(--primary-orange);
+    border-bottom: 2px solid var(--deep-amber);
     background: rgba(255, 140, 0, 0.05);
 }
 
@@ -1007,7 +1011,7 @@ section:not(.hidden) {
 }
 
 .nav-btn.next, .submit-btn {
-    background: var(--primary-orange);
+    background: var(--deep-amber);
     color: #fff;
 }
 

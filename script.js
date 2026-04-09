@@ -67,8 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Start Countdown
     startCountdown();
 
-    // Initialize Bubbly Background
-    initBubbles();
+    // Initialize Bee Background
+    initBees();
 
     // Load Players Data
     loadPlayers();
@@ -283,35 +283,35 @@ function startCountdown() {
     setInterval(update, 1000);
 }
 
-function initBubbles() {
+function initBees() {
     const container = document.getElementById('bubbles-container');
-    const bubbleCount = 15;
+    const beeCount = 10;
 
-    for (let i = 0; i < bubbleCount; i++) {
-        createBubble(container);
+    for (let i = 0; i < beeCount; i++) {
+        createBee(container);
     }
 }
 
-function createBubble(container) {
-    const bubble = document.createElement('div');
-    bubble.className = 'bubble';
+function createBee(container) {
+    const bee = document.createElement('div');
+    bee.className = 'bee';
     
-    const size = Math.random() * 60 + 20;
+    const size = Math.random() * 40 + 20;
     const left = Math.random() * 100;
     const duration = Math.random() * 10 + 10;
-    const delay = Math.random() * 10;
+    const delay = Math.random() * 15;
 
-    bubble.style.width = `${size}px`;
-    bubble.style.height = `${size}px`;
-    bubble.style.left = `${left}%`;
-    bubble.style.setProperty('--duration', `${duration}s`);
-    bubble.style.animationDelay = `${delay}s`;
+    bee.style.width = `${size}px`;
+    bee.style.height = `${size}px`;
+    bee.style.left = `${left}%`;
+    bee.style.setProperty('--duration', `${duration}s`);
+    bee.style.animationDelay = `${delay}s`;
 
-    container.appendChild(bubble);
+    container.appendChild(bee);
 
-    // Re-create bubble after it finishes its animation
-    bubble.addEventListener('animationiteration', () => {
-        bubble.style.left = `${Math.random() * 100}%`;
+    // Re-create bee after it finishes its animation
+    bee.addEventListener('animationiteration', () => {
+        bee.style.left = `${Math.random() * 100}%`;
     });
 }
 
