@@ -819,11 +819,13 @@ section:not(.hidden) {
 .app-btn.playtester { border-color: #2ed573; color: #2ed573; }
 .app-btn.sound { border-color: var(--honey-yellow); color: var(--honey-yellow); }
 .app-btn.coding { border-color: #1e90ff; color: #1e90ff; }
+.app-btn.photography { border-color: #a55eea; color: #a55eea; }
 
 .app-btn.builder:hover { background: var(--deep-amber); color: white; }
 .app-btn.playtester:hover { background: #2ed573; color: white; }
 .app-btn.sound:hover { background: var(--honey-yellow); color: white; }
 .app-btn.coding:hover { background: #1e90ff; color: white; }
+.app-btn.photography:hover { background: #a55eea; color: white; }
 
 /* Enhanced Application Styles - Google Forms Inspired (Dark Mode) */
 .app-modal-content {

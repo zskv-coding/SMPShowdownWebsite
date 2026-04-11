@@ -448,6 +448,35 @@ const APP_DATA = {
                 ]
             }
         ]
+    },
+    'Photography': {
+        title: 'SMP Showdown | Photography Application',
+        description: 'We are looking for people who can take great in-game photos of our events and builds.',
+        sections: [
+            {
+                title: 'The Basics',
+                fields: [
+                    { label: 'What is your preferred name?', name: 'preferred_name', type: 'text', required: true },
+                    { label: 'What is your Discord username?', name: 'discord', type: 'text', required: true },
+                    { label: 'What is your Minecraft username?', name: 'username', type: 'text', required: true }
+                ]
+            },
+            {
+                title: 'Your Work',
+                fields: [
+                    { label: 'Do you have a portfolio or some examples of your work?', name: 'portfolio', type: 'textarea', required: true },
+                    { label: 'You can also upload some of your favorite shots here:', name: 'portfolio_file', type: 'file', required: false },
+                    { label: 'What kind of photography do you usually do, such as shaders or cinematics?', name: 'style', type: 'textarea', required: true }
+                ]
+            },
+            {
+                title: 'Final Details',
+                fields: [
+                    { label: 'Do you understand that you can be removed from the team at any time?', name: 'understand_removal', type: 'select', options: ['Yes', 'No'], required: true },
+                    { label: 'Is there anything else you would like to tell us?', name: 'other_info', type: 'textarea', required: false }
+                ]
+            }
+        ]
     }
 };
 
