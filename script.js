@@ -1,5 +1,6 @@
 // Global state to store player stats for cross-tab linking
 let allPlayersData = {};
+const VERCEL_BACKEND_URL = 'https://apismpshowdown.vercel.app';
 
 function showSection(sectionId) {
     const transition = document.getElementById('tab-transition');
@@ -1034,8 +1035,6 @@ function toggleOtherPlatform(radio) {
         otherInput.required = radio.value === 'other';
     }
 }
-
-const VERCEL_BACKEND_URL = 'https://apismpshowdown.vercel.app'; 
 
 async function submitLiveForm(event) {
     event.preventDefault();
