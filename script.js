@@ -774,10 +774,15 @@ window.onclick = function(event) {
 
 /* Voting Logic */
 async function castVote(gameName) {
-    // Basic local rate limiting/double-vote prevention
+    // Check if user has already voted
     const lastVote = localStorage.getItem('last_vote');
-    if (lastVote === gameName) {
-        alert("You've already voted for this game!");
+    if (lastVote) {
+        alert("You have already cast your vote!");
+        return;
+    }
+
+    // Confirm vote
+    if (!confirm(`Are you sure you want to vote for ${gameName}? You cannot change your vote later!`)) {
         return;
     }
 
@@ -801,11 +806,22 @@ async function castVote(gameName) {
 
 function updateVoteUI(selectedGame) {
     const buttons = document.querySelectorAll('.vote-btn');
+    const hasVoted = !!selectedGame;
+    
     buttons.forEach(btn => {
-        if (btn.innerText.trim() === selectedGame) {
+        const isThisGame = btn.innerText.trim() === selectedGame;
+        if (isThisGame) {
             btn.classList.add('selected');
         } else {
             btn.classList.remove('selected');
+        }
+        
+        // Disable all buttons if user has voted
+        if (hasVoted) {
+            btn.disabled = true;
+            btn.style.opacity = isThisGame ? '1' : '0.5';
+            btn.style.cursor = 'not-allowed';
+            btn.style.transform = 'none';
         }
     });
 }
