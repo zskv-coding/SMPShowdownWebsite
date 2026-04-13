@@ -866,17 +866,24 @@ section:not(.hidden) {
 
 .form-question-card input[type="text"],
 .form-question-card input[type="email"],
+.form-question-card input[type="url"],
+.form-question-card input[type="password"],
 .form-question-card textarea,
 .form-question-card select {
     width: 100%;
     border: none;
     border-bottom: 1px solid #444;
-    background: rgba(0,0,0,0.2);
+    background: #1a1a1a;
     padding: 12px 8px;
     border-radius: 4px 4px 0 0;
     color: white;
     font-size: 14px;
     transition: all 0.3s;
+}
+
+.form-question-card select option {
+    background: #1a1a1a;
+    color: white;
 }
 
 .form-question-card input:focus,
