@@ -66,21 +66,40 @@ function performSectionSwitch(sectionId) {
 }
 
 // Initialize Everything
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     // Check URL to show correct section
     const path = window.location.pathname;
-    if (path === '/vote' || path === '/vote.html') {
-        // Switch to voting section immediately without animation on load
-        performSectionSwitch('voting');
-    } else {
-        // Start Live Scores Update immediately
-        updateLiveScores();
+    
+    // Check voting status before showing section
+    try {
+        const response = await fetch('https://apismpshowdown.vercel.app/api/votes');
+        const data = await response.json();
+        votingActive = data.votingActive;
+        
+        const voteBtn = document.getElementById('btn-voting');
+        if (voteBtn) voteBtn.style.display = votingActive ? 'block' : 'none';
+
+        if ((path === '/vote' || path === '/vote.html')) {
+            if (votingActive) {
+                performSectionSwitch('voting');
+            } else {
+                performSectionSwitch('home');
+                showToast("Viewer vote isn't active!");
+            }
+        } else {
+            updateLiveScores();
+        }
+    } catch (e) {
+        console.error("Failed to check initial voting status", e);
+        if (!(path === '/vote' || path === '/vote.html')) {
+            updateLiveScores();
+        }
     }
     
-    // Always update votes if tab is active or potentially shown
+    // Start Updates
     updateVotes();
-    setInterval(updateVotes, 5000); // Update every 5 seconds
-    setInterval(updateLiveScores, 5000); // Update scores every 5 seconds
+    setInterval(updateVotes, 5000); 
+    setInterval(updateLiveScores, 5000); 
 
     // Initialize Twitch Embed with safety check
     try {
@@ -784,7 +803,14 @@ window.onclick = function(event) {
 }
 
 /* Voting Logic */
+let votingActive = true; // Default to true until we check API
+
 async function castVote(gameName) {
+    if (!votingActive) {
+        showToast("Viewer vote isn't active!");
+        return;
+    }
+
     // Check if user has already voted
     const lastVote = localStorage.getItem('last_vote');
     if (lastVote) {
@@ -848,6 +874,20 @@ function updateVoteUI(selectedGame) {
     });
 }
 
+function showToast(message) {
+    let toast = document.querySelector('.toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'toast';
+        document.body.appendChild(toast);
+    }
+    toast.innerText = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
 async function updateVotes() {
     const votesBody = document.getElementById('votes-body');
     if (!votesBody) return;
@@ -859,6 +899,23 @@ async function updateVotes() {
         if (!response.ok) throw new Error('Failed to fetch votes');
 
         const data = await response.json();
+        
+        // Handle Voting Visibility
+        votingActive = data.votingActive;
+        const voteBtn = document.getElementById('btn-voting');
+        if (voteBtn) {
+            voteBtn.style.display = votingActive ? 'block' : 'none';
+        }
+
+        // Redirect if on /vote and not active
+        const isVotingPath = window.location.pathname === '/vote' || window.location.pathname === '/vote.html';
+        const isVotingSection = !document.getElementById('voting').classList.contains('hidden');
+        
+        if (!votingActive && (isVotingPath || isVotingSection)) {
+            showSection('home');
+            showToast("Viewer vote isn't active!");
+        }
+
         const apiSession = data.sessionId;
         const localSession = localStorage.getItem('vote_session');
         const votes = data.games || [];
