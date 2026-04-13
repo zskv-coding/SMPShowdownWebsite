@@ -626,7 +626,6 @@ function renderStep() {
 }
 
 
-const VERCEL_BACKEND_URL = 'https://smp-showdown-website.vercel.app'; 
 const DRIVE_UPLOAD_URL = 'https://script.google.com/macros/s/AKfycbxj_dEaGur0jqJCOQYCjuAXkkjZwrpsoH8obgZXLquLRq5Y6GAKAjWr-g_R8aHVfgil/exec'; 
 const DRIVE_FOLDER_URL = 'https://drive.google.com/drive/u/0/folders/1dOIpLc5bBj9cjTUpeNDHrlVWIZS6NrQV';
 
@@ -1036,6 +1035,8 @@ function toggleOtherPlatform(radio) {
     }
 }
 
+const VERCEL_BACKEND_URL = 'https://apismpshowdown.vercel.app'; 
+
 async function submitLiveForm(event) {
     event.preventDefault();
     const form = event.target;
@@ -1052,13 +1053,15 @@ async function submitLiveForm(event) {
     status.classList.remove('hidden', 'success', 'error');
 
     try {
-        const apiPath = 'https://apismpshowdown.vercel.app/api/live-submissions';
+        const apiPath = `${VERCEL_BACKEND_URL}/api/live-submissions`;
 
         const response = await fetch(apiPath, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
+
+        const result = await response.json();
 
         if (response.ok) {
             status.innerText = '✅ Submitted successfully! Redirecting...';
@@ -1068,10 +1071,10 @@ async function submitLiveForm(event) {
                 showSection('home');
             }, 2000);
         } else {
-            const result = await response.json();
-            throw new Error(result.error || 'Failed to submit');
+            throw new Error(result.error || result.message || 'Failed to submit');
         }
     } catch (error) {
+        console.error('Submission error:', error);
         status.innerText = '❌ Error: ' + error.message;
         status.classList.add('error');
         submitBtn.disabled = false;
@@ -1123,13 +1126,17 @@ async function loadSubmissions() {
     list.innerHTML = '<p style="text-align: center; color: #aaa; margin: 20px;">Loading submissions...</p>';
 
     try {
-        const apiPath = 'https://apismpshowdown.vercel.app/api/live-submissions';
+        const apiPath = `${VERCEL_BACKEND_URL}/api/live-submissions`;
 
         const response = await fetch(apiPath, {
             headers: { 'Authorization': `Basic ${auth}` }
         });
 
-        if (!response.ok) throw new Error('Unauthorized or fetch failed');
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Fetch error:', errorText);
+            throw new Error(response.status === 401 ? 'Unauthorized' : 'Fetch failed');
+        }
 
         const submissions = await response.json();
         
