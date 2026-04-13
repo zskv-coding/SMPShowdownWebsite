@@ -292,11 +292,18 @@
                         <label class="question-label">What is your Minecraft username? <span class="required-asterisk">*</span></label>
                         <input type="text" name="mc_username" required placeholder="Username">
                     </div>
-                    <div class="form-question-card">
+                    <div class="form-question-card" id="player-selection-group">
                         <label class="question-label">Select yourself from the player list below: <span class="required-asterisk">*</span></label>
-                        <select name="selected_player" id="player-dropdown" required>
-                            <option value="">Loading players...</option>
-                        </select>
+                        <div id="player-dropdown-container">
+                            <select name="selected_player" id="player-dropdown" required>
+                                <option value="">Loading players...</option>
+                            </select>
+                            <button type="button" class="app-btn sound" style="margin-top: 15px; padding: 10px 20px; font-size: 0.9rem; width: auto; border-radius: 8px;" onclick="toggleManualPlayer(true)">I'm not on the list</button>
+                        </div>
+                        <div id="player-manual-container" style="display: none;">
+                            <input type="text" id="player-manual-input" placeholder="Enter your display name">
+                            <button type="button" class="app-btn builder" style="margin-top: 15px; padding: 10px 20px; font-size: 0.9rem; width: auto; border-radius: 8px;" onclick="toggleManualPlayer(false)">Back to list</button>
+                        </div>
                     </div>
                     <div class="form-question-card">
                         <label class="question-label">Where do you mainly stream? <span class="required-asterisk">*</span></label>

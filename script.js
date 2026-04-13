@@ -1036,6 +1036,26 @@ function toggleOtherPlatform(radio) {
     }
 }
 
+function toggleManualPlayer(isManual) {
+    const dropdownContainer = document.getElementById('player-dropdown-container');
+    const manualContainer = document.getElementById('player-manual-container');
+    const dropdown = document.getElementById('player-dropdown');
+    const manualInput = document.getElementById('player-manual-input');
+
+    if (isManual) {
+        dropdownContainer.style.display = 'none';
+        manualContainer.style.display = 'block';
+        dropdown.required = false;
+        manualInput.required = true;
+    } else {
+        dropdownContainer.style.display = 'block';
+        manualContainer.style.display = 'none';
+        dropdown.required = true;
+        manualInput.required = false;
+        manualInput.value = '';
+    }
+}
+
 async function submitLiveForm(event) {
     event.preventDefault();
     const form = event.target;
@@ -1044,6 +1064,13 @@ async function submitLiveForm(event) {
 
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
+
+    // Handle manual player input
+    const manualContainer = document.getElementById('player-manual-container');
+    if (manualContainer && manualContainer.style.display === 'block') {
+        const manualInput = document.getElementById('player-manual-input');
+        data.selected_player = manualInput.value;
+    }
 
     submitBtn.disabled = true;
     submitBtn.innerText = 'Submitting...';
