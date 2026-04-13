@@ -859,25 +859,30 @@ async function updateVotes() {
         if (!response.ok) throw new Error('Failed to fetch votes');
 
         const data = await response.json();
-        const apiSession = data.sessionId; // ID of the first vote in the current round
+        const apiSession = data.sessionId;
         const localSession = localStorage.getItem('vote_session');
-
-        // IF THE DATABASE IS EMPTY: Reset everyone to allow a fresh vote
-        if (!apiSession) {
-            localStorage.removeItem('last_vote');
-            localStorage.removeItem('vote_session');
-        } 
-        // IF THE SESSION CHANGED (New round): Clear local vote
-        else if (localSession && String(apiSession) !== localSession) {
-            localStorage.removeItem('last_vote');
-            localStorage.setItem('vote_session', String(apiSession));
-        }
-        // IF WE DON'T HAVE A SESSION RECORD: Set it to the current one
-        else if (!localSession) {
-            localStorage.setItem('vote_session', String(apiSession));
-        }
-
         const votes = data.games || [];
+        const totalVotes = votes.reduce((sum, v) => sum + v.votes, 0);
+
+        // GLOBAL RESET: If database is empty or total votes is 0, unlock for everyone
+        if (!apiSession || totalVotes === 0) {
+            if (localStorage.getItem('last_vote')) {
+                console.log('Vote reset detected (Empty Database)');
+                localStorage.removeItem('last_vote');
+                localStorage.removeItem('vote_session');
+            }
+        } 
+        // SESSION CHANGE: If a new voting round started, unlock
+        else if (localSession && String(apiSession) !== localSession) {
+            console.log('New voting round detected');
+            localStorage.removeItem('last_vote');
+            localStorage.setItem('vote_session', String(apiSession));
+        }
+        // INITIAL SYNC: If we haven't recorded the current session yet
+        else if (!localSession && apiSession) {
+            localStorage.setItem('vote_session', String(apiSession));
+        }
+
         const maxVotes = Math.max(...votes.map(v => v.votes), 1);
 
         // Sort votes by count descending
