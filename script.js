@@ -69,7 +69,7 @@ function performSectionSwitch(sectionId) {
 document.addEventListener('DOMContentLoaded', () => {
     // Check URL to show correct section
     const path = window.location.pathname;
-    if (path === '/vote') {
+    if (path === '/vote' || path === '/vote.html') {
         // Switch to voting section immediately without animation on load
         performSectionSwitch('voting');
     } else {
