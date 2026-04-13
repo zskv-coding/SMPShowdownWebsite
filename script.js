@@ -105,6 +105,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         if (typeof Twitch !== 'undefined') {
             new Twitch.Player("twitch-embed", {
+                width: "100%",
+                height: "100%",
                 channel: "smpshowdown"
             });
         } else {
