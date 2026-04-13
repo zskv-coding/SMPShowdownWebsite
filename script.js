@@ -67,6 +67,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load Players Data
     loadPlayers();
 
+    // Start Votes Update
+    updateVotes();
+    setInterval(updateVotes, 5000); // Update every 5 seconds
+
     // Initialize Twitch Embed with safety check
     try {
         if (typeof Twitch !== 'undefined') {
@@ -767,5 +771,90 @@ window.onclick = function(event) {
         closeAppModal();
     }
 }
+
+/* Voting Logic */
+async function castVote(gameName) {
+    // Basic local rate limiting/double-vote prevention
+    const lastVote = localStorage.getItem('last_vote');
+    if (lastVote === gameName) {
+        alert("You've already voted for this game!");
+        return;
+    }
+
+    try {
+        const response = await fetch('https://apismpshowdown.vercel.app/api/votes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ game: gameName })
+        });
+
+        if (!response.ok) throw new Error('Vote failed');
+
+        localStorage.setItem('last_vote', gameName);
+        updateVoteUI(gameName);
+        updateVotes(); // Immediate refresh
+    } catch (error) {
+        console.error('Error casting vote:', error);
+        alert('Failed to cast vote. Please try again later.');
+    }
+}
+
+function updateVoteUI(selectedGame) {
+    const buttons = document.querySelectorAll('.vote-btn');
+    buttons.forEach(btn => {
+        if (btn.innerText.trim() === selectedGame) {
+            btn.classList.add('selected');
+        } else {
+            btn.classList.remove('selected');
+        }
+    });
+}
+
+async function updateVotes() {
+    const votesBody = document.getElementById('votes-body');
+    if (!votesBody) return;
+
+    try {
+        const response = await fetch('https://apismpshowdown.vercel.app/api/votes', {
+            cache: 'no-store'
+        });
+        if (!response.ok) throw new Error('Failed to fetch votes');
+
+        const votes = await response.json();
+        const maxVotes = Math.max(...votes.map(v => v.votes), 1);
+
+        // Sort votes by count descending
+        votes.sort((a, b) => b.votes - a.votes);
+
+        let html = '';
+        votes.forEach(v => {
+            const percentage = (v.votes / maxVotes) * 100;
+            html += `
+                <tr>
+                    <td>
+                        <div>${v.game}</div>
+                        <div class="vote-bar-container">
+                            <div class="vote-bar" style="width: ${percentage}%"></div>
+                        </div>
+                    </td>
+                    <td class="vote-count">${v.votes.toLocaleString()}</td>
+                </tr>
+            `;
+        });
+
+        if (votesBody.innerHTML !== html) {
+            votesBody.innerHTML = html;
+        }
+
+        // Highlight selected game on load
+        const lastVote = localStorage.getItem('last_vote');
+        if (lastVote) {
+            updateVoteUI(lastVote);
+        }
+    } catch (error) {
+        console.error('Error updating votes:', error);
+    }
+}
+
 
 

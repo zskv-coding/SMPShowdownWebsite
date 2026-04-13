@@ -43,6 +43,7 @@
                     <button onclick="showSection('games')" id="btn-games">GAMES</button>
                     <button onclick="showSection('players')" id="btn-players">PLAYERS</button>
                     <button onclick="showSection('live')" id="btn-live">LIVE</button>
+                    <button onclick="showSection('voting')" id="btn-voting">VOTING</button>
                     <button onclick="showSection('applications')" id="btn-applications">APPLICATIONS</button>
                 </nav>
             </div>
@@ -238,6 +239,37 @@
                     <div class="player-slots" id="players-pink">
                         <div class="player-slot">Loading...</div>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="voting" class="hidden">
+            <h1>VOTE FOR THE NEXT GAME!</h1>
+            <p class="section-subtitle">Choose your favorite game for the next event round!</p>
+            
+            <div class="voting-container">
+                <div class="voting-options" id="voting-options">
+                    <button class="vote-btn" onclick="castVote('Peckish Playoffs')">Peckish Playoffs</button>
+                    <button class="vote-btn" onclick="castVote('Parkour Run')">Parkour Run</button>
+                    <button class="vote-btn" onclick="castVote('SMP Triathlon')">SMP Triathlon</button>
+                    <button class="vote-btn" onclick="castVote('Aquatic Ambush')">Aquatic Ambush</button>
+                    <button class="vote-btn" onclick="castVote('Block Shuffle')">Block Shuffle</button>
+                    <button class="vote-btn" onclick="castVote('King of the Hill')">King of the Hill</button>
+                </div>
+
+                <div class="votes-leaderboard">
+                    <h2>LIVE STANDINGS</h2>
+                    <table id="votes-table">
+                        <thead>
+                            <tr>
+                                <th>Game</th>
+                                <th>Votes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="votes-body">
+                            <!-- Votes will be populated here -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
