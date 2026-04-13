@@ -36,6 +36,8 @@ function showSection(sectionId) {
     }, 800);
 }
 
+let twitchPlayer = null;
+
 function performSectionSwitch(sectionId) {
     // Hide all sections
     document.querySelectorAll('main section').forEach(section => {
@@ -48,7 +50,28 @@ function performSectionSwitch(sectionId) {
     });
 
     // Show selected section
-    document.getElementById(sectionId).classList.remove('hidden');
+    const selectedSection = document.getElementById(sectionId);
+    if (selectedSection) {
+        selectedSection.classList.remove('hidden');
+    }
+
+    // Initialize Twitch Player when the section is shown
+    if (sectionId === 'live' && !twitchPlayer) {
+        try {
+            if (typeof Twitch !== 'undefined') {
+                twitchPlayer = new Twitch.Player("twitch-embed", {
+                    width: "100%",
+                    height: "100%",
+                    channel: "smpshowdown",
+                    parent: [window.location.hostname, "localhost"]
+                });
+            } else {
+                console.warn('Twitch Player Script not loaded yet.');
+            }
+        } catch (e) {
+            console.error('Twitch Player failed to load:', e);
+        }
+    }
 
     // Add active class to clicked button
     const btn = document.getElementById(`btn-${sectionId}`);
@@ -100,21 +123,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateVotes();
     setInterval(updateVotes, 5000); 
     setInterval(updateLiveScores, 5000); 
-
-    // Initialize Twitch Embed with safety check
-    try {
-        if (typeof Twitch !== 'undefined') {
-            new Twitch.Player("twitch-embed", {
-                width: "100%",
-                height: "100%",
-                channel: "smpshowdown"
-            });
-        } else {
-            console.warn('Twitch Embed Script not loaded yet.');
-        }
-    } catch (e) {
-        console.error('Twitch Embed failed to load:', e);
-    }
 });
 
 async function updateLiveScores() {
