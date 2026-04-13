@@ -279,6 +279,76 @@
             </div>
         </section>
 
+        <section id="live-submissions" class="hidden">
+            <h1>LIVE SUBMISSIONS</h1>
+            <p class="section-subtitle">Submit your stream details below!</p>
+            <div class="modal-content app-modal-content" style="margin: 20px auto; max-width: 600px; display: block;">
+                <div id="app-header">
+                    <h2>Streamer Information</h2>
+                    <p class="app-description">Please provide your streaming details for the event.</p>
+                </div>
+                <form id="live-submission-form" onsubmit="submitLiveForm(event)">
+                    <div class="form-question-card">
+                        <label class="question-label">What is your Minecraft username? <span class="required-asterisk">*</span></label>
+                        <input type="text" name="mc_username" required placeholder="Username">
+                    </div>
+                    <div class="form-question-card">
+                        <label class="question-label">Select yourself from the player list below: <span class="required-asterisk">*</span></label>
+                        <select name="selected_player" id="player-dropdown" required>
+                            <option value="">Loading players...</option>
+                        </select>
+                    </div>
+                    <div class="form-question-card">
+                        <label class="question-label">Where do you mainly stream? <span class="required-asterisk">*</span></label>
+                        <div class="radio-group" style="margin-top: 10px; display: flex; flex-direction: column; gap: 10px;">
+                            <label class="checkbox-container"><input type="radio" name="platform" value="Twitch" required onchange="toggleOtherPlatform(this)"> <span class="checkbox-label">Twitch</span></label>
+                            <label class="checkbox-container"><input type="radio" name="platform" value="YouTube" required onchange="toggleOtherPlatform(this)"> <span class="checkbox-label">YouTube</span></label>
+                            <label class="checkbox-container"><input type="radio" name="platform" value="other" required onchange="toggleOtherPlatform(this)"> <span class="checkbox-label">Other</span></label>
+                        </div>
+                        <input type="text" id="other-platform" name="other_platform" placeholder="Please specify where" style="display: none; margin-top: 10px;">
+                    </div>
+                    <div class="form-question-card">
+                        <label class="question-label">Submit the social media link where you normally stream: <span class="required-asterisk">*</span></label>
+                        <input type="url" name="social_link" required placeholder="https://twitch.tv/yourname">
+                    </div>
+                    <div style="padding: 0 12px 20px 12px;">
+                        <button type="submit" class="submit-btn" style="width: 100%;">Submit</button>
+                    </div>
+                </form>
+                <div id="live-form-status" class="form-status-msg hidden" style="margin: 0 12px 20px 12px; padding: 15px; border-radius: 8px; text-align: center;"></div>
+            </div>
+        </section>
+
+        <section id="admin-live-link-submissions" class="hidden">
+            <h1>ADMIN SUBMISSIONS</h1>
+            <div id="admin-login-container" class="modal-content app-modal-content" style="margin: 20px auto; max-width: 400px; display: block;">
+                <div id="app-header" style="border-top-color: #a55eea;">
+                    <h2>Admin Login</h2>
+                </div>
+                <form onsubmit="adminLogin(event)" style="padding: 20px;">
+                    <div class="form-question-card" style="margin: 0 0 20px 0;">
+                        <label class="question-label">Email</label>
+                        <input type="email" id="admin-email" required placeholder="admin@example.com">
+                    </div>
+                    <div class="form-question-card" style="margin: 0 0 20px 0;">
+                        <label class="question-label">Password</label>
+                        <input type="password" id="admin-password" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="submit-btn" style="width: 100%;">Login</button>
+                    <p id="login-error" style="color: #ff6b6b; margin-top: 15px; display: none; text-align: center; font-family: 'Open Sans', sans-serif;">Invalid credentials</p>
+                </form>
+            </div>
+            <div id="admin-content" class="hidden" style="max-width: 1000px; margin: 20px auto; padding: 20px; background: rgba(0,0,0,0.5); border-radius: 15px; border: 1px solid #333;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="font-family: 'Montserrat', sans-serif; margin: 0;">Submissions</h2>
+                    <button onclick="logoutAdmin()" class="app-btn photography" style="padding: 10px 20px; font-size: 1rem;">Logout</button>
+                </div>
+                <div id="submissions-list" class="submissions-list" style="overflow-x: auto;">
+                    <!-- Submissions will be loaded here -->
+                </div>
+            </div>
+        </section>
+
         <div id="app-modal" class="modal hidden">
             <div class="modal-content app-modal-content">
                 <span class="close-btn" onclick="closeAppModal()">&times;</span>

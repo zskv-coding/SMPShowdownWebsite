@@ -83,7 +83,11 @@ function performSectionSwitch(sectionId) {
     // Update URL if switching to/from /vote
     if (sectionId === 'voting') {
         window.history.pushState({}, '', '/vote');
-    } else if (window.location.pathname === '/vote') {
+    } else if (sectionId === 'live-submissions') {
+        window.history.pushState({}, '', '/live-submissions');
+    } else if (sectionId === 'admin-live-link-submissions') {
+        window.history.pushState({}, '', '/admin-live-link-submissions');
+    } else if (['/vote', '/live-submissions', '/admin-live-link-submissions'].includes(window.location.pathname)) {
         window.history.pushState({}, '', '/');
     }
 }
@@ -92,6 +96,17 @@ function performSectionSwitch(sectionId) {
 document.addEventListener('DOMContentLoaded', async () => {
     // Check URL to show correct section
     const path = window.location.pathname;
+    
+    // Initial data load
+    await loadPlayers();
+    populatePlayerDropdown();
+
+    if (path === '/live-submissions') {
+        performSectionSwitch('live-submissions');
+    } else if (path === '/admin-live-link-submissions') {
+        performSectionSwitch('admin-live-link-submissions');
+        checkAdminSession();
+    }
     
     // Check voting status before showing section
     try {
@@ -977,6 +992,167 @@ async function updateVotes() {
         updateVoteUI(lastVote || null);
     } catch (error) {
         console.error('Error updating votes:', error);
+    }
+}
+
+/* Live Submissions & Admin Logic */
+
+function populatePlayerDropdown() {
+    const dropdown = document.getElementById('player-dropdown');
+    if (!dropdown) return;
+
+    const players = Object.values(allPlayersData).sort((a, b) => a.username.localeCompare(b.username));
+    
+    if (players.length === 0) {
+        dropdown.innerHTML = '<option value="">No players found</option>';
+        return;
+    }
+
+    let html = '<option value="">-- Select Player --</option>';
+    players.forEach(p => {
+        html += `<option value="${p.username}">${p.username}</option>`;
+    });
+    dropdown.innerHTML = html;
+}
+
+function toggleOtherPlatform(radio) {
+    const otherInput = document.getElementById('other-platform');
+    if (otherInput) {
+        otherInput.style.display = radio.value === 'other' ? 'block' : 'none';
+        otherInput.required = radio.value === 'other';
+    }
+}
+
+async function submitLiveForm(event) {
+    event.preventDefault();
+    const form = event.target;
+    const status = document.getElementById('live-form-status');
+    const submitBtn = form.querySelector('.submit-btn');
+
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    submitBtn.disabled = true;
+    submitBtn.innerText = 'Submitting...';
+    status.className = 'form-status-msg';
+    status.innerText = 'Processing...';
+    status.classList.remove('hidden', 'success', 'error');
+
+    try {
+        const apiPath = (typeof VERCEL_BACKEND_URL !== 'undefined' && VERCEL_BACKEND_URL)
+            ? `${VERCEL_BACKEND_URL.replace(/\/$/, '')}/api/live-submissions`
+            : '/api/live-submissions';
+
+        const response = await fetch(apiPath, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            status.innerText = '✅ Submitted successfully! Redirecting...';
+            status.classList.add('success');
+            form.reset();
+            setTimeout(() => {
+                showSection('home');
+            }, 2000);
+        } else {
+            const result = await response.json();
+            throw new Error(result.error || 'Failed to submit');
+        }
+    } catch (error) {
+        status.innerText = '❌ Error: ' + error.message;
+        status.classList.add('error');
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Submit';
+    }
+}
+
+function adminLogin(event) {
+    event.preventDefault();
+    const email = document.getElementById('admin-email').value;
+    const password = document.getElementById('admin-password').value;
+    const error = document.getElementById('login-error');
+
+    if (email === 'zskvbusiness@gmail.com' && password === 'SMPShowdownAdminSection2024124') {
+        const auth = btoa(`${email}:${password}`);
+        localStorage.setItem('admin_auth', auth);
+        error.style.display = 'none';
+        checkAdminSession();
+    } else {
+        error.style.display = 'block';
+    }
+}
+
+function logoutAdmin() {
+    localStorage.removeItem('admin_auth');
+    checkAdminSession();
+}
+
+function checkAdminSession() {
+    const auth = localStorage.getItem('admin_auth');
+    const loginContainer = document.getElementById('admin-login-container');
+    const adminContent = document.getElementById('admin-content');
+
+    if (auth) {
+        loginContainer.classList.add('hidden');
+        adminContent.classList.remove('hidden');
+        loadSubmissions();
+    } else {
+        loginContainer.classList.remove('hidden');
+        adminContent.classList.add('hidden');
+    }
+}
+
+async function loadSubmissions() {
+    const list = document.getElementById('submissions-list');
+    const auth = localStorage.getItem('admin_auth');
+    if (!list || !auth) return;
+
+    list.innerHTML = '<p style="text-align: center; color: #aaa; margin: 20px;">Loading submissions...</p>';
+
+    try {
+        const apiPath = (typeof VERCEL_BACKEND_URL !== 'undefined' && VERCEL_BACKEND_URL)
+            ? `${VERCEL_BACKEND_URL.replace(/\/$/, '')}/api/live-submissions`
+            : '/api/live-submissions';
+
+        const response = await fetch(apiPath, {
+            headers: { 'Authorization': `Basic ${auth}` }
+        });
+
+        if (!response.ok) throw new Error('Unauthorized or fetch failed');
+
+        const submissions = await response.json();
+        
+        if (submissions.length === 0) {
+            list.innerHTML = '<p>No submissions found.</p>';
+            return;
+        }
+
+        let html = '<table style="width:100%; border-collapse: collapse; margin-top: 10px;">';
+        html += '<tr style="border-bottom: 2px solid #555;">';
+        html += '<th style="text-align:left; padding: 10px;">User</th>';
+        html += '<th style="text-align:left; padding: 10px;">Player</th>';
+        html += '<th style="text-align:left; padding: 10px;">Platform</th>';
+        html += '<th style="text-align:left; padding: 10px;">Link</th>';
+        html += '<th style="text-align:left; padding: 10px;">Date</th>';
+        html += '</tr>';
+
+        submissions.forEach(s => {
+            const d = s.data;
+            const date = new Date(s.created_at || d.submitted_at).toLocaleString();
+            html += `<tr style="border-bottom: 1px solid #333;">`;
+            html += `<td style="padding: 10px;">${d.mc_username}</td>`;
+            html += `<td style="padding: 10px;">${d.selected_player}</td>`;
+            html += `<td style="padding: 10px;">${d.platform === 'other' ? d.other_platform : d.platform}</td>`;
+            html += `<td style="padding: 10px;"><a href="${d.social_link}" target="_blank" style="color: #4facfe;">Link</a></td>`;
+            html += `<td style="padding: 10px; font-size: 0.8rem; color: #aaa;">${date}</td>`;
+            html += `</tr>`;
+        });
+        html += '</table>';
+        list.innerHTML = html;
+    } catch (error) {
+        list.innerHTML = `<p style="color: #ff6b6b;">Error: ${error.message}</p>`;
     }
 }
 
