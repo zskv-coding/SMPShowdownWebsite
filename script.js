@@ -808,7 +808,12 @@ async function castVote(gameName) {
 
         localStorage.setItem('last_vote', gameName);
         
-        // Refresh votes to get the new session ID if it was the first vote
+        // Use current session ID if available, else let updateVotes handle it
+        const currentData = await (await fetch('https://apismpshowdown.vercel.app/api/votes')).json();
+        if (currentData.sessionId) {
+            localStorage.setItem('vote_session', String(currentData.sessionId));
+        }
+        
         await updateVotes();
     } catch (error) {
         console.error('Error casting vote:', error);
@@ -849,17 +854,22 @@ async function updateVotes() {
         if (!response.ok) throw new Error('Failed to fetch votes');
 
         const data = await response.json();
-        const apiSession = data.sessionId;
+        const apiSession = data.sessionId; // ID of the first vote in the current round
         const localSession = localStorage.getItem('vote_session');
 
-        // Reset local vote if round has changed or was cleared
-        if (apiSession && String(apiSession) !== localSession) {
-            localStorage.removeItem('last_vote');
-            localStorage.setItem('vote_session', apiSession);
-        } else if (!apiSession && localSession) {
-            // Table is empty, clear local storage for a fresh start
+        // IF THE DATABASE IS EMPTY: Reset everyone to allow a fresh vote
+        if (!apiSession) {
             localStorage.removeItem('last_vote');
             localStorage.removeItem('vote_session');
+        } 
+        // IF THE SESSION CHANGED (New round): Clear local vote
+        else if (localSession && String(apiSession) !== localSession) {
+            localStorage.removeItem('last_vote');
+            localStorage.setItem('vote_session', String(apiSession));
+        }
+        // IF WE DON'T HAVE A SESSION RECORD: Set it to the current one
+        else if (!localSession) {
+            localStorage.setItem('vote_session', String(apiSession));
         }
 
         const votes = data.games || [];
