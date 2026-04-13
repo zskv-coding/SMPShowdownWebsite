@@ -833,12 +833,17 @@ function updateVoteUI(selectedGame) {
             btn.classList.remove('selected');
         }
         
-        // Disable all buttons if user has voted
+        // Lock buttons if user has voted, unlock otherwise
         if (hasVoted) {
             btn.disabled = true;
             btn.style.opacity = isThisGame ? '1' : '0.5';
             btn.style.cursor = 'not-allowed';
             btn.style.transform = 'none';
+        } else {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.style.cursor = 'pointer';
+            btn.style.transform = ''; // Reset transform
         }
     });
 }
