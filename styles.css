@@ -864,6 +864,33 @@ section:not(.hidden) {
     color: #ff4d4d;
 }
 
+/* Force Dark Backgrounds for All Form Inputs */
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="password"],
+textarea,
+select {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+    border: 1px solid #333 !important;
+}
+
+/* Fix for Select Dropdown Options */
+select option {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+}
+
+/* Webkit specific fix for autocomplete backgrounds */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #ffffff !important;
+    -webkit-box-shadow: 0 0 0px 1000px #1a1a1a inset !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
 .form-question-card input[type="text"],
 .form-question-card input[type="email"],
 .form-question-card input[type="url"],
@@ -871,12 +898,12 @@ section:not(.hidden) {
 .form-question-card textarea,
 .form-question-card select {
     width: 100%;
-    border: none;
-    border-bottom: 1px solid #444;
-    background: #1a1a1a;
+    border: none !important;
+    border-bottom: 2px solid #444 !important;
+    background: #1a1a1a !important;
     padding: 12px 8px;
     border-radius: 4px 4px 0 0;
-    color: white;
+    color: white !important;
     font-size: 14px;
     transition: all 0.3s;
 }
