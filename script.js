@@ -56,20 +56,31 @@ function performSectionSwitch(sectionId) {
 
     // Scroll to top
     window.scrollTo(0, 0);
+
+    // Update URL if switching to/from /vote
+    if (sectionId === 'voting') {
+        window.history.pushState({}, '', '/vote');
+    } else if (window.location.pathname === '/vote') {
+        window.history.pushState({}, '', '/');
+    }
 }
 
 // Initialize Everything
 document.addEventListener('DOMContentLoaded', () => {
-    // Start Live Scores Update immediately
-    updateLiveScores();
-    setInterval(updateLiveScores, 5000); // Update every 5 seconds
-
-    // Load Players Data
-    loadPlayers();
-
-    // Start Votes Update
+    // Check URL to show correct section
+    const path = window.location.pathname;
+    if (path === '/vote') {
+        // Switch to voting section immediately without animation on load
+        performSectionSwitch('voting');
+    } else {
+        // Start Live Scores Update immediately
+        updateLiveScores();
+    }
+    
+    // Always update votes if tab is active or potentially shown
     updateVotes();
     setInterval(updateVotes, 5000); // Update every 5 seconds
+    setInterval(updateLiveScores, 5000); // Update scores every 5 seconds
 
     // Initialize Twitch Embed with safety check
     try {
