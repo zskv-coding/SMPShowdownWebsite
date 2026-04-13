@@ -104,11 +104,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Initialize Twitch Embed with safety check
     try {
         if (typeof Twitch !== 'undefined') {
-            new Twitch.Embed("twitch-embed", {
-                width: "100%",
-                height: "100%",
-                channel: "smpshowdown",
-                parent: [window.location.hostname, "localhost"]
+            new Twitch.Player("twitch-embed", {
+                channel: "smpshowdown"
             });
         } else {
             console.warn('Twitch Embed Script not loaded yet.');
