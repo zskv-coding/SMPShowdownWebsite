@@ -864,48 +864,34 @@ section:not(.hidden) {
     color: #ff4d4d;
 }
 
-/* Force Dark Backgrounds for All Form Inputs */
-input[type="text"],
-input[type="email"],
-input[type="url"],
-input[type="password"],
-textarea,
-select {
+/* Aggressive Form Reset for Special Sections */
+#live-submissions input,
+#live-submissions select,
+#live-submissions textarea,
+#admin-live-link-submissions input,
+#admin-live-link-submissions select,
+#admin-live-link-submissions textarea {
     background-color: #1a1a1a !important;
     color: #ffffff !important;
-    border: 1px solid #333 !important;
+    border: 1px solid #444 !important;
+    padding: 12px !important;
+    border-radius: 4px !important;
+    font-family: 'Open Sans', sans-serif !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
 
-/* Fix for Select Dropdown Options */
-select option {
+#live-submissions select option,
+#admin-live-link-submissions select option {
     background-color: #1a1a1a !important;
     color: #ffffff !important;
 }
 
-/* Webkit specific fix for autocomplete backgrounds */
-input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus {
-    -webkit-text-fill-color: #ffffff !important;
-    -webkit-box-shadow: 0 0 0px 1000px #1a1a1a inset !important;
-    transition: background-color 5000s ease-in-out 0s;
-}
-
-.form-question-card input[type="text"],
-.form-question-card input[type="email"],
-.form-question-card input[type="url"],
-.form-question-card input[type="password"],
-.form-question-card textarea,
-.form-question-card select {
-    width: 100%;
-    border: none !important;
-    border-bottom: 2px solid #444 !important;
-    background: #1a1a1a !important;
-    padding: 12px 8px;
-    border-radius: 4px 4px 0 0;
-    color: white !important;
-    font-size: 14px;
-    transition: all 0.3s;
+#live-submissions input:focus,
+#live-submissions select:focus,
+#admin-live-link-submissions input:focus {
+    outline: 2px solid var(--honey-yellow) !important;
+    background-color: #252525 !important;
 }
 
 .form-question-card select option {
