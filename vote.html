@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMP Showdown</title>
+
+    <!-- Social Embed Meta Tags -->
+    <meta property="og:title" content="SMP Showdown">
+    <meta property="og:description" content="An all-inclusive semi-competitive Minecraft event tailored to feature SMPs of all sizes, all at once!">
+    <meta property="og:image" content="https://smpshowdown.com/showdown-embed.png">
+    <meta property="og:url" content="https://smpshowdown.com">
+    <meta property="og:type" content="website">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SMP Showdown">
+    <meta name="twitter:description" content="An all-inclusive semi-competitive Minecraft event tailored to feature SMPs of all sizes, all at once!">
+    <meta name="twitter:image" content="https://smpshowdown.com/showdown-embed.png">
+
+    <link rel="icon" type="image/png" href="sd_bee_crown.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Fredoka:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body class="bee-bg">
+    <div class="bee-container" id="bee-container"></div>
+    
+    <div id="tab-transition" class="tab-transition">
+        <div class="transition-bg"></div>
+        <div class="transition-content">
+            <img src="sd_bee_crown.png" alt="" class="transition-crown">
+        </div>
+    </div>
+    
+    <header class="main-header">
+        <div class="banner-container">
+            <img src="lobby-image.png" alt="" class="banner-bg">
+            <div class="banner-content">
+                <img src="sd_logo.png" alt="SMP Showdown Logo" class="main-logo" onclick="showSection('home')">
+                <nav class="centered-nav">
+                    <button onclick="showSection('home')" id="btn-home" class="active">HOME</button>
+                    <button onclick="showSection('games')" id="btn-games">GAMES</button>
+                    <button onclick="showSection('players')" id="btn-players">PLAYERS</button>
+                    <button onclick="showSection('live')" id="btn-live">LIVE</button>
+                    <button onclick="showSection('voting')" id="btn-voting">VOTING</button>
+                    <button onclick="showSection('applications')" id="btn-applications">APPLICATIONS</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="home">
+            <div class="hero">
+                <p class="description">An all-inclusive semi-competitive Minecraft event tailored to feature SMPs of all sizes, all at once!</p>
+                
+                <div class="social-links">
+                    <a href="https://www.twitch.tv/smpshowdown" target="_blank" class="social-btn twitch">Twitch</a>
+                    <a href="https://discord.gg/M2AwXaMTG5" target="_blank" class="social-btn discord">Discord</a>
+                    <a href="https://x.com/ShowdownOffical" target="_blank" class="social-btn twitter">Twitter</a>
+                    <a href="https://bsky.app/profile/smpshowdown.com" target="_blank" class="social-btn bluesky">Bluesky</a>
+                    <a href="https://www.youtube.com/@smpshowdown" target="_blank" class="social-btn youtube">YouTube</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="games" class="hidden">
+            <h1>THE GAMES</h1>
+            <div class="games-grid">
+                <div class="game-card">
+                    <div class="game-images">
+                        <img src="peckish1.png" alt="Peckish 1" class="game-img">
+                        <img src="peckish2.png" alt="Peckish 2" class="game-img">
+                    </div>
+                    <h2>Peckish Playoffs</h2>
+                    <div class="game-desc">
+                        <p>The classic Survival Games meets a new style! Be careful not to get lost in our expansive Japanese style map, it may be a little easier than before! You will not spawn next to all of your teammates, but rather, be randomly shuffled amongst your rivals. Make sure to meet up with your team before the grace period ends!</p>
+                        <p>Our loot pool is made in an effort to ensure survivability. Nobody likes when they get two-hit by somebody with a random diamond axe. We want to make sure EVERYBODY has the chance to enjoy their surroundings as they fight to the death! But there are other dangers to consider: fall damage is on, the border is closing in.</p>
+                        <p class="points">Points are distributed individually for kills, survival, and for winning! The more of your team lives until the end, the further ahead you'll get. May the odds be ever in your favor!</p>
+                    </div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-images">
+                        <img src="triathlon1.png" alt="Triathlon 1" class="game-img">
+                        <img src="triathlon2.png" alt="Triathlon 2" class="game-img">
+                    </div>
+                    <h2>SMP Triathlon</h2>
+                    <div class="game-desc">
+                        <p>Race to be the fastest on our fantasy-European-mountain-castle map! (yes it's a complex theme okay?) Don't get distracted by the duels or waterfalls, or you might miss a jump pad or spot of levitation... Avoid the potholes and cobwebs blocking your path, and make sure not to fall off the mountain entirely! We don't want to do that kind of paperwork.</p>
+                        <p class="points">This is a placement-based game, so the closer you are to the front of the pack, the better you will do! Keep an eye on where your going and where the others are going, you might be able to find a faster way of overcoming a challenge.</p>
+                    </div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-images">
+                        <img src="parkour1.png" alt="Parkour 1" class="game-img">
+                        <img src="parkour2.png" alt="Parkour 2" class="game-img">
+                    </div>
+                    <h2>Parkour Run</h2>
+                    <div class="game-desc">
+                        <p>Enjoy winding pathways at sunset floating over the vast.. empty... all consuming void... AAH sorry! Points are awarded by getting to checkpoints, stationed between each themed obstacle. Anybody who manages to finish the entire course in the ten minute time limit will get bonus points!</p>
+                        <p>There isn't too much more to explain for this game... but just make sure to JUMP JUMP JUMP JUMP JUMP JUMP JUMP JUMP JUMP JUMP JUMP JUMP JUMP JUMP!</p>
+                    </div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-images">
+                        <img src="koth1.png" alt="KOTH 1" class="game-img">
+                        <img src="koth2.png" alt="KOTH 2" class="game-img">
+                    </div>
+                    <h2>KOTH</h2>
+                    <div class="game-desc">
+                        <p>Welcome to King of the Hill! It's a basic game. 4 teams will be in each area (2 arenas). You will all race to the top of the hill, and try and capture the capture point (by standing on it)! The team who wins in each arena will go into a finale with the other winning team! First team to 200 points wins.</p>
+                    </div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-images">
+                        <img src="shuffle1.png" alt="Shuffle 1" class="game-img">
+                        <img src="shuffle2.png" alt="Shuffle 2" class="game-img">
+                    </div>
+                    <h2>Block Shuffle</h2>
+                    <div class="game-desc">
+                        <p>Block Shuffle is an intense survival minigame where players have to quickly find and stand on the correct block type or get eliminated.</p>
+                        <p>Players start on a platform filled with different colored glazed terracotta blocks that have unique patterns like circles, squares, triangles, and other shapes. Every round, the game announces which block pattern players need to find and stand on. After a few seconds, all the wrong blocks disappear, and anyone not standing on the right block falls into the void and gets eliminated.</p>
+                    </div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-images">
+                        <img src="hideseek1.png" alt="Hide and Seek 1" class="game-img">
+                        <img src="hideseek2.png" alt="Hide and Seek 2" class="game-img">
+                    </div>
+                    <h2>Hide and Seek</h2>
+                    <div class="game-desc">
+                        <p>Sneak behind pipes and cabling, zip between rooms with our vent system, meet an iconic Platypus - Scientist duo, and gaze into the starry abyss! Make sure not to press the self-destruct button or turn off the shields... Spread out and try not to get caught in our sus... "Skold" map! Hiders will be shrunk down to fit in small spaces, seeking safety from one chosen player of each team with the sole goal of hunting down every single hider.</p>
+                        <p class="points">Points are awarded to seekers for catching a hider and eliminating a team. Hiders get points for outlasting other hiders. If there are hiders left at the end of the timer, all remaining hiders are granted extra points. If not, every seeker gain points, boosting their individual scores.</p>
+                    </div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-images">
+                        <img src="clash1.png" alt="Clash 1" class="game-img">
+                        <img src="clash2.png" alt="Clash 2" class="game-img">
+                    </div>
+                    <h2>Chromatic Clash</h2>
+                    <div class="game-desc">
+                        <p>Description coming soon!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="players" class="hidden">
+            <h1>PLAYERS</h1>
+            <p class="section-subtitle">Click the players head to view their SMP Showdown stats!</p>
+            <div class="players-tab-content">
+                <p style="text-align: center; font-size: 1.2rem; color: #aaa;">Player lists coming soon!</p>
+            </div>
+        </section>
+
+        <section id="live" class="hidden">
+            <h1>WATCH LIVE</h1>
+            <div class="winner-announcement orange">
+                <img src="sd_bee_crown.png" alt="" class="winner-crown">
+                <div class="winner-text">
+                    <h2>ORANGE TEAM WON!</h2>
+                    <p>Congratulations to the champions of SMP Showdown!</p>
+                </div>
+                <img src="sd_bee_crown.png" alt="" class="winner-crown">
+            </div>
+            <div class="stream-container">
+                <div id="twitch-embed"></div>
+            </div>
+
+            <div class="teams-container">
+                <div class="team-card-live red" id="team-red">
+                    <img src="red.png" alt="Red Team Icon" class="team-icon">
+                    <h3>Red Team</h3>
+                    <div class="team-score">Score: <span id="score-red">0</span></div>
+                    <div class="player-slots" id="players-red">
+                        <div class="player-slot">Loading...</div>
+                    </div>
+                </div>
+                <div class="team-card-live orange" id="team-orange">
+                    <img src="orange.png" alt="Orange Team Icon" class="team-icon">
+                    <h3>Orange Team</h3>
+                    <div class="team-score">Score: <span id="score-orange">0</span></div>
+                    <div class="player-slots" id="players-orange">
+                        <div class="player-slot">Loading...</div>
+                    </div>
+                </div>
+                <div class="team-card-live yellow" id="team-yellow">
+                    <img src="yellow.png" alt="Yellow Team Icon" class="team-icon">
+                    <h3>Yellow Team</h3>
+                    <div class="team-score">Score: <span id="score-yellow">0</span></div>
+                    <div class="player-slots" id="players-yellow">
+                        <div class="player-slot">Loading...</div>
+                    </div>
+                </div>
+                <div class="team-card-live green" id="team-green">
+                    <img src="green.png" alt="Green Team Icon" class="team-icon">
+                    <h3>Green Team</h3>
+                    <div class="team-score">Score: <span id="score-green">0</span></div>
+                    <div class="player-slots" id="players-green">
+                        <div class="player-slot">Loading...</div>
+                    </div>
+                </div>
+                <div class="team-card-live aqua" id="team-aqua">
+                    <img src="aqua.png" alt="Aqua Team Icon" class="team-icon">
+                    <h3>Aqua Team</h3>
+                    <div class="team-score">Score: <span id="score-aqua">0</span></div>
+                    <div class="player-slots" id="players-aqua">
+                        <div class="player-slot">Loading...</div>
+                    </div>
+                </div>
+                <div class="team-card-live blue" id="team-blue">
+                    <img src="blue.png" alt="Blue Team Icon" class="team-icon">
+                    <h3>Blue Team</h3>
+                    <div class="team-score">Score: <span id="score-blue">0</span></div>
+                    <div class="player-slots" id="players-blue">
+                        <div class="player-slot">Loading...</div>
+                    </div>
+                </div>
+                <div class="team-card-live purple" id="team-purple">
+                    <img src="purple.png" alt="Purple Team Icon" class="team-icon">
+                    <h3>Purple Team</h3>
+                    <div class="team-score">Score: <span id="score-purple">0</span></div>
+                    <div class="player-slots" id="players-purple">
+                        <div class="player-slot">Loading...</div>
+                    </div>
+                </div>
+                <div class="team-card-live pink" id="team-pink">
+                    <img src="pink.png" alt="Pink Team Icon" class="team-icon">
+                    <h3>Pink Team</h3>
+                    <div class="team-score">Score: <span id="score-pink">0</span></div>
+                    <div class="player-slots" id="players-pink">
+                        <div class="player-slot">Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="voting" class="hidden">
+            <h1>VOTE FOR THE NEXT GAME!</h1>
+            <p class="section-subtitle">Choose your favorite game for the next event round!</p>
+            
+            <div class="voting-container">
+                <div class="voting-options" id="voting-options">
+                    <button class="vote-btn" onclick="castVote('Peckish Playoffs')">Peckish Playoffs</button>
+                    <button class="vote-btn" onclick="castVote('Parkour Run')">Parkour Run</button>
+                    <button class="vote-btn" onclick="castVote('SMP Triathlon')">SMP Triathlon</button>
+                    <button class="vote-btn" onclick="castVote('Aquatic Ambush')">Aquatic Ambush</button>
+                    <button class="vote-btn" onclick="castVote('Block Shuffle')">Block Shuffle</button>
+                    <button class="vote-btn" onclick="castVote('King of the Hill')">King of the Hill</button>
+                </div>
+
+                <div class="votes-leaderboard">
+                    <h2>LIVE STANDINGS</h2>
+                    <table id="votes-table">
+                        <thead>
+                            <tr>
+                                <th>Game</th>
+                                <th>Votes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="votes-body">
+                            <!-- Votes will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="applications" class="hidden">
+            <h1>APPLICATIONS</h1>
+            <p class="section-subtitle">Choose an application type to apply for SMP Showdown!</p>
+            <div class="applications-grid">
+                <button class="app-btn builder" onclick="openAppForm('Builder')">Builder Applications</button>
+                <button class="app-btn playtester" onclick="openAppForm('Playtester')">Playtester Applications</button>
+                <button class="app-btn sound" onclick="openAppForm('Sound/Music Designer')">Sound/Music Designer Applications</button>
+                <button class="app-btn coding" onclick="openAppForm('Coding')">Coding Applications</button>
+                <button class="app-btn photography" onclick="openAppForm('Photography')">Photography Applications</button>
+            </div>
+        </section>
+
+        <div id="app-modal" class="modal hidden">
+            <div class="modal-content app-modal-content">
+                <span class="close-btn" onclick="closeAppModal()">&times;</span>
+                <div id="app-header">
+                    <h2 id="app-type-title">Builder Application</h2>
+                    <p id="app-description" class="app-description"></p>
+                </div>
+                <form id="application-form">
+                    <input type="hidden" id="app-type-input" name="app-type">
+                    <div id="dynamic-questions">
+                        <!-- Questions will be injected here -->
+                    </div>
+                </form>
+                <div id="form-status" class="form-status-msg hidden"></div>
+            </div>
+        </div>
+     </main>
+
+    <div id="player-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div id="modal-player-details">
+                <!-- Player details will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://embed.twitch.tv/v1/embed.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
