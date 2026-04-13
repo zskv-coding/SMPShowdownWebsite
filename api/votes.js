@@ -47,10 +47,9 @@ export default async function handler(req, res) {
                 'Block Shuffle',
                 'King of the Hill'
             ];
-            // Fetch Votes
-            const [rows] = await connection.execute('SELECT game_name as game, vote_count as votes FROM votes');
+            // Count votes per game
+            const [rows] = await connection.execute('SELECT game_name as game, COUNT(*) as votes FROM votes GROUP BY game_name');
             
-            // Map votes to the full game list (default to 0)
             const votesMap = {};
             rows.forEach(row => votesMap[row.game] = row.votes);
             
@@ -59,9 +58,7 @@ export default async function handler(req, res) {
                 votes: votesMap[game] || 0
             }));
 
-            // Sort by votes descending
             results.sort((a, b) => b.votes - a.votes);
-
             return res.status(200).json(results);
         } else if (req.method === 'POST') {
             const { game } = req.body;
@@ -69,9 +66,9 @@ export default async function handler(req, res) {
                 return res.status(400).json({ error: 'Missing game name' });
             }
 
-            // Increment vote count. Use ON DUPLICATE KEY UPDATE to handle if the game doesn't exist yet.
+            // Insert a new vote record
             await connection.execute(
-                'INSERT INTO votes (game_name, vote_count) VALUES (?, 1) ON DUPLICATE KEY UPDATE vote_count = vote_count + 1',
+                'INSERT INTO votes (game_name) VALUES (?)',
                 [game]
             );
 
