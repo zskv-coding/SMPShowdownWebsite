@@ -108,6 +108,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadPlayers();
     populatePlayerDropdown();
 
+    const isSpecialPath = path.includes('live-submissions') || path.includes('admin-live-link-submissions');
+
     if (path === '/live-submissions' || path === 'live-submissions') {
         performSectionSwitch('live-submissions');
     } else if (path === '/admin-live-link-submissions' || path === 'admin-live-link-submissions') {
@@ -115,7 +117,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         checkAdminSession();
     }
     
-    // Check voting status before showing section
+    // Only check voting status redirect if we are NOT on a special path
     try {
         const response = await fetch('https://apismpshowdown.vercel.app/api/votes');
         const data = await response.json();
@@ -124,19 +126,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         const voteBtn = document.getElementById('btn-voting');
         if (voteBtn) voteBtn.style.display = votingActive ? 'block' : 'none';
 
-        if ((path === '/vote' || path === '/vote.html')) {
-            if (votingActive) {
-                performSectionSwitch('voting');
+        if (!isSpecialPath) {
+            if ((path === '/vote' || path === '/vote.html')) {
+                if (votingActive) {
+                    performSectionSwitch('voting');
+                } else {
+                    performSectionSwitch('home');
+                    showToast("Viewer vote isn't active!");
+                }
             } else {
-                performSectionSwitch('home');
-                showToast("Viewer vote isn't active!");
+                updateLiveScores();
             }
-        } else {
-            updateLiveScores();
         }
     } catch (e) {
         console.error("Failed to check initial voting status", e);
-        if (!(path === '/vote' || path === '/vote.html')) {
+        if (!isSpecialPath && !(path === '/vote' || path === '/vote.html')) {
             updateLiveScores();
         }
     }
@@ -939,8 +943,10 @@ async function updateVotes() {
         // Redirect if on /vote and not active
         const isVotingPath = window.location.pathname === '/vote' || window.location.pathname === '/vote.html';
         const isVotingSection = !document.getElementById('voting').classList.contains('hidden');
+        const isSpecialSection = !document.getElementById('live-submissions').classList.contains('hidden') || 
+                                 !document.getElementById('admin-live-link-submissions').classList.contains('hidden');
         
-        if (!votingActive && (isVotingPath || isVotingSection)) {
+        if (!votingActive && (isVotingPath || isVotingSection) && !isSpecialSection) {
             showSection('home');
             showToast("Viewer vote isn't active!");
         }
