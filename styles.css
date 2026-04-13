@@ -864,39 +864,47 @@ section:not(.hidden) {
     color: #ff4d4d;
 }
 
-/* Aggressive Form Reset for Special Sections */
-#live-submissions input,
-#live-submissions select,
-#live-submissions textarea,
-#admin-live-link-submissions input,
-#admin-live-link-submissions select,
-#admin-live-link-submissions textarea {
-    background-color: #1a1a1a !important;
+/* High-Specificity Reset for Live Submissions Form */
+#live-submissions .modal-content.app-modal-content {
+    background-color: #121212 !important;
+}
+
+#live-submissions .form-question-card {
+    background-color: #1e1e1e !important;
+}
+
+#live-submissions input[type="text"],
+#live-submissions input[type="url"],
+#live-submissions select {
+    background-color: #000000 !important;
     color: #ffffff !important;
     border: 1px solid #444 !important;
     padding: 12px !important;
-    border-radius: 4px !important;
-    font-family: 'Open Sans', sans-serif !important;
+    display: block !important;
     width: 100% !important;
-    box-sizing: border-box !important;
+    border-radius: 4px !important;
+    font-size: 16px !important;
 }
 
-#live-submissions select option,
-#admin-live-link-submissions select option {
-    background-color: #1a1a1a !important;
+#live-submissions select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 1rem center !important;
+    background-size: 1em !important;
+    padding-right: 2.5rem !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+}
+
+#live-submissions select option {
+    background-color: #000000 !important;
     color: #ffffff !important;
 }
 
-#live-submissions input:focus,
-#live-submissions select:focus,
-#admin-live-link-submissions input:focus {
-    outline: 2px solid var(--honey-yellow) !important;
-    background-color: #252525 !important;
-}
-
-.form-question-card select option {
-    background: #1a1a1a;
-    color: white;
+#live-submissions input::placeholder {
+    color: #888 !important;
 }
 
 .form-question-card input:focus,
