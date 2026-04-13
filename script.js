@@ -807,8 +807,9 @@ async function castVote(gameName) {
         if (!response.ok) throw new Error('Vote failed');
 
         localStorage.setItem('last_vote', gameName);
-        updateVoteUI(gameName);
-        updateVotes(); // Immediate refresh
+        
+        // Refresh votes to get the new session ID if it was the first vote
+        await updateVotes();
     } catch (error) {
         console.error('Error casting vote:', error);
         alert('Failed to cast vote. Please try again later.');
@@ -847,7 +848,21 @@ async function updateVotes() {
         });
         if (!response.ok) throw new Error('Failed to fetch votes');
 
-        const votes = await response.json();
+        const data = await response.json();
+        const apiSession = data.sessionId;
+        const localSession = localStorage.getItem('vote_session');
+
+        // Reset local vote if round has changed or was cleared
+        if (apiSession && String(apiSession) !== localSession) {
+            localStorage.removeItem('last_vote');
+            localStorage.setItem('vote_session', apiSession);
+        } else if (!apiSession && localSession) {
+            // Table is empty, clear local storage for a fresh start
+            localStorage.removeItem('last_vote');
+            localStorage.removeItem('vote_session');
+        }
+
+        const votes = data.games || [];
         const maxVotes = Math.max(...votes.map(v => v.votes), 1);
 
         // Sort votes by count descending
@@ -873,11 +888,9 @@ async function updateVotes() {
             votesBody.innerHTML = html;
         }
 
-        // Highlight selected game on load
+        // Highlight selected game
         const lastVote = localStorage.getItem('last_vote');
-        if (lastVote) {
-            updateVoteUI(lastVote);
-        }
+        updateVoteUI(lastVote || null);
     } catch (error) {
         console.error('Error updating votes:', error);
     }
