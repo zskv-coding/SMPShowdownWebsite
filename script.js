@@ -95,15 +95,22 @@ function performSectionSwitch(sectionId) {
 // Initialize Everything
 document.addEventListener('DOMContentLoaded', async () => {
     // Check URL to show correct section
-    const path = window.location.pathname;
+    let path = window.location.pathname;
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectPath = urlParams.get('p');
+    if (redirectPath) {
+        path = redirectPath;
+        // Clean up URL
+        window.history.replaceState({}, '', redirectPath);
+    }
     
     // Initial data load
     await loadPlayers();
     populatePlayerDropdown();
 
-    if (path === '/live-submissions') {
+    if (path === '/live-submissions' || path === 'live-submissions') {
         performSectionSwitch('live-submissions');
-    } else if (path === '/admin-live-link-submissions') {
+    } else if (path === '/admin-live-link-submissions' || path === 'admin-live-link-submissions') {
         performSectionSwitch('admin-live-link-submissions');
         checkAdminSession();
     }
@@ -1039,9 +1046,7 @@ async function submitLiveForm(event) {
     status.classList.remove('hidden', 'success', 'error');
 
     try {
-        const apiPath = (typeof VERCEL_BACKEND_URL !== 'undefined' && VERCEL_BACKEND_URL)
-            ? `${VERCEL_BACKEND_URL.replace(/\/$/, '')}/api/live-submissions`
-            : '/api/live-submissions';
+        const apiPath = 'https://apismpshowdown.vercel.app/api/live-submissions';
 
         const response = await fetch(apiPath, {
             method: 'POST',
@@ -1112,9 +1117,7 @@ async function loadSubmissions() {
     list.innerHTML = '<p style="text-align: center; color: #aaa; margin: 20px;">Loading submissions...</p>';
 
     try {
-        const apiPath = (typeof VERCEL_BACKEND_URL !== 'undefined' && VERCEL_BACKEND_URL)
-            ? `${VERCEL_BACKEND_URL.replace(/\/$/, '')}/api/live-submissions`
-            : '/api/live-submissions';
+        const apiPath = 'https://apismpshowdown.vercel.app/api/live-submissions';
 
         const response = await fetch(apiPath, {
             headers: { 'Authorization': `Basic ${auth}` }
@@ -1129,27 +1132,27 @@ async function loadSubmissions() {
             return;
         }
 
-        let html = '<table style="width:100%; border-collapse: collapse; margin-top: 10px;">';
-        html += '<tr style="border-bottom: 2px solid #555;">';
-        html += '<th style="text-align:left; padding: 10px;">User</th>';
-        html += '<th style="text-align:left; padding: 10px;">Player</th>';
-        html += '<th style="text-align:left; padding: 10px;">Platform</th>';
-        html += '<th style="text-align:left; padding: 10px;">Link</th>';
-        html += '<th style="text-align:left; padding: 10px;">Date</th>';
-        html += '</tr>';
+        let html = '<table>';
+        html += '<thead><tr>';
+        html += '<th>User</th>';
+        html += '<th>Player</th>';
+        html += '<th>Platform</th>';
+        html += '<th>Link</th>';
+        html += '<th>Date</th>';
+        html += '</tr></thead><tbody>';
 
         submissions.forEach(s => {
             const d = s.data;
             const date = new Date(s.created_at || d.submitted_at).toLocaleString();
-            html += `<tr style="border-bottom: 1px solid #333;">`;
-            html += `<td style="padding: 10px;">${d.mc_username}</td>`;
-            html += `<td style="padding: 10px;">${d.selected_player}</td>`;
-            html += `<td style="padding: 10px;">${d.platform === 'other' ? d.other_platform : d.platform}</td>`;
-            html += `<td style="padding: 10px;"><a href="${d.social_link}" target="_blank" style="color: #4facfe;">Link</a></td>`;
-            html += `<td style="padding: 10px; font-size: 0.8rem; color: #aaa;">${date}</td>`;
+            html += `<tr>`;
+            html += `<td>${d.mc_username}</td>`;
+            html += `<td>${d.selected_player}</td>`;
+            html += `<td>${d.platform === 'other' ? d.other_platform : d.platform}</td>`;
+            html += `<td><a href="${d.social_link}" target="_blank">Link</a></td>`;
+            html += `<td>${date}</td>`;
             html += `</tr>`;
         });
-        html += '</table>';
+        html += '</tbody></table>';
         list.innerHTML = html;
     } catch (error) {
         list.innerHTML = `<p style="color: #ff6b6b;">Error: ${error.message}</p>`;

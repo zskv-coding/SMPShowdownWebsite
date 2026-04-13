@@ -1104,4 +1104,42 @@ section:not(.hidden) {
     transform: translateX(-50%) translateY(0);
 }
 
+/* Admin Submissions Table */
+.submissions-list table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+    margin-top: 10px;
+}
+
+.submissions-list th {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    color: #888;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+.submissions-list td {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    color: #eee;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.submissions-list tr:hover td {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.submissions-list a {
+    color: var(--honey-yellow);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.submissions-list a:hover {
+    text-decoration: underline;
+}
+
 
