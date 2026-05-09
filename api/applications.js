@@ -1,6 +1,7 @@
 import mysql from 'mysql2/promise';
 import formidable from 'formidable';
 import fs from 'fs/promises';
+import FormData from 'form-data'; // Import form-data
 
 export const config = {
     api: {
@@ -47,8 +48,6 @@ export default async function handler(req, res) {
         const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
         if (DISCORD_WEBHOOK_URL) {
             try {
-                const discordForm = new FormData();
-                
                 const formatValue = (val) => {
                     const str = String(val || 'N/A');
                     return str.length > 1020 ? str.substring(0, 1020) + '...' : str;
@@ -57,18 +56,18 @@ export default async function handler(req, res) {
                 // Create Embeds based on Form Structure
                 const embeds = [];
                 
-        // Header Embed
-        const headerEmbed = {
-            title: `📢 New ${type} Application`,
-            description: `**From:** ${username} (${discord})\n**Time:** ${new Date().toLocaleString()}`,
-            color: 0xFFA500,
-        };
+                // Header Embed
+                const headerEmbed = {
+                    title: `📢 New ${type} Application`,
+                    description: `**From:** ${username} (${discord})\n**Time:** ${new Date().toLocaleString()}`,
+                    color: 0xFFA500,
+                };
 
-        if (data.drive_folder_url) {
-            headerEmbed.description += `\n\n📁 **[View Uploaded Files in Google Drive](${data.drive_folder_url})**`;
-        }
+                if (data.drive_folder_url) {
+                    headerEmbed.description += `\n\n📁 **[View Uploaded Files in Google Drive](${data.drive_folder_url})**`;
+                }
 
-        embeds.push(headerEmbed);
+                embeds.push(headerEmbed);
 
                 if (formStructure) {
                     formStructure.forEach(section => {
@@ -107,30 +106,28 @@ export default async function handler(req, res) {
                     });
                 }
 
+                const discordForm = new FormData();
                 discordForm.append('payload_json', JSON.stringify({ embeds }));
 
-                // 3. ATTACH REMAINING BINARY FILES (if any)
-                let fileIndex = 0;
+                // ATTACH REMAINING BINARY FILES (if any)
+                let hasFilesToAttach = false;
                 for (const key in files) {
                     const fileArray = Array.isArray(files[key]) ? files[key] : [files[key]];
                     for (const file of fileArray) {
-                        // Only attach if it's a real file and not an empty placeholder
-                        // (If it was uploaded to Drive, 'data[key]' contains the string note, 
-                        // and 'files[key]' might still exist but shouldn't be attached if we want to save bandwidth)
                         const wasUploadedToDrive = typeof data[key] === 'string' && data[key].includes('UPLOADED TO DRIVE');
                         
                         if (file && file.filepath && file.size > 0 && !wasUploadedToDrive) {
-                            const fileContent = await fs.readFile(file.filepath);
-                            const blob = new Blob([fileContent], { type: file.mimetype });
-                            discordForm.append(`file${fileIndex}`, blob, file.originalFilename || 'upload.png');
-                            fileIndex++;
+                            const fileContent = await fs.readFile(file.filepath); // Read as Buffer
+                            discordForm.append(key, fileContent, { filename: file.originalFilename, contentType: file.mimetype });
+                            hasFilesToAttach = true;
                         }
                     }
                 }
 
                 await fetch(DISCORD_WEBHOOK_URL, {
                     method: 'POST',
-                    body: discordForm
+                    body: discordForm,
+                    headers: hasFilesToAttach ? discordForm.getHeaders() : { 'Content-Type': 'application/json' } // Set headers correctly
                 });
             } catch (discordError) {
                 console.error('Discord Webhook Error:', discordError);
