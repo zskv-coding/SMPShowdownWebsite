@@ -31,21 +31,20 @@ export default async function handler(req, res) {
         minFileSize: 0
     });
 
-    try {
-        const [fields, files] = await form.parse(req);
-        
-        const data = {};
-        for (const key in fields) {
-            data[key] = fields[key][0];
-        }
+            try {
+                const [fields, files] = await form.parse(req);
+                
+                const data = {};
+                for (const key in fields) {
+                    data[key] = fields[key][0];
+                }
 
-        const username = data.username || data.mc_name || 'Unknown';
-        const discord = data.discord || data.discord_name || 'Unknown';
-        const type = data['app-type'] || 'General';
-        const formStructure = data.form_structure ? JSON.parse(data.form_structure) : null;
+                const username = data.username || data.mc_name || 'Unknown';
+                const discord = data.discord || data.discord_name || 'Unknown';
+                const type = data['app-type'] || 'General';
+                const formStructure = data.form_structure ? JSON.parse(data.form_structure) : null;
 
-        // 2. DISCORD WEBHOOK
-        const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
+                const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
         if (DISCORD_WEBHOOK_URL) {
             try {
                 const formatValue = (val) => {
@@ -53,10 +52,8 @@ export default async function handler(req, res) {
                     return str.length > 1020 ? str.substring(0, 1020) + '...' : str;
                 };
 
-                // Create Embeds based on Form Structure
                 const embeds = [];
-                
-                // Header Embed
+
                 const headerEmbed = {
                     title: `📢 New ${type} Application`,
                     description: `**From:** ${username} (${discord})\n**Time:** ${new Date().toLocaleString()}`,
@@ -71,28 +68,19 @@ export default async function handler(req, res) {
 
                 if (formStructure) {
                     formStructure.forEach(section => {
-                        const fields = section.fields
+                        const sectionFields = section.fields
                             .map(f => {
                                 const answer = data[f.name];
                                 if (!answer) return null;
-                                return {
-                                    name: f.label,
-                                    value: formatValue(answer),
-                                    inline: false
-                                };
+                                return { name: f.label, value: formatValue(answer), inline: false };
                             })
                             .filter(f => f !== null);
 
-                        if (fields.length > 0) {
-                            embeds.push({
-                                title: section.title,
-                                color: 0xFFA500,
-                                fields: fields
-                            });
+                        if (sectionFields.length > 0) {
+                            embeds.push({ title: section.title, color: 0xFFA500, fields: sectionFields });
                         }
                     });
                 } else {
-                    // Fallback to simple list if structure is missing
                     embeds.push({
                         title: "Application Details",
                         color: 0xFFA500,
@@ -106,32 +94,17 @@ export default async function handler(req, res) {
                     });
                 }
 
-                const discordForm = new FormData();
-                discordForm.append('payload_json', JSON.stringify({ embeds }));
-
-                // ATTACH REMAINING BINARY FILES (if any)
-                let hasFilesToAttach = false;
-                for (const key in files) {
-                    const fileArray = Array.isArray(files[key]) ? files[key] : [files[key]];
-                    for (const file of fileArray) {
-                        const wasUploadedToDrive = typeof data[key] === 'string' && data[key].includes('UPLOADED TO DRIVE');
-                        
-                        if (file && file.filepath && file.size > 0 && !wasUploadedToDrive) {
-                            const fileContent = await fs.readFile(file.filepath); // Read as Buffer
-                            discordForm.append(key, fileContent, { filename: file.originalFilename, contentType: file.mimetype });
-                            hasFilesToAttach = true;
-                        }
-                    }
-                }
-
                 await fetch(DISCORD_WEBHOOK_URL, {
                     method: 'POST',
-                    body: discordForm,
-                    headers: hasFilesToAttach ? discordForm.getHeaders() : { 'Content-Type': 'application/json' } // Set headers correctly
-                });
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ embeds })
+                }).catch(err => console.error('Webhook failed:', err));
+
             } catch (discordError) {
                 console.error('Discord Webhook Error:', discordError);
             }
+        } else {
+            console.warn('DISCORD_WEBHOOK_URL is not set.');
         }
 
         // 3. Save to MySQL
