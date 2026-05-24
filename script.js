@@ -1051,15 +1051,6 @@ async function updateVotes() {
         console.error('Error updating votes:', error);
     }
 }
-        }
-
-        // Highlight selected game
-        const lastVote = localStorage.getItem('last_vote');
-        updateVoteUI(lastVote || null);
-    } catch (error) {
-        console.error('Error updating votes:', error);
-    }
-}
 
 /* Live Submissions & Admin Logic */
 
