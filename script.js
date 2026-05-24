@@ -12,8 +12,8 @@ async function fetchVotesApi(options = {}) {
     const localUrl = VOTES_API_PATH;
     const fallbackUrl = `${VERCEL_BACKEND_URL}${VOTES_API_PATH}`;
     const host = typeof window !== 'undefined' ? window.location.hostname : '';
-    const tryLocalFirst = host === 'localhost' || host === '127.0.0.1';
-    const urls = tryLocalFirst ? [localUrl, fallbackUrl] : [fallbackUrl, localUrl];
+    const isLocalHost = host === 'localhost' || host === '127.0.0.1' || host === '::1';
+    const urls = isLocalHost ? [localUrl, fallbackUrl] : [fallbackUrl];
 
     for (const url of urls) {
         try {
