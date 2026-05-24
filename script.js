@@ -2,11 +2,18 @@
 let allPlayersData = {};
 let playedGames = [];
 const VERCEL_BACKEND_URL = 'https://apismpshowdown.vercel.app';
+const VOTES_API_PATH = '/api/votes';
 
 function normalizeGameName(name) {
     return String(name || '').trim().toLowerCase();
 }
 
+function getVotesApiUrl() {
+    if (typeof window !== 'undefined' && window.location.protocol.startsWith('http')) {
+        return VOTES_API_PATH;
+    }
+    return `${VERCEL_BACKEND_URL}${VOTES_API_PATH}`;
+}
 
 function showSection(sectionId) {
     const transition = document.getElementById('tab-transition');
@@ -126,7 +133,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Only check voting status redirect if we are NOT on a special path
     try {
-        const response = await fetch('https://apismpshowdown.vercel.app/api/votes');
+        const response = await fetch(getVotesApiUrl());
         const data = await response.json();
         votingActive = data.votingActive;
         
@@ -869,7 +876,7 @@ async function castVote(gameName) {
     }
 
     try {
-        const response = await fetch('https://apismpshowdown.vercel.app/api/votes', {
+        const response = await fetch(getVotesApiUrl(), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ game: gameName })
@@ -880,7 +887,7 @@ async function castVote(gameName) {
         localStorage.setItem('last_vote', gameName);
         
         // Use current session ID if available, else let updateVotes handle it
-        const currentData = await (await fetch('https://apismpshowdown.vercel.app/api/votes')).json();
+        const currentData = await (await fetch(getVotesApiUrl())).json();
         if (currentData.sessionId) {
             localStorage.setItem('vote_session', String(currentData.sessionId));
         }
@@ -967,7 +974,7 @@ async function updateVotes() {
     if (!votesBody) return;
 
     try {
-        const response = await fetch('https://apismpshowdown.vercel.app/api/votes', {
+        const response = await fetch(getVotesApiUrl(), {
             cache: 'no-store'
         });
         if (!response.ok) throw new Error('Failed to fetch votes');
@@ -1000,7 +1007,10 @@ async function updateVotes() {
         let votes = data.games || [];
         
         // Store normalized played games from API response
-        playedGames = (data.playedGames || []).map(normalizeGameName).filter(Boolean);
+        if (!Array.isArray(data.playedGames)) {
+            console.warn('votes API response missing playedGames:', data);
+        }
+        playedGames = (Array.isArray(data.playedGames) ? data.playedGames : []).map(normalizeGameName).filter(Boolean);
         const playedGamesSet = new Set(playedGames);
         
         // Filter out already-played games from the leaderboard
