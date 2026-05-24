@@ -55,6 +55,10 @@ export default async function handler(req, res) {
             const [[statusRow]] = await connection.execute('SELECT is_active FROM voting_status WHERE id = 1');
             const votingActive = statusRow ? Boolean(statusRow.is_active) : false;
             
+            // Fetch played games from the database
+            const [playedGamesRows] = await connection.execute('SELECT game_name FROM played_games');
+            const playedGames = playedGamesRows.map(row => row.game_name);
+            
             const votesMap = {};
             rows.forEach(row => votesMap[row.game] = row.votes);
             
@@ -68,7 +72,8 @@ export default async function handler(req, res) {
             return res.status(200).json({
                 sessionId: sessionRow?.sessionId || null,
                 votingActive: votingActive,
-                games: results
+                games: results,
+                playedGames: playedGames
             });
         } else if (req.method === 'POST') {
             const { game } = req.body;

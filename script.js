@@ -1,5 +1,6 @@
 // Global state to store player stats for cross-tab linking
 let allPlayersData = {};
+let playedGames = [];
 const VERCEL_BACKEND_URL = 'https://apismpshowdown.vercel.app';
 
 function showSection(sectionId) {
@@ -844,6 +845,12 @@ async function castVote(gameName) {
         return;
     }
 
+    // Check if game has already been played
+    if (playedGames.includes(gameName)) {
+        alert(`${gameName} has already been played and cannot be voted for!`);
+        return;
+    }
+
     // Check if user has already voted
     const lastVote = localStorage.getItem('last_vote');
     if (lastVote) {
@@ -880,22 +887,49 @@ async function castVote(gameName) {
     }
 }
 
+function updateVoteButtons() {
+    const buttons = document.querySelectorAll('.vote-btn');
+    buttons.forEach(btn => {
+        const gameName = btn.innerText.trim();
+        const isPlayed = playedGames.includes(gameName);
+        
+        if (isPlayed) {
+            btn.disabled = true;
+            btn.style.opacity = '0.4';
+            btn.style.cursor = 'not-allowed';
+            btn.title = 'This game has already been played';
+        } else {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.style.cursor = 'pointer';
+            btn.title = '';
+        }
+    });
+}
+
 function updateVoteUI(selectedGame) {
     const buttons = document.querySelectorAll('.vote-btn');
     const hasVoted = !!selectedGame;
     
     buttons.forEach(btn => {
-        const isThisGame = btn.innerText.trim() === selectedGame;
+        const gameName = btn.innerText.trim();
+        const isThisGame = gameName === selectedGame;
+        const isPlayed = playedGames.includes(gameName);
+        
         if (isThisGame) {
             btn.classList.add('selected');
         } else {
             btn.classList.remove('selected');
         }
         
-        // Lock buttons if user has voted, unlock otherwise
-        if (hasVoted) {
+        // Lock buttons if user has voted or if game has been played
+        if (hasVoted || isPlayed) {
             btn.disabled = true;
-            btn.style.opacity = isThisGame ? '1' : '0.5';
+            if (isThisGame && hasVoted) {
+                btn.style.opacity = '1';
+            } else {
+                btn.style.opacity = isPlayed ? '0.4' : '0.5';
+            }
             btn.style.cursor = 'not-allowed';
             btn.style.transform = 'none';
         } else {
@@ -933,6 +967,9 @@ async function updateVotes() {
 
         const data = await response.json();
         
+        // Store played games from API response
+        playedGames = data.playedGames || [];
+        
         // Handle Voting Visibility
         votingActive = data.votingActive;
         const voteBtn = document.getElementById('btn-voting');
@@ -953,7 +990,11 @@ async function updateVotes() {
 
         const apiSession = data.sessionId;
         const localSession = localStorage.getItem('vote_session');
-        const votes = data.games || [];
+        let votes = data.games || [];
+        
+        // Filter out already-played games from the leaderboard
+        votes = votes.filter(v => !playedGames.includes(v.game));
+        
         const totalVotes = votes.reduce((sum, v) => sum + v.votes, 0);
 
         // GLOBAL RESET: If database is empty or total votes is 0, unlock for everyone
@@ -998,6 +1039,18 @@ async function updateVotes() {
 
         if (votesBody.innerHTML !== html) {
             votesBody.innerHTML = html;
+        }
+
+        // Update voting buttons to disable/hide already-played games
+        updateVoteButtons();
+        
+        // Highlight selected game
+        const lastVote = localStorage.getItem('last_vote');
+        updateVoteUI(lastVote || null);
+    } catch (error) {
+        console.error('Error updating votes:', error);
+    }
+}
         }
 
         // Highlight selected game
