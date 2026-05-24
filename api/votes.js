@@ -38,6 +38,26 @@ export default async function handler(req, res) {
             connectTimeout: 10000
         });
 
+        // Ensure tables exist
+        await connection.execute(`
+            CREATE TABLE IF NOT EXISTS votes (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                game_name VARCHAR(100),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        await connection.execute(`
+            CREATE TABLE IF NOT EXISTS voting_status (
+                id INT PRIMARY KEY,
+                is_active BOOLEAN DEFAULT FALSE
+            )
+        `);
+        await connection.execute(`
+            CREATE TABLE IF NOT EXISTS played_games (
+                game_name VARCHAR(100) PRIMARY KEY
+            )
+        `);
+
         if (req.method === 'GET') {
             const gameList = [
                 'Peckish Playoffs',
@@ -52,7 +72,8 @@ export default async function handler(req, res) {
             const [[sessionRow]] = await connection.execute('SELECT MIN(id) as sessionId FROM votes');
             
             // Check if voting is active
-            const [[statusRow]] = await connection.execute('SELECT is_active FROM voting_status WHERE id = 1');
+            const [statusRows] = await connection.execute('SELECT is_active FROM voting_status WHERE id = 1');
+            const statusRow = statusRows[0];
             const votingActive = statusRow ? Boolean(statusRow.is_active) : false;
             
             // Fetch played games from the database
