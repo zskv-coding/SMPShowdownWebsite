@@ -10,22 +10,24 @@ function normalizeGameName(name) {
 
 async function fetchVotesApi(options = {}) {
     const localUrl = VOTES_API_PATH;
-    try {
-        const response = await fetch(localUrl, options);
-        if (response.ok) {
-            return response;
+    const fallbackUrl = `${VERCEL_BACKEND_URL}${VOTES_API_PATH}`;
+    const host = typeof window !== 'undefined' ? window.location.hostname : '';
+    const tryLocalFirst = host === 'localhost' || host === '127.0.0.1';
+    const urls = tryLocalFirst ? [localUrl, fallbackUrl] : [fallbackUrl, localUrl];
+
+    for (const url of urls) {
+        try {
+            const response = await fetch(url, options);
+            if (response.ok) {
+                return response;
+            }
+            console.warn('Votes API request failed:', response.status, response.statusText, url);
+        } catch (error) {
+            console.warn('Votes API request error:', error, url);
         }
-        console.warn('Local votes API request failed:', response.status, response.statusText, localUrl);
-    } catch (error) {
-        console.warn('Local votes API request error:', error, localUrl);
     }
 
-    const fallbackUrl = `${VERCEL_BACKEND_URL}${VOTES_API_PATH}`;
-    const response = await fetch(fallbackUrl, options);
-    if (!response.ok) {
-        throw new Error(`Fallback votes API request failed: ${response.status} ${response.statusText}`);
-    }
-    return response;
+    throw new Error('All votes API requests failed');
 }
 
 function showSection(sectionId) {
