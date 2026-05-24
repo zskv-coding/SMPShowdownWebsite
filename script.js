@@ -8,11 +8,24 @@ function normalizeGameName(name) {
     return String(name || '').trim().toLowerCase();
 }
 
-function getVotesApiUrl() {
-    if (typeof window !== 'undefined' && window.location.protocol.startsWith('http')) {
-        return VOTES_API_PATH;
+async function fetchVotesApi(options = {}) {
+    const localUrl = VOTES_API_PATH;
+    try {
+        const response = await fetch(localUrl, options);
+        if (response.ok) {
+            return response;
+        }
+        console.warn('Local votes API request failed:', response.status, response.statusText, localUrl);
+    } catch (error) {
+        console.warn('Local votes API request error:', error, localUrl);
     }
-    return `${VERCEL_BACKEND_URL}${VOTES_API_PATH}`;
+
+    const fallbackUrl = `${VERCEL_BACKEND_URL}${VOTES_API_PATH}`;
+    const response = await fetch(fallbackUrl, options);
+    if (!response.ok) {
+        throw new Error(`Fallback votes API request failed: ${response.status} ${response.statusText}`);
+    }
+    return response;
 }
 
 function showSection(sectionId) {
@@ -133,7 +146,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Only check voting status redirect if we are NOT on a special path
     try {
-        const response = await fetch(getVotesApiUrl());
+        const response = await fetchVotesApi();
         const data = await response.json();
         votingActive = data.votingActive;
         
@@ -876,7 +889,7 @@ async function castVote(gameName) {
     }
 
     try {
-        const response = await fetch(getVotesApiUrl(), {
+        const response = await fetchVotesApi({
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ game: gameName })
@@ -887,7 +900,7 @@ async function castVote(gameName) {
         localStorage.setItem('last_vote', gameName);
         
         // Use current session ID if available, else let updateVotes handle it
-        const currentData = await (await fetch(getVotesApiUrl())).json();
+        const currentData = await (await fetchVotesApi()).json();
         if (currentData.sessionId) {
             localStorage.setItem('vote_session', String(currentData.sessionId));
         }
@@ -974,7 +987,7 @@ async function updateVotes() {
     if (!votesBody) return;
 
     try {
-        const response = await fetch(getVotesApiUrl(), {
+        const response = await fetchVotesApi({
             cache: 'no-store'
         });
         if (!response.ok) throw new Error('Failed to fetch votes');
