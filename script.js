@@ -983,9 +983,12 @@ async function updateVotes() {
 
         // Redirect if on /vote and not active
         const isVotingPath = window.location.pathname === '/vote' || window.location.pathname === '/vote.html';
-        const isVotingSection = !document.getElementById('voting').classList.contains('hidden');
-        const isSpecialSection = !document.getElementById('live-submissions').classList.contains('hidden') || 
-                                 !document.getElementById('admin-live-link-submissions').classList.contains('hidden');
+        const votingSection = document.getElementById('voting');
+        const liveSubmissionsSection = document.getElementById('live-submissions');
+        const adminLiveLinkSection = document.getElementById('admin-live-link-submissions');
+        const isVotingSection = votingSection ? !votingSection.classList.contains('hidden') : false;
+        const isSpecialSection = (liveSubmissionsSection ? !liveSubmissionsSection.classList.contains('hidden') : false) || 
+                                 (adminLiveLinkSection ? !adminLiveLinkSection.classList.contains('hidden') : false);
         
         if (!votingActive && (isVotingPath || isVotingSection) && !isSpecialSection) {
             showSection('home');
