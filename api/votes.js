@@ -57,15 +57,18 @@ export default async function handler(req, res) {
             
             // Fetch played games from the database
             const [playedGamesRows] = await connection.execute('SELECT game_name FROM played_games');
-            const playedGames = playedGamesRows.map(row => row.game_name);
+            const playedGames = playedGamesRows.map(row => String(row.game_name || '').trim()).filter(Boolean);
+            const playedGamesSet = new Set(playedGames.map(name => name.toLowerCase()));
             
             const votesMap = {};
             rows.forEach(row => votesMap[row.game] = row.votes);
             
-            const results = gameList.map(game => ({
-                game,
-                votes: votesMap[game] || 0
-            }));
+            const results = gameList
+                .filter(game => !playedGamesSet.has(game.toLowerCase()))
+                .map(game => ({
+                    game,
+                    votes: votesMap[game] || 0
+                }));
 
             results.sort((a, b) => b.votes - a.votes);
 

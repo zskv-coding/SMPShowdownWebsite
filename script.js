@@ -3,6 +3,11 @@ let allPlayersData = {};
 let playedGames = [];
 const VERCEL_BACKEND_URL = 'https://apismpshowdown.vercel.app';
 
+function normalizeGameName(name) {
+    return String(name || '').trim().toLowerCase();
+}
+
+
 function showSection(sectionId) {
     const transition = document.getElementById('tab-transition');
     const bg = transition?.querySelector('.transition-bg');
@@ -846,7 +851,7 @@ async function castVote(gameName) {
     }
 
     // Check if game has already been played
-    if (playedGames.includes(gameName)) {
+    if (playedGames.includes(normalizeGameName(gameName))) {
         alert(`${gameName} has already been played and cannot be voted for!`);
         return;
     }
@@ -891,14 +896,15 @@ function updateVoteButtons() {
     const buttons = document.querySelectorAll('.vote-btn');
     buttons.forEach(btn => {
         const gameName = btn.innerText.trim();
-        const isPlayed = playedGames.includes(gameName);
+        const normalizedName = normalizeGameName(gameName);
+        const isPlayed = playedGames.includes(normalizedName);
         
         if (isPlayed) {
+            btn.style.display = 'none';
             btn.disabled = true;
-            btn.style.opacity = '0.4';
-            btn.style.cursor = 'not-allowed';
             btn.title = 'This game has already been played';
         } else {
+            btn.style.display = '';
             btn.disabled = false;
             btn.style.opacity = '1';
             btn.style.cursor = 'pointer';
@@ -913,8 +919,9 @@ function updateVoteUI(selectedGame) {
     
     buttons.forEach(btn => {
         const gameName = btn.innerText.trim();
+        const normalizedName = normalizeGameName(gameName);
         const isThisGame = gameName === selectedGame;
-        const isPlayed = playedGames.includes(gameName);
+        const isPlayed = playedGames.includes(normalizedName);
         
         if (isThisGame) {
             btn.classList.add('selected');
@@ -967,9 +974,6 @@ async function updateVotes() {
 
         const data = await response.json();
         
-        // Store played games from API response
-        playedGames = data.playedGames || [];
-        
         // Handle Voting Visibility
         votingActive = data.votingActive;
         const voteBtn = document.getElementById('btn-voting');
@@ -992,8 +996,12 @@ async function updateVotes() {
         const localSession = localStorage.getItem('vote_session');
         let votes = data.games || [];
         
+        // Store normalized played games from API response
+        playedGames = (data.playedGames || []).map(normalizeGameName).filter(Boolean);
+        const playedGamesSet = new Set(playedGames);
+        
         // Filter out already-played games from the leaderboard
-        votes = votes.filter(v => !playedGames.includes(v.game));
+        votes = votes.filter(v => !playedGamesSet.has(normalizeGameName(v.game)));
         
         const totalVotes = votes.reduce((sum, v) => sum + v.votes, 0);
 
