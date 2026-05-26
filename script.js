@@ -530,6 +530,12 @@ const APP_DATA = {
                         options: ['Yes', 'No'], required: true 
                     }
                 ]
+            },
+            {
+                title: 'Backup Information',
+                fields: [
+                    { label: 'Do you have 2-3 players who can be a backup for the event?', name: 'backup_players_available', type: 'select', options: ['Yes', 'No'], required: true }
+                ]
             }
         ]
     },
