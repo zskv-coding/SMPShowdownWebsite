@@ -495,6 +495,44 @@ const APP_DATA = {
             }
         ]
     },
+    'Showdown #2 Signups': {
+        title: 'SMP Showdown | Showdown #2 Signups',
+        description: 'Sign up your SMP for the next SMP Showdown event!',
+        sections: [
+            {
+                title: 'SMP Communicator Information',
+                fields: [
+                    { label: 'Who is your SMP Communicator?', name: 'smp_communicator_name', type: 'text', required: true },
+                    { label: 'What is their username for Discord & Minecraft?', name: 'communicator_usernames', type: 'textarea', required: true }
+                ]
+            },
+            {
+                title: 'SMP Details',
+                fields: [
+                    { label: 'What is your SMP Name?', name: 'smp_name', type: 'text', required: true },
+                    { 
+                        label: 'Please submit your SMP Logo (PNG/JPG)', 
+                        name: 'smp_logo_file', 
+                        type: 'file', 
+                        required: true,
+                        info: 'This will be uploaded to Google Drive.'
+                    },
+                    { label: 'Do you have 5 players that will be interested in playing?', name: 'five_players_interested', type: 'select', options: ['Yes', 'No'], required: true }
+                ]
+            },
+            {
+                title: 'Streaming Requirement',
+                fields: [
+                    { 
+                        label: 'Can all 5 people stream the event? This is a requirement. Everybody on your team needs to stream the event, no option.', 
+                        name: 'all_stream_event', 
+                        type: 'select', 
+                        options: ['Yes', 'No'], required: true 
+                    }
+                ]
+            }
+        ]
+    },
     'Coding': {
         title: 'SMP Showdown | Coder Applications',
         description: 'Are you looking to code for a MC Event? Then you\'ve come to the right spot! Apply for SMP Showdown coder below!',
@@ -1277,6 +1315,3 @@ async function loadSubmissions() {
         list.innerHTML = `<p style="color: #ff6b6b;">Error: ${error.message}</p>`;
     }
 }
-
-
-
