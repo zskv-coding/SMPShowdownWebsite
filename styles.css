@@ -864,18 +864,21 @@ section:not(.hidden) {
     color: #ff4d4d;
 }
 
-/* High-Specificity Reset for Live Submissions Form */
-#live-submissions .modal-content.app-modal-content {
+/* Unified Application Form Styles */
+.app-modal-content {
     background-color: #121212 !important;
 }
 
-#live-submissions .form-question-card {
+.form-question-card {
     background-color: #1e1e1e !important;
 }
 
-#live-submissions input[type="text"],
-#live-submissions input[type="url"],
-#live-submissions select {
+.form-question-card input[type="text"],
+.form-question-card input[type="url"],
+.form-question-card input[type="email"],
+.form-question-card input[type="password"],
+.form-question-card textarea,
+.form-question-card select {
     background-color: #000000 !important;
     color: #ffffff !important;
     border: 1px solid #444 !important;
@@ -884,9 +887,10 @@ section:not(.hidden) {
     width: 100% !important;
     border-radius: 4px !important;
     font-size: 16px !important;
+    font-family: 'Open Sans', sans-serif !important;
 }
 
-#live-submissions select {
+.form-question-card select {
     cursor: pointer;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
     background-repeat: no-repeat !important;
@@ -898,12 +902,13 @@ section:not(.hidden) {
     appearance: none !important;
 }
 
-#live-submissions select option {
+.form-question-card select option {
     background-color: #000000 !important;
     color: #ffffff !important;
 }
 
-#live-submissions input::placeholder {
+.form-question-card input::placeholder,
+.form-question-card textarea::placeholder {
     color: #888 !important;
 }
 
@@ -1169,5 +1174,3 @@ section:not(.hidden) {
 .submissions-list a:hover {
     text-decoration: underline;
 }
-
-
