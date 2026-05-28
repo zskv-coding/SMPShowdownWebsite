@@ -526,17 +526,17 @@ section h1 {
     object-fit: contain;
     margin-bottom: 1.5rem;
     filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
-    animation: float 3s linear infinite;
+    animation: float 4s ease-in-out infinite;
 }
 
 .team-card-live:nth-child(even) .team-icon {
-    animation-delay: 0.5s;
-    animation-duration: 3.5s;
+    animation-delay: -1.2s;
+    animation-duration: 4.5s;
 }
 
 .team-card-live:nth-child(3n) .team-icon {
-    animation-delay: 1s;
-    animation-duration: 4s;
+    animation-delay: -2.5s;
+    animation-duration: 5s;
 }
 
 /* Floating Animations */
