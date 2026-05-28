@@ -526,7 +526,7 @@ section h1 {
     object-fit: contain;
     margin-bottom: 1.5rem;
     filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
-    animation: float 3s ease-in-out infinite;
+    animation: float 3s linear infinite;
 }
 
 .team-card-live:nth-child(even) .team-icon {
